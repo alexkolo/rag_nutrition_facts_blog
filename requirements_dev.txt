@@ -1,0 +1,5 @@
+beautifulsoup4==4.12.3 # for webpage scraping
+ipykernel==6.29.5 # for jupyter notebook
+requests==2.32.3 # for web requests
+tqdm==4.66.5 # progress bars
+pre-commit==3.8.0

@@ -10,13 +10,23 @@ TODO: expand it
 
 ### Data Acquisition
 
-- scraped all blog posts from [https://nutritionfacts.org/blog/](https://nutritionfacts.org/blog/) as of 28.08.2024
-- See notebook: `notebooks/web_scraping.ipynb`
+- I scraped all blog posts from [https://nutritionfacts.org/blog/](https://nutritionfacts.org/blog/) as of 28.08.2024
+- Notebook: `notebooks/web_scraping.ipynb`
+  - At first, at collected the urls of all blog posts: `data/blog_posts/blog_posts_urls.csv`
+    - Number of unique blog post urls: 1281
+  - Then I saved the content of each blog post a json file in `data/blog_posts/json/` with the following structure:
+    - url: str
+    - title: str
+    - created : datatime str
+    - updated : datatime str (last update of the blog post)
+    - category : list[str] (derived from `raw_tags`)
+    - blog_tags : list[str] (derived from `raw_tags`)
+    - raw_tags : list[str]
+    - paragraphs : list[str] (all paragraphs of the blog post)
+      - Since paragraphs were kept separate, the text is already chunked.
+    - key_takeaways : list[str] (not all posts have it)
 
-### Data Inquestion
-
-
-
+### Data Ingestion
 
 ## How to run the bot on your own
 
@@ -47,11 +57,6 @@ TODO: expand it
 
 ## Developer Environment
 
-- builds on "Run Environment"
-- pre-commit:
-
-    ```bash
-    pip install pre-commit
-    pre-commit install
-    # pre-commit autoupdate
-    ```
+- create "User Environment"
+- `pip install -r requirements_dev.txt`
+- (optional) pre-commit setup: `pre-commit install` (update: `pre-commit autoupdate`)
