@@ -53,6 +53,7 @@ TODO: expand it
     # .\venv\Scripts\Activate # for Windows
     pip install -U pip wheel setuptools
     pip install -r requirements.txt
+    pip cache purge # reduce storage footprint
     ```
 
 ## Developer Environment
