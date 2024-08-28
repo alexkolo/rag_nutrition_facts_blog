@@ -60,3 +60,4 @@ TODO: expand it
 - create "User Environment"
 - `pip install -r requirements_dev.txt`
 - (optional) pre-commit setup: `pre-commit install` (update: `pre-commit autoupdate`)
+  - test: `pre-commit run --all-files`
