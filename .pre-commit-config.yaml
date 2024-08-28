@@ -34,6 +34,7 @@ repos:
         args: ["--py312-plus"]
       - id: nbqa-isort
         args: ["--float-to-top"]
-      # - id: nbqa-pylint
       - id: nbqa-flake8
         args: ["--extend-ignore=E501"]
+      # - id: nbqa-pylint # too many complaints
+      # - id: nbqa-mypy # too many complaints
