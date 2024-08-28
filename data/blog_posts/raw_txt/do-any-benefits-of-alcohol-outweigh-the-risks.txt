@@ -1,0 +1,68 @@
+
+
+  Written By 
+    Michael Greger M.D. FACLM
+  
+  •
+  
+      January 27, 2022
+  
+
+
+Last updated: 
+  December 7, 2021
+  
+    • 5 min read
+  
+
+
+          Image Credit: Pixabay. This image has been modified.          
+
+What would happen if you effectively randomized people at birth to drink more or less alcohol their whole lives? Would they get more or less heart disease?
+
+Once you remove the “systematic error” of misclassifying former drinkers as if they were lifelong abstainers from studies on alcohol and mortality, moderate alcohol consumption, like a glass of wine a day, does not appear to be protective after all. “The immediate implication from this [new research] is that clinicians need to be highly skeptical about the hypothesized health benefits of alcohol consumption and should not advise their patients to drink to improve their life expectancy. This is especially important given increasing awareness of cancer risks from even moderate alcohol use.” Given the cancer risk from drinking, as I discuss in my video Do Any Benefits of Alcohol Outweigh the Risks?, if there are only harms without any benefits, then the ideal alcohol intake on a routine, day-to-day basis should really be zero, potentially making it a red-light beverage. 
+
+The problem was that many of these population studies classified those who “quit drinking in response to ill-health” as nondrinkers. This is the problem of reverse causation: Instead of abstaining from alcohol consumption leading to poor health, poor health may have led to abstaining. It’s similar to studies showing that those who sit around and watch TV have worse health. Is watching more TV leading to illness, or is illness leading to more TV? As you can see at 1:24 in my video, this is one of the reasons why, if you look at the hierarchy of evidence, where stronger evidence is higher on the pyramid, interventional trials, such as randomized controlled trials, tend to offer better evidence than observational studies of populations, which can suffer from both reverse causation and confounding factors. As a group, light-to-moderate drinkers “display a range of healthy behaviours, such as better diet and more physical activity,” so, for example, they may be more likely to drink their glass of wine with a salad than a cheeseburger, and that’s why the wine appeared protective. It can be hard to do randomized controlled trials, though. For instance, you can’t randomize people to smoke a pack a day for a few decades, so you sometimes have to base your decisions on observational studies. We now have a new tool, however: Mendelian randomization. 
+
+In cases where randomized controlled trials “are not feasible or practical,” this new tool “can provide reliable evidence on the causal relationship between exposures and risks of disease.” 
+
+It’s like the HDL story. Alcohol does raise your “good” HDL cholesterol levels, but, unfortunately, it seems good cholesterol isn’t any good at lowering heart disease risk after all, based in part on Mendelian randomization studies where people who were randomly assigned higher HDL levels genetically from birth don’t appear to be protected. Is there any way to study people who were randomly assigned since conception not to drink as much? Remarkably, yes.
+
+As you can see at 2:46 in my video, alcohol is detoxified in the liver to carbon dioxide and water by two enzymes, ADH1B and ALDH2. But, in the process, acetaldehyde, a toxic intermediate metabolite, is produced, which can cause unpleasant nausea and flushing sensations. If people are born with a superfast variant of the enzyme ADH1B or a slow variant of the enzyme ALDH2, toxic acetaldehyde can build up, making drinking alcohol a relatively unpleasant experience throughout their lives. So, they are born less likely to drink as much. Do they have an increased risk of heart disease, as the original observational studies would suggest? No, they have a reduced risk of heart disease. “This suggests that reduction of alcohol consumption, even for light to moderate drinkers, is beneficial for cardiovascular health.”
+
+This further “sheds doubt on protective associations between ‘moderate’ alcohol consumption and coronary heart disease,” which were already “plagued by confounding…[and] bias…and [now] the scientific pillars on which it is based appear increasingly shaky indeed.” This has led some to ask, “Has the leaning tower of presumed health benefits from ‘moderate’ alcohol use finally collapsed?” “Given the harms attributed to alcohol use, it is not surprising that reports suggesting possible mortality benefits for low level users attracted enthusiasm among consumers, the media, and the alcohol industry…[but] these apparent benefits are now evaporating…”
+
+“What conclusions should we draw from this emerging evidence…? Firstly, in health as elsewhere, if something looks too good to be true”—like butter is back—”it should be treated with great caution. Secondly, health professionals should discourage suggestions that even low level alcohol use protects against cardiovascular disease and brings mortality benefits. Thirdly, health advice should come from health authorities, not from the alcohol industry…[which] should remove misleading references to health benefits from their information materials,” which increasingly look more like “a triumph of spin doctoring” than good science, “as contrived as the alleged split among scientists over climate change” advanced by the petroleum industry.
+
+“As an intoxicating, addictive, toxic, carcinogenic drug, alcohol is not a good choice as a therapeutic agent,” even if it did help. There are better ways to prevent heart attacks, namely diet and exercise (and, when necessary, drugs). “In contrast to that of alcohol, effectiveness of the [lifestyle] interventions has been demonstrated and they have no abuse potential.” There’s a reason there’s no Appleholics Anonymous.
+
+If, like me, you’re interested in the cool, nerdy world of Mendelian randomization—which isn’t only cool and nerdy because it was named after a Gregor!—check out my video Coconut Oil and the Boost in HDL “Good” Cholesterol.
+
+KEY TAKEAWAYS
+
+In case you missed the first three videos in this four-part series, see: 
+
+In health,
+
+Michael Greger, M.D.
+
+PS: If you haven’t yet, you can subscribe to my free videos here and watch my live presentations:
+
+Michael Greger M.D. FACLM
+
+A founding member and Fellow of the American College of Lifestyle Medicine, Michael Greger, MD, is a physician, New York Times bestselling author, and internationally recognized speaker on nutrition. Dr. Greger has lectured at the Conference on World Affairs, testified before Congress, and was invited as an expert witness in the defense of Oprah Winfrey in the infamous “meat defamation” trial.
+
+
+  Subscribe to our free newsletter and receive our Care for Your Skin as You Age infographic.
+  
+
+Catch up with Dr. Greger at one of his live speaking engagements:
+
+
+
+
+Charity ID: 05-0559626
+                    
+
+
+                    We  our volunteers!                    Apply Now!

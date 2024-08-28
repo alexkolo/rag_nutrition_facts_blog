@@ -1,0 +1,96 @@
+
+
+  Written By 
+    Michael Greger M.D. FACLM
+  
+  •
+  
+      April 25, 2013
+  
+
+
+Last updated: 
+  January 26, 2024
+  
+    • 6 min read
+  
+
+
+          Image Credit: joyosity / Flickr.  This image has been modified.          
+
+Consumer Reports recently released a study in which they analyzed U.S. retail pork and found trace levels of an adrenaline-like drug called ractopamine in about 20 percent of the samples and a foodborne bacteria that sickens nearly 100,000 Americans every year called Yersina in two-thirds of pork samples.
+
+Ractopamine safety analysis
+
+The National Pork Producers Council tried to address concerns about ractopamine by noting that the levels in meat of this muscle growth promoter, which is fed to pigs in the form of Paylean™ and turkeys in the form of Topmax™, were below the limit set by the UN Codex Commission last summer. What they didn’t mention was that due to outstanding safety concerns, the Commission’s drug residue limit only passed by a single vote out of 143 ballots cast.
+
+The Codex Commission based this drug residue limit in meat on the only human data available, a study of just six people that wasn’t designed to establish safety. At higher doses, the study subjects reported their hearts racing and pounding—so much so that one subject had to be withdrawn from the study. At a lower dose, though, no cardiac changes were noted. So that’s the dose the Codex Commission used to calculate the maximum allowable meat residue and acceptable human daily intake levels.
+
+Just because a certain dose doesn’t cause a problem in six people is no certainty that the dose is safe for everyone. The European Food Safety Authority—Europe’s equivalent to the U.S. Food and Drug Administration—calculated that a study of six people wouldn’t even have the statistical power to pick up a 40 percent change in cardiac output, a key measured endpoint. To detect as statistically significant a clinically relevant change, the study would have required at least 60 people.
+
+Also, the study only looked at the cardiovascular effects of ractopamine. Given its adrenaline-like effects, the drug could also cause metabolic effects in people such as an increase in blood sugar levels or behavioral effects such as restlessness or anxiety.
+
+Finally, all six study subjects were healthy young men. What about particularly vulnerable populations such as children or people with heart disease? The European Food Safety Authority panel concluded that the Codex limit did not sufficiently take these higher risk populations into account. They concluded that the single small human study “can not be taken as a basis to derive an acceptable daily intake…and consequently no proposal for maximum [meat] residue levels could be made.” In other words, we simply don’t have enough data to determine a safe level of drug exposure from meat.
+
+Ractopamine – animal health and welfare
+
+The Council of the European Union recently joined China in reaffirming the ban on ractopamine, citing both human health and animal welfare concerns. Studies over the last decade have shown that pigs on ractopamine may have chronically elevated heart rates, increased stress reactions, and difficulty walking. In fact the warning label reads: ‘‘Caution: Pigs fed PAYLEAN are at an increased risk for exhibiting the downer pig syndrome,” a condition in which pigs are too sick, injured, or exhausted to stand and may be dragged to slaughter.
+
+The pork industry uses an ironic pretext to defend its use of gestation crates – restrictive cages that virtually immobilize breeding pigs for nearly their entire lives. The industry claims this is to keep them from fighting, but at the same time pork producers feed millions of fattening pigs a drug shown to increases aggressiveness and attacks.
+
+Given the human and animal welfare concerns, why does the U.S. pork industry continue to feed this drug to their animals every year?
+
+A meta-analysis was recently published in the Journal of Animal Science. Based on all the studies done to date, pigs fed ractopamine “had an overall carcass cutability advantage of 1.01 percentage units when compared to control pigs.” All this for a 1 percent greater yield.
+
+For more on this drug in the meat supply, see my 6-min. video Ractopamine in Pork.
+
+For more on the drug use by the livestock industry see:
+
+Yersinia – the gift that can keep on giving
+
+The discovery of Yersinia in pork is no surprise. Pigs are considered to be to be the main reservoir for Yersinia enterocolitica and pork products the main source of human infection. While most foodborne pathogens come from a variety of sources, 100 percent of the attributable Yersinia outbreaks reported in the United States from 1999 through 2008 were caused by pork. What was a surprise is the level of contamination of the U.S. pork supply—69 percent of samples tested positive—and the level of antibiotic resistance. Ninety percent of the Yersinia bacteria found contaminating the pork was resistant to one or more antibiotics.
+
+In most cases, Yersinia food poisoning causes an acute “stomach flu” characterized by fever, abdominal pain, and often bloody diarrhea. Severe cases are frequently confused with appendicitis, leading to unnecessary emergency surgery. Long-term complications of infection include chronic inflammation of the eyes, kidneys, heart, and joints. Within a year of a bout of Yersinia food poisoning, victims appear to have a 47-fold higher risk of coming down with autoimmune arthritis. The bacteria may also play a role in triggering an autoimmune thyroid condition known as Graves’ disease.
+
+Yersinia – the role of factory farming
+
+The new findings, published in the January 2013 issue of Consumer Reports, are not surprising given how widespread the infection is in the national herd. The increasing emergence of human infections over the last century has been blamed on the industrialization of the pork industry and higher stocking densities. Inside swine confinement buildings, researchers have been able to culture Yersinia bacteria right out of the air.
+
+The pork industry acknowledges overcrowding pigs is associated with increased health risks, but the trade journal National Hog Farmer cites research showing that when “space was dropped to 6 sq. ft./pig, the building produced 26% more pounds of pork at the same fixed cost.” That entails cramming a 200-pound pig in a space equivalent to about 2 feet by 3 feet. Sometimes, the article concludes, “crowding grow-finish pigs a little tighter will make you more money.”
+
+With so many Americans falling ill from contaminated pork, why are there no industry-wide Yersinia monitoring and control programs in the United States? Perhaps this is because Yersinia enterocolitica doesn’t cause clinical disease in pigs and therefore doesn’t directly affect the industry’s bottom-line. The costs of crowded confinement may instead be passed on to the tens of thousands of Americans who continue to be sickened every year at an annual estimated cost of a quarter billion dollars.
+
+Research from Europe suggests pigs raised using organic methods – which in Europe means more than just what animals are fed – may have 50 times lower odds of harboring Yersinia enterocolitica infection compared to pigs raised on conventional factory farms. After studying a variety of factors, the researchers ended up attributing the low rates of Yersinia infection on organic farms to lower levels of stress among the animals.
+
+If stress is indeed a contributing factor, things may be looking up in Europe. On Jan. 1, 2013 gestation crates for pregnant pigs were banned across all 27 nations of the European Union. Crated sows have been shown to have impaired immunity, thought to be a result of elevated stress hormone levels related to being virtually immobilized for years on end.
+
+Pregnant sows in the U.S., where the majority are still crated, have been shown to have among the highest rates of Yersinia enterocolitica infection. Since infected piglets have been shown to carry the infection through to slaughter, the impact of stress levels on disease resistance of breeding pigs can have human health consequences. Thankfully, major U.S. retailers, restaurant chains, and leaders in the pork industry have started phasing out gestation crates, which may end up benefiting both animal welfare and the safety of the meat supply.
+
+For more on this pork-borne bacteria check out my 7-min. video Yersinia in Pork.
+
+For more videos on fecal matter contamination of the meat supply, see:
+
+The Campylobacter in chicken that I end the Yersinia  video on is the Poultry and Paralysis bacteria.
+
+–Michael Greger, M.D.
+
+PS: If you haven’t yet, you can subscribe to my videos for free by clicking here and watch my full 2012 – 2015 presentations Uprooting the Leading Causes of Death, More than an Apple a Day, From Table to Able, and Food as Medicine.
+
+Michael Greger M.D. FACLM
+
+A founding member and Fellow of the American College of Lifestyle Medicine, Michael Greger, MD, is a physician, New York Times bestselling author, and internationally recognized speaker on nutrition. Dr. Greger has lectured at the Conference on World Affairs, testified before Congress, and was invited as an expert witness in the defense of Oprah Winfrey in the infamous “meat defamation” trial.
+
+
+  Subscribe to our free newsletter and receive our Care for Your Skin as You Age infographic.
+  
+
+Catch up with Dr. Greger at one of his live speaking engagements:
+
+
+
+
+Charity ID: 05-0559626
+                    
+
+
+                    We  our volunteers!                    Apply Now!

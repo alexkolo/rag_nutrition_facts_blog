@@ -1,0 +1,80 @@
+
+
+  Written By 
+    Michael Greger M.D. FACLM
+  
+  •
+  
+      June 16, 2020
+  
+
+
+Last updated: 
+  February 8, 2022
+  
+    • 7 min read
+  
+
+
+          Image Credit: Pixabay. This image has been modified.          
+
+Cutting two teaspoons of salt’s worth of sodium from one’s daily diet can significantly improve lung function in asthmatics
+
+In the 1960s and 1970s, a mystery was emerging. Why were childhood asthma rates between 2 to 5 percent in the developed world but as low as 0.007 percent in the developing world? For example, in the developing world, instead of 1 in 20 kids affected, or even 1 in 50 kids, it could be more like 1 in 10,000 kids—extremely rare. And, when kids moved from a low-risk area to a high-risk area, their risk went up. What was going on? Were they exposed to something new? Did they leave some protective factor behind?
+
+As I discuss in my video How to Treat Asthma with a Low-Salt Diet, all the way back in 1938, scientists showed they could stop asthma attacks by lowering children’s sodium levels. That was done with a diuretic drug, but subsequent dietary experiments showed that diets high in salt seemed to increase asthmatic symptoms, while “lowering the salt decreased the asthmatic symptoms…” This body of evidence was apparently forgotten…until it was picked up again in the 1980s as a possible explanation for why Western countries had higher asthma rates.
+
+Maybe it was the salt.
+
+As you can see at 1:34 in my video, researchers graphed out childhood death from asthma versus family salt purchases, and it seemed more salt meant more death. Just because a family buys more salt doesn’t necessarily mean the kids are eating more, though. The way to find out how much salt someone is eating is to collect their urine over a 24-hour period and measure the amount of sodium, since how much salt we eat is pretty much how much salt we excrete. The way to test for asthma, called a bronchial challenge test, is to look for an exaggerated response to an inhaled chemical. And, indeed, there was a strong correlation between how their lungs reacted and how much sodium they were taking in. However, there are all sorts of food additives, like preservatives, that can trigger these so-called hypersensitivity reactions, so maybe high sodium intake was just a marker for high processed food intake. Maybe it wasn’t the salt at all.
+
+Or maybe it was other components of the diet. For example, the reason sodium may be a risk factor for another inflammatory disease, rheumatoid arthritis, may be that sodium intake is just a marker for increased fish and other meat intake or decreased fruit and vegetable intake. We needed a study where researchers would take asthmatics, change the amount of salt in their diets, and see what happened—and that’s just what came next.
+
+As you can see at 3:16 in my video, researchers doubled the salt intake of ten asthmatics, and lung sensitivity worsened in nine out of ten. There was no control group, though. Is it possible the subjects would have gotten worse anyway?
+
+In a randomized, double-blind, placebo-controlled trial, researchers put everyone on a low-salt diet, but then gave half of the subjects sustained-release sodium pills to bring their salt intake back up to a more normal level and the other half a placebo. After five weeks, the groups switched regimes for another five weeks. That’s how you can randomize people to a true low-sodium diet without them even realizing it. Genius! So what happened? Asthmatics on the salt got worse. Their lung function got worse, their asthma symptoms got worse, and they had to take more puffs on their inhalers. This study compared asthmatics consuming about three teaspoons’ worth of salt a day to those consuming less than one, so they were effectively able to drop their sodium intake by two teaspoons’ worth of salt, as you can see at 4:04 in my video. If you do a more “pragmatic” trial and only effectively reduce people’s salt intake by a half a teaspoon a day, it doesn’t work.
+
+Even if you are able to cut down your sodium intake enough to get a therapeutic effect, though, it should be considered an adjunct treatment. Do not stop your asthma medications without your doctor’s approval.
+
+Millions suffer from asthma attacks triggered by exercise. Within five minutes of starting to exercise, people can get short of breath and start coughing and wheezing such that lung function significantly drops, as you can see at 0:19 in my video Sodium and Autoimmune Disease: Rubbing Salt in the Wound?. On a high-salt diet, however, the attack is even worse, whereas on a low-salt diet, there’s hardly a significant drop in function at all. To figure out why, researchers had the subjects cough up sputum from their lungs and found that those on the high-salt diet had triple the inflammatory cells and up to double the concentration of inflammatory mediators, as you can see at 0:43 in my video. But why? What does salt intake have to do with inflammation? We didn’t know…until now.
+
+“The ‘Western diet,’ high in saturated fatty acids and salt, has long been postulated as one potential…cause for the increasing incidence of autoimmune diseases in developed countries…” The rapidly increasing incidence of autoimmune diseases may be due to an overactivation of immune cells called T helper 17 (Th17) cells. “The development of…multiple sclerosis, psoriasis, type I diabetes, Sjögren’s syndrome, asthma, and rheumatoid arthritis are all shown to involve Th17-driven inflammation,” and one trigger for the activation of those Th17 cells may be elevated levels of salt in our bloodstream. “The sodium content of processed foods and ‘fast foods’…can be more than 100 times higher in comparison to similar homemade meals.”
+
+And, sodium chloride—salt—appears to drive autoimmune disease by the induction of these disease-causing Th17 cells. It turns out there is a salt-sensing enzyme responsible for triggering the formation of these Th17 cells, as you can see at 2:07 in my video.
+
+Organ damage caused by high-salt diets may also activate another type of inflammatory immune cell. A high-salt diet can overwork the kidneys, starving them of oxygen and triggering inflammation, as you can see at 2:17 in my video. The more salt researchers gave people, the more activation of inflammatory monocyte cells, associated with high-salt intake induced kidney oxygen deficiency. But that study only lasted two weeks. What happens over the long term?
+
+One of the difficulties in doing sodium experiments is that it’s hard to get free-living folks to maintain a specific salt intake. You can do so-called metabolic ward studies, where people are essentially locked in a hospital ward for a few days and their food intake is controlled, but you can’t do that long term—unless you can lock people in a space capsule. Mars520 was a 520-day space flight simulation to see how people might do on the way to Mars and back. As you can see at 3:17 in my video, the researchers found that those on a high-salt diet “displayed a markedly higher number of monocytes,” which are a type of immune cell you often see increased in settings of chronic inflammation and autoimmune disorders. This may “reveal one of the consequences of excess salt consumption in our everyday lives,” since that so-called high-salt intake may actually just be the average-salt intake. Furthermore, there was an increase in the levels of pro-inflammatory mediators and a decrease in the level of anti-inflammatory mediators, suggesting that a “high-salt diet had a potential to bring about an excessive immune response,” which may damage the immune balance, “resulting in either difficulties on getting rid of inflammation or even an increased risk of autoimmune disease.”
+
+What if you already have an autoimmune disease? In the study titled “Sodium intake is associated with increased disease activity in multiple sclerosis,” researchers followed MS patients for a few years and found that those patients eating more salt had three to four times the exacerbation rate, were three times more likely to develop new MS lesions in their brains, and, on average, had 8 more lesions in their brain—14 lesions compared to 6 in the low-salt group. The next step is to try treating patients with salt reduction to see if they get better. But, since reducing our salt intake is a healthy thing to do anyway, I don’t see why we have to wait.
+
+What else can we do for asthma? See:
+
+Have you heard that salt reduction was controversial? That’s what the processed food industry wants you to think. Check out the science in:
+
+What are some of the most powerful dietary interventions we have for autoimmune disease? See, for example:
+
+In health,
+
+Michael Greger, M.D.
+
+PS: If you haven’t yet, you can subscribe to my free videos here and watch my live presentations:
+
+Michael Greger M.D. FACLM
+
+A founding member and Fellow of the American College of Lifestyle Medicine, Michael Greger, MD, is a physician, New York Times bestselling author, and internationally recognized speaker on nutrition. Dr. Greger has lectured at the Conference on World Affairs, testified before Congress, and was invited as an expert witness in the defense of Oprah Winfrey in the infamous “meat defamation” trial.
+
+
+  Subscribe to our free newsletter and receive our Care for Your Skin as You Age infographic.
+  
+
+Catch up with Dr. Greger at one of his live speaking engagements:
+
+
+
+
+Charity ID: 05-0559626
+                    
+
+
+                    We  our volunteers!                    Apply Now!

@@ -1,0 +1,65 @@
+
+
+  Written By 
+    Michael Greger M.D. FACLM
+  
+  •
+  
+      April 9, 2020
+  
+
+
+Last updated: 
+  February 8, 2022
+  
+    • 4 min read
+  
+
+
+          Image Credit: Changyoung Koh / Unsplash. This image has been modified          
+
+The compelling finding of Mycobacterium avium paratuberculosis (MAP) circulating disproportionately within the bloodstream of type 1 diabetics was subsequently confirmed by culturing it straight out of their blood. MAP infection and type 1 diabetes appear to go together, but we didn’t know which came first. Does the infection make kids more susceptible to diabetes? Might diabetes make kids more susceptible to infection? Maybe this MAP bug just likes hanging out in sugary blood. In that case, we might expect to also see it in type 2 diabetics, but, no: Paratuberculosis infection is not associated with type 2 diabetes, which makes sense since type 2 is not an autoimmune disease.
+
+In order for the idea of MAP infection triggering type 1 diabetes to be sound, there would have to be an immune response mounted to the bug, and, indeed, there is. Researchers in Sardinia found an “extremely significant” antibody response against paratuberculosis (paraTB) bacteria in type 1 diabetics. But do the antibodies attacking the bug cross-react with our own insulin-producing cells to generate that autoimmune reaction? Apparently so. Antibodies recognizing the molecular signatures of MAP cross-react with the molecular signatures present on our insulin-producing beta cells in the pancreas, as you can see at 1:09 in my video Does Paratuberculosis in Meat Trigger Type 1 Diabetes?.
+
+Is this just in Sardinia, or might we find these same results elsewhere? The same results were in fact found on mainland Italy with a group of type 1 diabetics “with a genetic background different from Sardinians”—a strong association between paraTB bacteria exposure and type 1 diabetes. The findings were confirmed in further studies, confirmed once more in other pediatric populations, and confirmed in a group of type 1 diabetic adults, as well.
+
+The paratuberculosis bacterium may also explain why type 1 diabetes risk is associated with a specific gene on chromosome 2 called SLC11A1. What does that gene do? SLC11A1 activates the immune cell that eats mycobacteria for breakfast. This could explain how a mutation in that gene could increase the susceptibility to type 1 diabetes—namely, by increasing the susceptibility to mycobacterial infections, like Mycobacterium avium paratuberculosis. Indeed, an “[a]ccumulating line of evidence points…[to] MAP in the development of T1DM [type 1 diabetes] as an environmental trigger.” It’s likely no coincidence. These types of bacteria have evolved to disguise themselves to look like human proteins for the express purpose of avoiding detection by our immune system. These are not the droids you’re looking for. If, however, our immune system sees through the disguise and starts attacking the bacteria, our similar-looking proteins can become a victim of friendly fire, which is what nearly all of these studies have been pointing to. Nearly, but not all.
+
+A 2015 review found that seven out of seven human studies found an association between type 1 diabetes and paratuberculosis exposure, but it’s actually seven out of eight. Since that review came out, a study in India was published finding no link. A few possible explanations were offered. Maybe it’s because vaccination for regular TB is compulsory in India, which might offer “cross protection from MAP as in case of leprosy,” or because they eat so much less meat due to “certain cultural and culinary practices such as widespread vegetarianism,” or because of their “compulsory boiling of milk before consumption…” If we measure the heat inactivation of milk with high concentrations of naturally infected feces, which is probably the main source of milk contamination, pasteurization may not completely inactivate the bacteria, but sterilization at boiling temperatures should (as you can see at 3:40 in my video). This may depend on the degree of fecal clumping, though. MAP bacteria may be able to ride out pasteurization by hiding in tiny fecal clumps in milk, but only rarely should MAP survive over 100 degrees Celsius, perhaps explaining the disparate India findings. 
+
+Bottom line: “To reduce human exposure to MAP via consumption of dairy and meat products…[more] studies are needed for estimating the amount of MAP” in milk, meat, and feces, as well as “the amount of faecal contamination of milk and carcasses [meat]” to figure out what we need to do to kill it. In the meanwhile, what’s the potential public health impact of Mycobacterium avium paratuberculosis? The majority of specialists in the field agree that it “is likely a risk to human health” and should be “a high- or medium-priority…public health issue.” 
+
+I started speaking out about the link between human disease and paratuberculosis infection in milk and meat 15 years ago. As cynical as I can be at times, even I am shocked that the industry hasn’t done more to clean up its act. It reminds me of the bovine leukemia virus story. See:
+
+Is Bovine Leukemia Virus in Milk Infectious?
+
+The Role of Bovine Leukemia Virus in Breast Cancer
+
+Industry Response to Bovine Leukemia Virus in Breast Cancer
+
+If you missed the first two installments in this series, check out Does Paratuberculosis in Milk Trigger Type 1 Diabetes? and Meat Consumption and the Development of Type 1 Diabetes.
+
+In health,
+Michael Greger, M.D.
+
+PS: If you haven’t yet, you can subscribe to my free videos here and watch my live presentations:
+
+Michael Greger M.D. FACLM
+
+A founding member and Fellow of the American College of Lifestyle Medicine, Michael Greger, MD, is a physician, New York Times bestselling author, and internationally recognized speaker on nutrition. Dr. Greger has lectured at the Conference on World Affairs, testified before Congress, and was invited as an expert witness in the defense of Oprah Winfrey in the infamous “meat defamation” trial.
+
+
+  Subscribe to our free newsletter and receive our Care for Your Skin as You Age infographic.
+  
+
+Catch up with Dr. Greger at one of his live speaking engagements:
+
+
+
+
+Charity ID: 05-0559626
+                    
+
+
+                    We  our volunteers!                    Apply Now!

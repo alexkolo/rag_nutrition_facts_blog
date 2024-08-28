@@ -16,25 +16,24 @@ TODO: expand it
 
 ## How to run the bot on your own
 
-- clone this repository
+- clone this repository: `git clone https://github.com/alexkolo/rag_nutrition_facts_blog`
 
 ## Python version
 
 - it was build with version `3.12.3`
-- setup suggestionsusing `pyenv`:
+- setup suggestions using `pyenv`:
   - [install `pyenv` on Linux or MacOS](https://github.com/pyenv/pyenv)
   - [install `pyenv` on Windows](https://github.com/pyenv-win/pyenv-win)
-  - install version:
-
-        ```bash
-        pyenv install 3.12.x
-        pyenv global 3.12.x
-        ```
-
-### Run Environment
 
     ```bash
-    # Python  version 3.12.x
+    pyenv install 3.12.x
+    pyenv global 3.12.x
+    ```
+
+### User Environment
+
+    ```bash
+    # assumes Python version 3.12.x
     python -m venv venv  # removed via: sudo rm -rf venv
     source venv/bin/activate # for Linux or MacOS
     # .\venv\Scripts\Activate # for Windows
@@ -50,5 +49,5 @@ TODO: expand it
     ```bash
     pip install pre-commit
     pre-commit install
-    pre-commit autoupdate
+    # pre-commit autoupdate
     ```

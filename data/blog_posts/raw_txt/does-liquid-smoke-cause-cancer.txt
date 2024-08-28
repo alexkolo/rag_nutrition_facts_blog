@@ -1,0 +1,78 @@
+
+
+  Written By 
+    Michael Greger M.D. FACLM
+  
+  •
+  
+      April 14, 2015
+  
+
+
+Last updated: 
+  January 25, 2024
+  
+    • 5 min read
+  
+
+
+          Image Credit: eric forsberg / Flickr.  This image has been modified.          
+
+We know smoke inhalation isn’t good for us, but what about smoke ingestion? Decades ago, smoke flavorings were tested to see if they caused DNA mutations in bacteria—the tests came up negative. Even as more and more smoke flavoring was added, the DNA mutation rate remained about the same.
+
+But the fact that something is not mutagenic in bacteria may have little predictive value for its effect on human cells. A group at MIT tested a hickory smoke flavoring they bought at the store against two types of human white blood cells. Unlike the bacteria, the mutation rate shot up as more and more liquid smoke was added. But, “there is no evidence that mutagenic activity in a particular human cell line is more closely related to human health risk than is mutagenic activity in bacteria.” In other words: just because liquid smoke causes DNA mutations to human cells in a petri dish, doesn’t mean that it does the same thing within the human body.
+
+A good approach may be to just analyze liquid smoke for known carcinogens, chemicals that we know cause cancer.
+
+Damaging DNA is just one of many ways chemicals can be toxic to cells. A decade later researchers tested to see what effect liquid smoke had on overall cell viability. If you drip water on cells, nothing happens, they keep powering away at around 100% survival, but drip on more and more wood fire smoke, and you start killing some of the cells off. Cigarette smoke is more toxic, but three out of four of the brands of liquid smoke they bought at the supermarket killed off even more cells, leading them to conclude that the cytotoxic potential of some commercial smoke flavorings is greater than that of liquid cigarette smoke, a finding they no doubt celebrated given that the researchers were paid employees of the R. J. Reynolds Tobacco Co.
+
+Unfortunately they didn’t name names of the offending brands. That’s one of the reasons I was so excited about a new study, where they tested—and named–15 different brands of liquid smoke. This maximum “response” they were measuring was p53 activation.
+
+P53 is a protein we make that binds to our DNA, you can see this illustrated in my video, Is Liquid Smoke Flavoring Carcinogenic?. It activates our DNA repair enzymes. So a big p53 response may be indicative of a lot of DNA damage,and a few of the liquid smoke flavorings activated p53 almost as much as a chemotherapy drug like etoposide, whose whole purpose is to break DNA strands.
+
+Other flavorings didn’t seem as bad, though there was a hickory smoke powder that ranked pretty high, as did the fish sauce, though smoked paprika didn’t register at all.
+
+The p53-activating property in liquid smoke was eliminated by standard baking conditions (350°F for 1h), so if you’re baking something with liquid smoke for long enough, it should eliminate this effect, though just boiling—even for an hour, or slow cooking doesn’t appear to work.
+
+They conclude “If the DNA-damaging activities of liquid smoke were thought to be deleterious, it might be possible to replace liquid smoke with other safer, smoky substances.” Why do they say if thought to be deleterious? That’s because they’re not really measuring DNA damage, they’re measuring p53 activation, and that’s not necessarily a bad thing.
+
+P53 is considered “Guardian of our Genome,” guardian of our DNA. It’s considered a tumor suppressor gene, so if something boosts its activity is that good or bad? It’s like the broccoli story. Cruciferous vegetables dramatically boost our liver’s detoxifying enzymes. Is this because our body sees broccoli as toxic and is trying to get rid of it quicker? Either way, the end result is good, lower cancer risk.
+
+It’s a biological phenomenon known as hormesis – that which doesn’t kill us may make us stronger. Like exercise is a stress on the body, but in the right amount can make us healthier in the long run. So, for example, teas and coffees caused p53 activation as well, but their consumption is associated with lower cancer risk. So it’s hard to know what to make of this p53 data. Due to the limitations of the available tests it’s hard to calculate the genotoxic potential of liquid smoke, or any other food for that matter. A better approach may be to just analyze liquid smoke for known carcinogens, chemicals that we know cause cancer.
+
+This was first attempted back in 1971. One of the seven liquid smoke flavors researchers tested contained one polycyclic aromatic hydrocarbon known to be cancer-causing, but there’s a bunch of similar carcinogens researchers didn’t test for. A later study, however, tested across the board, looking specifically at five different carcinogens in retail liquid smoke seasonings.
+
+The recommended daily upper safety limit for these carcinogens is 47. Hickory smoke flavoring has only 0.8 per teaspoon, so we’d have to drink three bottles a day to bump up against the limit. And mesquite liquid smoke has only 1.1.
+
+It turns out that most of the carcinogens in smoke are fat soluble, so when we make a water-based solution, like liquid smoke, we capture the smoke flavor compounds without capturing most of the smoke cancer compounds. The only time we need to really worry is when eating smoked foods—foods directly exposed to actual smoke. For example, smoked ham has 21.3 per serving, and smoked turkey breast has 26.7 per serving. One sandwich and we may be halfway to the limit, and one serving of barbequed chicken takes us over the top. Eating less than a single drumstick and we nearly double our daily allotment of these carcinogens. Nothing, however, is as bad as fish. Smoked herring? 140 per serving. And smoked salmon? One bagel with lox could take us ten times over the limit.
+
+I’ve touched on those cooked meat carcinogens before. In Estrogenic Cooked Meat Carcinogens I explored the role of these cooked meat chemicals in tumor growth. PhIP: The Three Strikes Breast Carcinogen explored their role in cancer invasion. Reducing Cancer Risk In Meateaters offered some mediation strategies. Heterocyclic Amines in Eggs, Cheese, and Creatine? showed how even vegetarians may be at risk and Cancer, Interrupted: Green Tea and Cancer, Interrupted: Garlic & Flavonoids explored some counter measures.
+
+Some smoke compounds may be a concern even if we don’t eat them. See Meat Fumes: Dietary Secondhand Smoke. Even the smell of frying bacon may be carcinogenic: Carcinogens in the Smell of Frying Bacon.
+
+Some plant foods exposed to high temperatures may also present a concern. See Is Yerba Mate Tea Bad for You? 
+
+The broccoli liver enzyme boost story is covered in The Best Detox.
+
+-Michael Greger, M.D.
+
+PS: If you haven’t yet, you can subscribe to my videos for free by clicking here and watch my full 2012 – 2015 presentations Uprooting the Leading Causes of Death, More than an Apple a Day, From Table to Able, and Food as Medicine.
+
+Michael Greger M.D. FACLM
+
+A founding member and Fellow of the American College of Lifestyle Medicine, Michael Greger, MD, is a physician, New York Times bestselling author, and internationally recognized speaker on nutrition. Dr. Greger has lectured at the Conference on World Affairs, testified before Congress, and was invited as an expert witness in the defense of Oprah Winfrey in the infamous “meat defamation” trial.
+
+
+  Subscribe to our free newsletter and receive our Care for Your Skin as You Age infographic.
+  
+
+Catch up with Dr. Greger at one of his live speaking engagements:
+
+
+
+
+Charity ID: 05-0559626
+                    
+
+
+                    We  our volunteers!                    Apply Now!
