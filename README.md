@@ -10,9 +10,13 @@ TODO: expand it
 
 ### Data Acquisition
 
-- scraped all blog posts from [https://nutritionfacts.org/blog/](https://nutritionfacts.org/blog/) as of 27.08.2024 got from page 1 to 54.
-- First blog entries: <https://nutritionfacts.org/blog/page/54/>
-- First blog post: April 15, 2011  <https://nutritionfacts.org/blog/welcome-to-nutritionfacts-org/>
+- scraped all blog posts from [https://nutritionfacts.org/blog/](https://nutritionfacts.org/blog/) as of 28.08.2024
+- See notebook: `notebooks/web_scraping.ipynb`
+
+### Data Inquestion
+
+
+
 
 ## How to run the bot on your own
 
