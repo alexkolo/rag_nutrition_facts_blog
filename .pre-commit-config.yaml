@@ -17,7 +17,7 @@ repos:
       - id: end-of-file-fixer # Makes sure files end in a newline and only a newline.
       - id: mixed-line-ending
         args: [--fix=lf] # single control character (\n, ASCII code 10), most universal
-      # - id: requirements-txt-fixer # Sorts entries in requirements.txt
+      - id: requirements-txt-fixer # Sorts entries in requirements.txt
       - id: check-case-conflict # Check for files with names that would conflict on a case-insensitive filesystem
 
   - repo: https://github.com/asottile/pyupgrade
@@ -29,12 +29,12 @@ repos:
   - repo: https://github.com/nbQA-dev/nbQA
     rev: 1.8.7
     hooks:
+      - id: nbqa-isort
+        args: ["--float-to-top", "--profile=black"]
+      - id: nbqa-flake8
+        args: ["--extend-ignore=E501"]
       - id: nbqa-black
       - id: nbqa-pyupgrade
         args: ["--py312-plus"]
-      - id: nbqa-isort
-        args: ["--float-to-top"]
-      - id: nbqa-flake8
-        args: ["--extend-ignore=E501"]
       # - id: nbqa-pylint # too many complaints
       # - id: nbqa-mypy # too many complaints

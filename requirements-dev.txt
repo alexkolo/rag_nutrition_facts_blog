@@ -1,7 +1,7 @@
 beautifulsoup4==4.12.3 # for webpage scraping
+black==24.8.0 # code formatter, use by nbqa-isort
 ipykernel==6.29.5 # for jupyter notebook
-requests==2.32.3 # for web requests
-tqdm==4.66.5 # progress bars
-pre-commit==3.8.0
-ruff==0.6.2
 pandas==2.2.2
+pre-commit==3.8.0 # git pre-commit hooks
+ruff==0.6.2 # not user if needed
+tqdm==4.66.5 # for progress bars
