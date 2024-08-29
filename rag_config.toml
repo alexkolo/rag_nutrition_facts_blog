@@ -1,8 +1,19 @@
 
+[hardware]
+# Device (like "cuda", "cpu", "mps", "npu") that should be used for computation
+device = "cuda"
+
 [embeddings]
-# [Source](https://www.sbert.net/docs/sentence_transformer/pretrained_models.html)
+# Pretrained Models : https://www.sbert.net/docs/sentence_transformer/pretrained_models.html
+#
 # `multi-qa-MiniLM-L6-cos-v1` was "tuned for semantic search: Given a query/question, it can find relevant passages. It was trained on a large and diverse set of (question, answer) pairs."
+# - https://huggingface.co/sentence-transformers/multi-qa-MiniLM-L6-cos-v1
+# "there is a limit of 512 word pieces: Text longer than that will be truncated. Further note that the model was just trained on input text up to 250 word pieces. It might not work well for longer text. "
 model_name = "multi-qa-MiniLM-L6-cos-v1"
+n_dim = 384
+n_token_max = 250 # recommended 250
+n_token_overlap = 20
+# 1 token per 4-6 characters for english
 
 [knowledge_base]
 table_name = "table_simple01"

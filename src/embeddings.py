@@ -45,8 +45,8 @@ class EmbeddingFunction(Protocol):
     def __call__(self, text: list[str]) -> list[list[float]]: ...
 
 
-def create_local_emb_func(emb_model_name: str) -> EmbeddingFunction:
-    emb_model = SentenceTransformer(emb_model_name)
+def create_local_emb_func(emb_model_name: str, device: str = "cpu") -> EmbeddingFunction:
+    emb_model = SentenceTransformer(emb_model_name, device=device)
 
     def emb_func(text: list[str]) -> list[list[float]]:
         return cast(np.ndarray, emb_model.encode(sentences=text)).tolist()

@@ -10,6 +10,7 @@ from lancedb.pydantic import LanceModel, Vector
 from lancedb.table import Table
 from tqdm import tqdm
 
+from chunking import split_paragraphs
 from embeddings import EmbeddingFunction, create_local_emb_func
 
 # to ignore FutureWarning from `transformers/tokenization_utils_base.py`
@@ -45,9 +46,12 @@ def lancedb_ingestion_simple(
     lancedb_uri: Path,
     emb_model_name: str,
     emb_manual: bool = False,
+    device: str = "cpu",
     n_files: int | None = None,
     table_name: str = "table",
     mode: str = "overwrite",
+    n_char_max: int = 1000,
+    overlap: int = 100,
 ) -> Table:
     """
     Simple method pipeline to create and populate a LanceDB table with text data and embeddings.
@@ -67,12 +71,18 @@ def lancedb_ingestion_simple(
         Whether to embed the data before ingesting it into the database, by default False.
         False: The database takes care the embeddings.
         True: Embeddings created manually beforehand.
+    device : str, optional
+         Device (like "cuda", "cpu", "mps", "npu") that should be used for computation. Defaults to "cpu".
     n_files : int, optional
         The maximum number of files to process, by default `None` (all files).
     table_name : str, optional
         The name of the table to create in the database, by default "table".
     mode : str, optional
         The mode to use when creating the table, by default "overwrite".
+    n_char_max : int, optional
+        The maximum number of characters of each chunk. Default is 1000 (~250 tokens).
+    overlap : int, optional
+        The number of characters to overlap between chunks. Default is 100 (~25 tokens).
 
     Returns
     -------
@@ -89,11 +99,11 @@ def lancedb_ingestion_simple(
     lancedb_emb_model: SentenceTransformerEmbeddings | None = None
     n_dim_vec: int
     if emb_manual:
-        emb_func: EmbeddingFunction = create_local_emb_func(emb_model_name)
+        emb_func: EmbeddingFunction = create_local_emb_func(emb_model_name, device=device)
         # measure the dimension of the embedding
         n_dim_vec = len(emb_func(["foo"])[0])
     else:
-        lancedb_emb_model = get_registry().get("sentence-transformers").create(name=emb_model_name)
+        lancedb_emb_model = get_registry().get("sentence-transformers").create(name=emb_model_name, device=device)
         n_dim_vec = lancedb_emb_model.ndims()
 
     # Define data structure
@@ -121,9 +131,15 @@ def lancedb_ingestion_simple(
 
         # extract data
         text_chunks: list[str] = doc["paragraphs"]
+
+        # ignore empty files
         if not text_chunks:
             empty_files.append(json_file.name)
             continue
+
+        # split paragraphs if necessary and remove paragraphs that only contain questions
+        text_chunks = split_paragraphs(text_chunks, n_char_max=n_char_max, overlap=overlap)
+
         # meta data (same for all chunks)
         title: str = doc["title"]
         url: str = doc["url"]
@@ -146,7 +162,7 @@ def lancedb_ingestion_simple(
             ]
         else:
             # combine data into rows
-            table_rows = [{"text": para, "title": title, "url": url, "tags": tags} for para in text_chunks]
+            table_rows = [{"text": chunk, "title": title, "url": url, "tags": tags} for chunk in text_chunks]
 
         # add data to the table, which automatically creates embeddings for the text column stored in the vector column
         table.add(data=table_rows)
@@ -172,6 +188,10 @@ if __name__ == "__main__":
     # get embedding model name
     emb_model_name: str = get_rag_config()["embeddings"]["model_name"]
     print(f"Using embedding model: {emb_model_name}")
+    device: str = get_rag_config()["hardware"]["device"]
+    n_token_max: int = get_rag_config()["embeddings"]["n_token_max"]
+    n_char_max: int = n_token_max * 4
+    overlap: int = int(n_char_max * 0.1)
 
     # variable parameters
     n_files: int = 2  # use `None` to process all files
@@ -189,6 +209,9 @@ if __name__ == "__main__":
             n_files=n_files,
             table_name=table_name,
             emb_manual=True,
+            device=device,
+            n_char_max=n_char_max,
+            overlap=overlap,
         )
 
         """
