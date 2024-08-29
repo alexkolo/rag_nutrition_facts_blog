@@ -81,8 +81,12 @@ def lancedb_ingestion_simple(
     pbar = tqdm(file_list[0:n_files])
     for json_file in pbar:
         pbar.set_description(json_file.name[:40])
+
+        # load data
         with open(json_file) as f:
             doc: dict = json.load(f)
+
+        # extract data
         paragraphs: list[str] = doc["paragraphs"]
         if not paragraphs:
             empty_files.append(json_file.name)
@@ -90,6 +94,8 @@ def lancedb_ingestion_simple(
         title: str = doc["title"]
         url: str = doc["url"]
         blog_tags: str = " ".join(set(doc["blog_tags"]))  # remove duplicates and join with space
+
+        # combine data into rows
         table_rows: list[dict[str, str]] = [
             {"text": para, "title": title, "url": url, "blog_tags": blog_tags} for para in paragraphs
         ]
