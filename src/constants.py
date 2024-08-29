@@ -2,7 +2,7 @@ from pathlib import Path
 
 # paths
 # --------
-repo_path = Path(".").resolve().parent  # assumes module is in `./src/`
+repo_path = Path(".").resolve()  # assumes module is in `./src/`
 
 # data
 data_path = repo_path / "data"

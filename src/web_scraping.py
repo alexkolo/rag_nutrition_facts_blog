@@ -33,9 +33,7 @@ EXCLUDE_STARTSWITH: list[str] = [
 
 def get_webpage_content(url: str, timeout: int = 10) -> requests.Response | None:
     try:
-        response = requests.get(
-            url, headers={"User-Agent": "Mozilla/5.0"}, timeout=timeout
-        )
+        response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=timeout)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
@@ -56,9 +54,7 @@ def filter_links(links: list[str], root: str) -> list[str]:
     return filtered_links
 
 
-def extract_all_urls(
-    root: str, page_stop: int | None = None, wait: float = 0.2
-) -> list[str]:
+def extract_all_urls(root: str, page_stop: int | None = None, wait: float = 0.2) -> list[str]:
     # collect all the blog posts urls
     i_page: int = 0
     url_list: list[str] = []
@@ -84,9 +80,7 @@ def extract_all_urls(
         soup = BeautifulSoup(response.content, "html.parser")
 
         # get all links on the page
-        links: list[str] = sorted(
-            {link["href"] for link in soup.find_all("a", href=True)}
-        )
+        links: list[str] = sorted({link["href"] for link in soup.find_all("a", href=True)})
 
         # filter the links
         blog_posts_of_page: list[str] = filter_links(links, root)
@@ -120,17 +114,13 @@ def get_paragraphs(soup: BeautifulSoup) -> list[str]:
         paragraphs_html = soup.find_all("p")
 
     # Extract and clean paragraphs while excluding those that start with certain phrases
-    paragraphs_raw: list[str] = [
-        replace_strange_chars(para_html.get_text().strip())
-        for para_html in paragraphs_html
-    ]
+    paragraphs_raw: list[str] = [replace_strange_chars(para_html.get_text().strip()) for para_html in paragraphs_html]
 
     # Create clean list
     paragraphs_clean: list[str] = [
         para_raw
         for para_raw in paragraphs_raw
-        if para_raw
-        and not any(para_raw.startswith(prefix) for prefix in EXCLUDE_STARTSWITH)
+        if para_raw and not any(para_raw.startswith(prefix) for prefix in EXCLUDE_STARTSWITH)
     ]
     return paragraphs_clean
 
@@ -144,22 +134,15 @@ def get_key_takeaways(soup: BeautifulSoup) -> list[str]:
     key_takeaways_list = key_takeaways_heading.find_next("ul")
 
     # Extract the text from each <li> in the list
-    return [
-        replace_strange_chars(li.get_text().strip())
-        for li in key_takeaways_list.find_all("li")
-    ]
+    return [replace_strange_chars(li.get_text().strip()) for li in key_takeaways_list.find_all("li")]
 
 
 def extract_blog_data(soup: BeautifulSoup) -> dict:
     blog_content: dict = get_meta_data(soup)
 
     tags_raw = soup.find("article").get("class")
-    blog_content["category"] = [
-        cat.split("-")[1] for cat in tags_raw if cat.startswith("category-")
-    ]
-    blog_content["blog_tags"] = [
-        tag.split("-")[1] for tag in tags_raw if tag.startswith("tag-")
-    ]
+    blog_content["category"] = [cat.split("-")[1] for cat in tags_raw if cat.startswith("category-")]
+    blog_content["blog_tags"] = [tag.split("-")[1:] for tag in tags_raw if tag.startswith("tag-")]
     blog_content["raw_tags"] = tags_raw
 
     blog_content["paragraphs"] = get_paragraphs(soup)

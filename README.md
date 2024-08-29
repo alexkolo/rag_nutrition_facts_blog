@@ -28,6 +28,17 @@ TODO: expand it
 
 ### Data Ingestion
 
+- the data is stored in a local database via `lancedb`
+- the script `src/ingestion.py` is used:
+  1. set `do_ingestion` to `True` in script and save
+  2. run: `venv/bin/python src/ingestion.py`
+    - takes ~ 20 min
+
+### IR : Information Retrieval
+
+- testing different indexes
+-
+
 ## How to run the bot on your own
 
 - clone this repository: `git clone https://github.com/alexkolo/rag_nutrition_facts_blog`
@@ -59,6 +70,6 @@ TODO: expand it
 ## Developer Environment
 
 - create "User Environment"
-- `pip install -r requirements_dev.txt`
+- `pip install -r requirements-dev.txt`
 - (optional) pre-commit setup: `pre-commit install` (update: `pre-commit autoupdate`)
   - test: `pre-commit run --all-files`

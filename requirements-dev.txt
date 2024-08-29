@@ -1,5 +1,4 @@
 beautifulsoup4==4.12.3 # for webpage scraping
-black==24.8.0 # code formatter, use by nbqa-isort
 ipykernel==6.29.5 # for jupyter notebook
 pandas==2.2.2
 pre-commit==3.8.0 # git pre-commit hooks
