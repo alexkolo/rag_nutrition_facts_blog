@@ -1,4 +1,8 @@
+from typing import Protocol, cast
+
+import numpy as np
 import requests
+from sentence_transformers import SentenceTransformer
 
 
 class HuggingFaceEmbedder:
@@ -20,3 +24,31 @@ class HuggingFaceEmbedder:
             },
         )
         return response.json()
+
+
+class EmbeddingFunction(Protocol):
+    """
+    A protocol that represents a function for generating embeddings.
+
+    Parameters
+    ----------
+    text : List[str]
+        A list of strings for which embeddings are to be generated.
+
+    Returns
+    -------
+    List[List[float]]
+        A list of embeddings, where each embedding is represented as
+        a list of floats.
+    """
+
+    def __call__(self, text: list[str]) -> list[list[float]]: ...
+
+
+def create_local_emb_func(emb_model_name: str) -> EmbeddingFunction:
+    emb_model = SentenceTransformer(emb_model_name)
+
+    def emb_func(text: list[str]) -> list[list[float]]:
+        return cast(np.ndarray, emb_model.encode(sentences=text)).tolist()
+
+    return emb_func

@@ -19,7 +19,7 @@
         - Since paragraphs were kept separate, the text is already chunked.
       - key_takeaways : list[str] (not all posts have it)
 
-## Data Ingestion
+## Data Ingestion: create Knowledge Base
 
 - the data is stored in a local database via `lancedb`
 - the script `src/ingestion.py` is used:

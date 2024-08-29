@@ -4,13 +4,13 @@ from pathlib import Path
 from typing import cast
 
 import lancedb
-import numpy as np
 from lancedb.db import DBConnection
 from lancedb.embeddings import SentenceTransformerEmbeddings, get_registry
 from lancedb.pydantic import LanceModel, Vector
 from lancedb.table import Table
-from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
+
+from embeddings import EmbeddingFunction, create_local_emb_func
 
 # to ignore FutureWarning from `transformers/tokenization_utils_base.py`
 warnings.simplefilter(action="ignore", category=FutureWarning)
@@ -89,11 +89,7 @@ def lancedb_ingestion_simple(
     lancedb_emb_model: SentenceTransformerEmbeddings | None = None
     n_dim_vec: int
     if emb_manual:
-        emb_model = SentenceTransformer(emb_model_name)
-
-        def emb_func(text: list[str]) -> list[list[float]]:
-            return cast(np.ndarray, emb_model.encode(sentences=text)).tolist()
-
+        emb_func: EmbeddingFunction = create_local_emb_func(emb_model_name)
         # measure the dimension of the embedding
         n_dim_vec = len(emb_func(["foo"])[0])
     else:
@@ -178,10 +174,10 @@ if __name__ == "__main__":
     print(f"Using embedding model: {emb_model_name}")
 
     # variable parameters
-    n_files: int = None  # use `None` to process all files
+    n_files: int = 2  # use `None` to process all files
     # time per file: ~0.4 sec
-    table_name: str = "table_simple02"
-    do_ingestion: bool = False
+    table_name: str = "table_simple03"
+    do_ingestion: bool = True
 
     # ingestion with simple method
     if do_ingestion:
@@ -200,9 +196,11 @@ if __name__ == "__main__":
         - 14547 text chunks of 1281 files have been added.
         - 1 empty files: ['treating-reflux-in-kids-with-diet.json']
         - emb_manual=False (The database takes care the embeddings)
+            - name : "table_simple01"
             - time: 11:36<00:00,  1.84it/s
             - database disk size: ~122 MB (json files only take ~8 MB)
         - emb_manual=True (Embeddings created manually beforehand.)
+            - name : "table_simple02"
             - time: 01:22, 15.46it/s
             - database disk size: ~114 MB (json files only take ~8 MB)
         """
@@ -212,6 +210,6 @@ if __name__ == "__main__":
     print(f"\n\nList of all tables in the LanceDB database:\n\t{db.table_names()}")
 
     tbl: Table = db.open_table(table_name)
-    print(f"Number of rows in the table '{table_name}': {tbl.count_rows()}")
-    print(f"\nShowing first 2 rows of table '{table_name}':")
+    print(f"Number of entries in the table '{table_name}': {tbl.count_rows()}")
+    print(f"\nShowing first 2 entries of table '{table_name}':")
     print(tbl.head(2))

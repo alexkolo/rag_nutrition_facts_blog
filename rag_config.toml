@@ -3,3 +3,6 @@
 # [Source](https://www.sbert.net/docs/sentence_transformer/pretrained_models.html)
 # `multi-qa-MiniLM-L6-cos-v1` was "tuned for semantic search: Given a query/question, it can find relevant passages. It was trained on a large and diverse set of (question, answer) pairs."
 model_name = "multi-qa-MiniLM-L6-cos-v1"
+
+[knowledge_base]
+table_name = "table_simple01"

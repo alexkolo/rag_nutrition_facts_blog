@@ -4,7 +4,17 @@ import tomli
 
 # paths
 # --------
-REPO_PATH = Path(".").resolve()  # assumes module is in `./src/`
+
+
+# get root of repository
+def find_repo(path):
+    """Find repository root from the path's parents"""
+    for path in Path(path).parents:  # here "path" is redefined as parent
+        if (path / "src").is_dir():
+            return path
+
+
+REPO_PATH = find_repo(__file__)  # Path(".").resolve()  # assumes module is in `./src/`
 
 # data
 data_path = REPO_PATH / "data"
