@@ -36,26 +36,24 @@
 - database entry structure:
 
   ```python
-    emb_model_name: str = "multi-qa-MiniLM-L6-cos-v1"
-    emb_model: SentenceTransformerEmbeddings = get_registry().get("sentence-transformers").create(name=emb_model_name)
-    n_dim_vec = emb_model.ndims()
-
     class DataModel(LanceModel):
-      vector: Vector(dim=n_dim_vec) = emb_model.VectorField()
-      text: str = emb_model.SourceField() # from paragraphs only
+      vector: Vector(n_dim_vec)
+      text: str =# from paragraphs only
       # meta data (the same for all paragraphs of the same blog post)
       title: str
       url: str
-      blog_tags: str
+      tags: str
   ```
 
-  - Embeddings: With this setup, LanceDB takes care of embedding in the background when entries are added to the table , i.e. one does not need to do it before ingestion. [Ref](https://lancedb.github.io/lancedb/embeddings/embedding_functions/)
+  - LanceDB has the possible take care of embedding in the background when entries are added to the table , i.e. one does not need to do it before ingestion. [Ref](https://lancedb.github.io/lancedb/embeddings/embedding_functions/) but it's slower than doing the embedding manually. before ingestion. (see `src/ingestion.py`)
 
   - Meta data of chunks: all paragraphs of the same blog post have the same meta data (e.g. url, blog_tags, title)
 
   - TODO: add datetime information
 
-- Embedding model: using `multi-qa-MiniLM-L6-cos-v1` as it was "tuned for semantic search: Given a query/question, it can find relevant passages. It was trained on a large and diverse set of (question, answer) pairs." [Source](https://www.sbert.net/docs/sentence_transformer/pretrained_models.html)
+- Embedding model:
+  - it's defined in the configuration file `./rag_config.toml`
+  - At moment, `multi-qa-MiniLM-L6-cos-v1` is used, as it was "tuned for semantic search: Given a query/question, it can find relevant passages. It was trained on a large and diverse set of (question, answer) pairs." [Source](https://www.sbert.net/docs/sentence_transformer/pretrained_models.html)
 
 ## IR : Information Retrieval
 
