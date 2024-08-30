@@ -1,4 +1,6 @@
+groq==0.10.0 # LLM API
 lancedb==0.12.0 # text and vector db
+pandas==2.2.2
 python-dotenv==1.0.1 # for secret variables
 requests==2.32.3 # for web requests
 sentence-transformers==3.0.1 # text embbeings, very big package

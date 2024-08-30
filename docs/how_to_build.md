@@ -24,8 +24,8 @@
 - the data is stored in a local database via `lancedb`
 - the script `src/ingestion.py` is used:
   1. set `do_ingestion` to `True` in script and save changes
-  2. run: `venv/bin/python src/ingestion.py`
-      - takes ~ 20 min
+  2. run: `venv/bin/python -m src.ingestion`
+      - takes ~ 10-30 min, depending on the configuration
 
 - Info on last Ingestion, as of 29.08.2024
   - duration: 11:36 (1.84it/s)
@@ -38,14 +38,12 @@
   ```python
     class DataModel(LanceModel):
       vector: Vector(n_dim_vec)
-      text: str =# from paragraphs only
+      text: str # from paragraphs only
       # meta data (the same for all paragraphs of the same blog post)
       title: str
       url: str
       tags: str
   ```
-
-  - LanceDB has the possible take care of embedding in the background when entries are added to the table , i.e. one does not need to do it before ingestion. [Ref](https://lancedb.github.io/lancedb/embeddings/embedding_functions/) but it's slower than doing the embedding manually. before ingestion. (see `src/ingestion.py`)
 
   - Meta data of chunks: all paragraphs of the same blog post have the same meta data (e.g. url, blog_tags, title)
 
@@ -54,6 +52,8 @@
 - Embedding model:
   - it's defined in the configuration file `./rag_config.toml`
   - At moment, `multi-qa-MiniLM-L6-cos-v1` is used, as it was "tuned for semantic search: Given a query/question, it can find relevant passages. It was trained on a large and diverse set of (question, answer) pairs." [Source](https://www.sbert.net/docs/sentence_transformer/pretrained_models.html)
+  - LanceDB has the possible take care of embedding in the background when entries are added to the table , i.e. one does not need to do it before ingestion. But it's much slower than doing the embedding manually before ingestion (see `src/ingestion.py`). [Source](https://lancedb.github.io/lancedb/embeddings/embedding_functions/)
+    - This is automatic embedding is needed for using hybrid searches. [Source](https://lancedb.github.io/lancedb/hybrid_search/hybrid_search/)
 
 ## IR : Information Retrieval
 

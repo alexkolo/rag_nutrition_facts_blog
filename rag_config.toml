@@ -21,4 +21,4 @@ overlap = 100 # The number of characters to overlap between chunks. Default is 1
 
 
 [knowledge_base]
-table_name = "table_simple01"
+table_name = "table_simple03"
