@@ -1,6 +1,6 @@
 [embeddings]
 # Device (like "cuda", "cpu", "mps", "npu") that should be used for computation
-device = "cuda"
+device = "cpu"
 
 # Pretrained Models : https://www.sbert.net/docs/sentence_transformer/pretrained_models.html
 #

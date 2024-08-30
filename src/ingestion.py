@@ -1,7 +1,7 @@
 import json
 import warnings
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
 import lancedb
 from lancedb.db import DBConnection
@@ -15,30 +15,6 @@ from embeddings import EmbeddingFunction
 
 # to ignore FutureWarning from `transformers/tokenization_utils_base.py`
 warnings.simplefilter(action="ignore", category=FutureWarning)
-
-
-def create_lancedb_data_model_simple(
-    n_dim_vec: int, lancedb_emb_model: SentenceTransformerEmbeddings | None = None
-) -> LanceModel:
-    if lancedb_emb_model is None:
-
-        class DataModel(LanceModel):
-            vector: Vector(n_dim_vec)  # type: ignore
-            text: str
-            title: str
-            url: str
-            tags: str
-    else:
-        emb_model = cast(SentenceTransformerEmbeddings, lancedb_emb_model)  # to get typing correct
-
-        class DataModel(LanceModel):
-            vector: Vector(n_dim_vec) = emb_model.VectorField()  # type: ignore
-            text: str = emb_model.SourceField()
-            title: str
-            url: str
-            tags: str
-
-    return DataModel
 
 
 def extract_metadata(doc: dict[str, Any]) -> dict[str, str]:
@@ -69,6 +45,7 @@ def generate_table_entries(
 def lancedb_ingestion_setup(
     lancedb_uri: Path,
     emb_config: dict[str, Any],
+    meta_fields: dict[str, Any],
     emb_manual: bool = False,
     table_name: str = "table",
     mode: str = "overwrite",
@@ -86,6 +63,8 @@ def lancedb_ingestion_setup(
         The URI of the LanceDB instance to connect to.
     emb_config : dict
         The configuration for the embedding model and chunking.
+    meta_fields : dict[str, Any]
+        The metadata fields to include in the table entries.
     emb_manual : bool, optional
         Whether to embed the data before ingesting it into the database, by default False.
         False: The database takes care the embeddings.
@@ -119,11 +98,30 @@ def lancedb_ingestion_setup(
 
     # Define data structure
     print("3/5 Defining data structure for table")
-    DataModel: LanceModel = create_lancedb_data_model_simple(
-        n_dim_vec=n_dim_vec,
-        lancedb_emb_model=lancedb_emb_model if not emb_manual else None,
-    )
+    # DataModel: LanceModel = create_lancedb_data_model_simple(
+    #     n_dim_vec=n_dim_vec,
+    #     lancedb_emb_model=lancedb_emb_model if not emb_manual else None,
+    # )
+    if emb_manual:
+
+        class BaseDataModel(LanceModel):
+            vector: Vector(n_dim_vec)  # type: ignore
+            text: str
+    else:
+
+        class BaseDataModel(LanceModel):
+            vector: Vector(n_dim_vec) = lancedb_emb_model.VectorField()  # type: ignore
+            text: str = lancedb_emb_model.SourceField()
+
+    # create a dynamic class that adds the fields from `meta_fields` to the base class
+    data_model_setup = {
+        "__module__": __name__,
+        "__annotations__": meta_fields,
+    }
+    DataModel: LanceModel = type("DataModel", (BaseDataModel,), data_model_setup)
+
     # show structure
+    # check fields via `DataModel.model_fields`
     # print(json.dumps(DataModel.model_json_schema(), indent=2))
 
     # create table via schema
@@ -176,6 +174,9 @@ def lancedb_ingestion_simple(
     n_char_max = emb_config.get("n_char_max", 1000)
     overlap = emb_config.get("overlap", 100)
 
+    # Define additional metadata fields
+    meta_fields: dict[str, Any] = {"title": str, "url": str, "tags": str}
+
     # LanceDB Ingestion setup
     # 1. create/connect to the database
     # 2. Define the embedding method
@@ -184,13 +185,14 @@ def lancedb_ingestion_simple(
     table, emb_func = lancedb_ingestion_setup(
         lancedb_uri=lancedb_uri,
         emb_config=emb_config,
+        meta_fields=meta_fields,
         table_name=table_name,
         emb_manual=emb_manual,
         mode=mode,
     )
 
     # Ingestion
-    print(f"5/5 Ingesting the content of {n_files} files:")
+    print(f"5/5 Ingesting the content of {n_files or len(file_list)} files:")
     n_rows: int = 0
     empty_files: list[str] = []
     pbar = tqdm(file_list[0:n_files])
@@ -235,29 +237,109 @@ def lancedb_ingestion_simple(
     return table
 
 
+def lancedb_ingestion_full_text(
+    file_list: list[Path],
+    lancedb_uri: Path,
+    emb_config: dict[str, Any],
+    emb_manual: bool = False,
+    table_name: str = "table",
+    mode: str = "overwrite",
+    n_files: int | None = None,
+) -> Table:
+    # Define additional metadata fields
+    meta_fields: dict[str, Any] = {"title": str, "url": str, "tags": str, "full_text": str}
+
+    # LanceDB Ingestion setup
+    # 1. create/connect to the database
+    # 2. Define the embedding method
+    # 3. Define data structure
+    # 4. create table via schema
+    table, emb_func = lancedb_ingestion_setup(
+        lancedb_uri=lancedb_uri,
+        emb_config=emb_config,
+        meta_fields=meta_fields,
+        table_name=table_name,
+        emb_manual=emb_manual,
+        mode=mode,
+    )
+
+    # Ingestion
+    print(f"5/5 Ingesting the content of {n_files or len(file_list)} files:")
+    n_rows: int = 0
+    empty_files: list[str] = []
+    pbar = tqdm(file_list[0:n_files])
+    for json_file in pbar:
+        pbar.set_description(json_file.name[:40])
+
+        # load data
+        with open(json_file, encoding="utf-8") as f:
+            doc: dict[str, Any] = json.load(f)
+
+        # extract data
+        paragraphs: list[str] = doc["paragraphs"]
+
+        # ignore files without any text
+        if not paragraphs:
+            empty_files.append(json_file.name)
+            continue
+
+        # meta data
+        metadata: dict[str, str] = extract_metadata(doc)
+
+        # join all paragraphs into one
+        metadata["full_text"] = " ".join(paragraphs)
+
+        # title + tags used also for vector search
+        text_chunks: list[str] = [metadata["title"] + " - " + metadata["tags"]]
+
+        # convert data into table entries
+        table_entries: list[dict[str, str | list[float]]] = generate_table_entries(
+            text_chunks=text_chunks,
+            metadata=metadata,
+            emb_manual=emb_manual,
+            emb_func=emb_func,
+        )
+
+        # add data to the table
+        table.add(data=table_entries)
+        n_rows += len(table_entries)
+
+    # optimize the table for faster reads.
+    table.compact_files()
+
+    print(f"Ingestion complete 🚀.  {n_rows} text chunks of {n_files or len(file_list)} files have been added.")
+
+    if empty_files:
+        print(f"\n{len(empty_files)} empty files:\n{empty_files}\n")
+
+    return table
+
+
 if __name__ == "__main__":
     print("Script started.")
 
     # fixed parameters
     from constants import LANCEDB_URI, POST_JSON_PATH, get_rag_config
 
+    file_list = list(POST_JSON_PATH.glob("*.json"))
+    emb_config = get_rag_config()["embeddings"]
+
     # get embedding model name
-    emb_model_name: str = get_rag_config()["embeddings"]["model_name"]
-    print(f"Using embedding model: {emb_model_name}")
+    print(f"Using embedding model: {emb_config['model_name']}")
 
     # variable parameters
-    n_files: int = 100  # use `None` to process all files
+    n_files: int = None  # use `None` to process all files
     # time per file: ~0.4 sec
     table_name: str = "table_simple03"
-    do_ingestion: bool = True
+    do_ingestion: bool = False
 
     # ingestion with simple method
     if do_ingestion:
         print("\nIngestion pipeline started.")
         table: Table = lancedb_ingestion_simple(
-            file_list=list(POST_JSON_PATH.glob("*.json")),
+            file_list=file_list,
             lancedb_uri=LANCEDB_URI,
-            emb_config=get_rag_config()["embeddings"],
+            emb_config=emb_config,
             n_files=n_files,
             table_name=table_name,
             emb_manual=False,
@@ -277,6 +359,29 @@ if __name__ == "__main__":
             - database disk size: ~114 MB (json files only take ~8 MB)
         """
 
+    # ingestion for full text posts
+    if True:
+        table_name: str = "fulltext01"
+        print("\nIngestion pipeline started.")
+        table: Table = lancedb_ingestion_full_text(
+            file_list=file_list,
+            lancedb_uri=LANCEDB_URI,
+            emb_config=emb_config,
+            n_files=n_files,
+            table_name=table_name,
+            emb_manual=False,
+        )
+
+        """
+        Info on last Ingestion, as of 29.08/2024
+        - 1280 text chunks of 1281 files have been added.
+        - 1 empty files: ['treating-reflux-in-kids-with-diet.json']
+        - emb_manual=True (Embeddings created manually beforehand.)
+            - name : "fulltext01"
+            - time: ?
+            - database disk size: ~? MB (json files only take ~8 MB)
+        """
+
     # Testing
     db: DBConnection = lancedb.connect(uri=LANCEDB_URI)
     print(f"\n\nList of all tables in the LanceDB database:\n\t{db.table_names()}")
@@ -284,4 +389,4 @@ if __name__ == "__main__":
     tbl: Table = db.open_table(table_name)
     print(f"Number of entries in the table '{table_name}': {tbl.count_rows()}")
     print(f"\nShowing first 2 entries of table '{table_name}':")
-    print(tbl.head(2))
+    print(tbl.head(1))
