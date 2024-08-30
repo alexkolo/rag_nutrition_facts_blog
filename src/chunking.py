@@ -70,7 +70,7 @@ def text_has_only_questions(text: str) -> bool:
     return "?" in text and "." not in text and "!" not in text
 
 
-def split_paragraphs(paragraphs: list[str], n_char_max: int = 1000, overlap: int = 100) -> list[str]:
+def split_and_filter_paragraphs(paragraphs: list[str], n_char_max: int = 1000, overlap: int = 100) -> list[str]:
     """
     Processes a list of paragraphs, splitting any paragraph that exceeds the maximum token limit.
     Ignores paragraphs that contain only questions.
