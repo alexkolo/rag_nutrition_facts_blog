@@ -22,3 +22,19 @@ overlap = 100 # The number of characters to overlap between chunks. Default is 1
 
 [knowledge_base]
 table_name = "table_simple03"
+
+[chat]
+user_avatar = "❔"  # "👀"  # "🙂"
+stream_default = true
+chat_history_height = 600
+
+[llm.settings]
+model_temp = 0.5
+api = "groq"
+
+[llm.api.groq]
+key_name = "GROQ_TOKEN"
+token.total_max = 8192
+models.url = "https://api.groq.com/openai/v1/models"
+# as of 23/07/2024
+models.ranked = [ "llama3-70b-8192", "mixtral-8x7b-32768", "llama3-8b-8192", "gemma2-9b-it", "gemma-7b-it" ]

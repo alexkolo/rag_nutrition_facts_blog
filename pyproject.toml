@@ -7,23 +7,8 @@ line-length = 120
 
 [tool.ruff]
 line-length = 120
-select = ["D", "E", "F", "I", "W"]
+select = ["E", "F", "I", "W"]
 
-ignore = [ # Set of rules tested on mts-api-python
-    "D102", # Missing docstring in public method
-    "D107", # Missing docstring in __init__
-    "D203", # 1 blank line required before class docstring, conflicts with D211 no blank line before class docstring
-    "D205", # 1 blank line required between summary line and description, very strict
-    "D212", "D213", # Summary should start at the first or second line, both are ignored by default
-    "D401", # First line should be in imperative mood
-    "D404", # First word of the docstring should not be "This"
-    "D103", # Missing docstring in public function
-    "D105", # Missing docstring in magic method
-]
 
-[tool.ruff.per-file-ignores]
-"__init__.py" = ["D104"] # ignore no docstrings in __init__.py
-"*.ipynb" = ["D"] # ignore all docstrings related linting in notebooks
-
-[tool.ruff.pydocstyle]
-convention = "numpy"
+[tool.mypy]
+disable_error_code = ["import-untyped"]

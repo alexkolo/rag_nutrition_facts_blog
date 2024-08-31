@@ -7,18 +7,10 @@ export PIP_NO_CACHE_DIR=1
 echo "Upgrading pip, wheel, and setuptools..."
 pip install --upgrade pip wheel setuptools
 
-# Upgrade pip without cache
-echo "Upgrading pip without cache..."
-pip install --no-cache-dir --upgrade pip
-
 # Install PyTorch packages from a specific index URL without cache
 # Ref: https://stackoverflow.com/a/77208494
 echo "Installing PyTorch packages from the specified index URL..."
-pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
-
-# Install sentence-transformers without cache
-echo "Installing sentence-transformers..."
-pip install --no-cache-dir sentence-transformers
+pip install torch==2.4.0+cpu --index-url https://download.pytorch.org/whl/cpu
 
 # Install the current package in editable mode
 echo "Installing the package in editable mode..."
