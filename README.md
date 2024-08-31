@@ -35,15 +35,15 @@ TODO: expand it
     # assumes Python version 3.12.x
     python -m venv venv  # removed via: sudo rm -rf venv
     source venv/bin/activate # for Linux or MacOS
-    # .\venv\Scripts\Activate # for Windows
-    pip install -U pip wheel setuptools
-    pip install -r requirements.txt
-    pip cache purge # reduce storage footprint
+    # for Windows: >.\venv\Scripts\Activate
+    bash setup.sh # for Linux or MacOS
+    # for Windows:
+    # > Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+    # > .\setup.ps1
     ```
 
 ## Developer Environment
 
-- create "User Environment"
-- `pip install -r requirements-dev.txt`
+- `pip install --no-cache-dir -e .[dev]`
 - (optional) pre-commit setup: `pre-commit install` (update: `pre-commit autoupdate`)
   - test: `pre-commit run --all-files`
