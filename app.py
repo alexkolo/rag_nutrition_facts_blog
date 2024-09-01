@@ -4,7 +4,6 @@ View in browser: `http://localhost:8501`
 """
 
 import streamlit as st
-from lancedb.table import Table
 from PIL import Image
 
 import src.constants as cst
@@ -12,7 +11,6 @@ from src.app_utils import init_st_keys, stream_text
 from src.app_widgets import create_button, create_chat_msg, show_md_file
 from src.llm_api import get_llm_api_client_object, get_preferred_model
 from src.prompt_building import WELCOME_MSG
-from src.retrieval import get_knowledge_base
 
 # Chat Parameters
 # -----------------------------
@@ -97,7 +95,7 @@ st.header(page_title, divider="blue")
 # Get Knowledge Base
 # ------------
 init_st_keys("kbase_loaded", False)
-k_base: Table = get_knowledge_base()
+# k_base: Table = get_knowledge_base()
 st.session_state["kbase_loaded"] = True
 
 
