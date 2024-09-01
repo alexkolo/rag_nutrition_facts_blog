@@ -163,7 +163,8 @@ cython_debug/
 #.idea/
 
 # Database
-my_lancedb
+/databases/my_lancedb/*
+!/databases/my_lancedb/table_simple03.lance/
 
 ### streamlit
 *secrets*
