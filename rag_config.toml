@@ -2,6 +2,7 @@
 # Device (like "cuda", "cpu", "mps", "npu") that should be used for computation
 device = "cpu"
 
+model_provider = "sentence-transformers"
 # Pretrained Models : https://www.sbert.net/docs/sentence_transformer/pretrained_models.html
 #
 # `multi-qa-MiniLM-L6-cos-v1`

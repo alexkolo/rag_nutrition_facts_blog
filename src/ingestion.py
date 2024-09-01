@@ -5,7 +5,8 @@ from typing import Any
 
 import lancedb
 from lancedb.db import DBConnection
-from lancedb.embeddings import SentenceTransformerEmbeddings, get_registry
+from lancedb.embeddings import get_registry
+from lancedb.embeddings.base import TextEmbeddingFunction
 from lancedb.pydantic import LanceModel, Vector
 from lancedb.table import Table
 from tqdm import tqdm
@@ -82,6 +83,7 @@ def lancedb_ingestion_setup(
     print(f"Ingestion pipeline started for table '{table_name}'.")
 
     # Embedding model Configuration
+    emb_model_provider: str = emb_config["model_provider"]
     emb_model_name: str = emb_config["model_name"]
     n_dim_vec: int = emb_config["n_dim_vec"]
     device = emb_config.get("device", "cpu")
@@ -92,8 +94,8 @@ def lancedb_ingestion_setup(
 
     # Define the embedding method
     print("2. Loading embedding model")
-    lancedb_emb_model: SentenceTransformerEmbeddings = (
-        get_registry().get("sentence-transformers").create(name=emb_model_name, device=device)
+    lancedb_emb_model: TextEmbeddingFunction = (
+        get_registry().get(emb_model_provider).create(name=emb_model_name, device=device)
     )
     emb_func: EmbeddingFunction = lancedb_emb_model.generate_embeddings
 
