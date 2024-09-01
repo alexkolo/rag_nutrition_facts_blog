@@ -52,7 +52,13 @@ LLM_API_KEY: str = st.secrets[LLM_API_KEY_NAME]
 # -----------------------------
 
 
-def process_user_input(user_prompt: str, avatars: dict[str, Any], api_name: str, stream: bool = STREAM_DEFAULT):
+def process_user_input(
+    user_prompt: str,
+    avatars: dict[str, Any],
+    api_name: str,
+    k_base: Table,
+    stream: bool = STREAM_DEFAULT,
+):
     if stream is False:
         # error handling
         raise ValueError("Stream=False is not supported in this version of the app")
@@ -67,7 +73,7 @@ def process_user_input(user_prompt: str, avatars: dict[str, Any], api_name: str,
             # build LLM chat input
             # TODO: check when message gets too big
             chat_history: list[dict[str, str]] = st.session_state["messages"]
-            messages: list[dict[str, str]] = build_full_llm_chat_input(user_prompt, chat_history)
+            messages: list[dict[str, str]] = build_full_llm_chat_input(user_prompt, chat_history, k_base)
 
             # send message to LLM and get response
             streamed_response_raw: Iterable = client.chat.completions.create(
@@ -178,7 +184,7 @@ if st.session_state["start_chat"]:
 
         if user_prompt:
             with chat_history:  # show everything below in the chat history
-                process_user_input(user_prompt, avatars=avatars, api_name=LLM_API_NAME)
+                process_user_input(user_prompt, avatars=avatars, api_name=LLM_API_NAME, k_base=k_base)
 
             # # save chat history
             # if st.session_state["mongodb_connected"]:

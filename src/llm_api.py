@@ -4,8 +4,10 @@ from typing import Any
 import requests
 import streamlit as st
 from groq import Groq
+from lancedb.table import Table
 
 from src.prompt_building import build_system_msg
+from src.retrieval import get_context
 
 LLM_CLIENTS: dict[str, Any] = {"groq": Groq}
 
@@ -34,7 +36,9 @@ def get_llm_api_client_object(api_name: str):
     return LLM_CLIENTS.get(api_name)
 
 
-def build_full_llm_chat_input(user_prompt: str, chat_history: list[dict[str, str]]) -> list[dict[str, str]]:
+def build_full_llm_chat_input(
+    user_prompt: str, chat_history: list[dict[str, str]], k_base: Table
+) -> list[dict[str, str]]:
     """
     Build the full chat history for the LLM where the system message contains the context for the most
     recent user message and is inserted at the beginning of the chat history.
@@ -51,7 +55,8 @@ def build_full_llm_chat_input(user_prompt: str, chat_history: list[dict[str, str
     """
 
     # get the context for the most recent user prompt
-    prompt_context: str = "Error: could not retrieve any context"  # TODO retrieve_context(user_prompt)
+    # prompt_context: str = "Error: could not retrieve any context"  # TODO retrieve_context(user_prompt)
+    prompt_context: str = get_context(k_base, user_prompt)
     # build the system message with the context
     system_msg_with_context: str = build_system_msg(context=prompt_context)
     # insert user prompt at the beginning of the chat history
