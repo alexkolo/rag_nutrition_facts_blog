@@ -8,10 +8,11 @@ TODO:
 - save user feedback & chat history into database
 """
 
-from typing import Any
 from collections.abc import Iterable
+from typing import Any
 
 import streamlit as st
+from lancedb.table import Table
 from PIL import Image
 
 import src.constants as cst
@@ -19,6 +20,7 @@ from src.app_utils import connect_to_llm, init_st_keys
 from src.app_widgets import create_button, create_chat_msg, create_first_assistant_msg, show_chat_history, show_md_file
 from src.llm_api import build_full_llm_chat_input, stream_chat_response
 from src.prompt_building import WELCOME_MSG
+from src.retrieval import get_knowledge_base
 
 # Chat Parameters
 # -----------------------------
@@ -103,8 +105,8 @@ st.header(page_title, divider="blue")
 # Get Knowledge Base
 # ------------
 init_st_keys("kbase_loaded", False)
-# k_base: Table = get_knowledge_base()
-# st.session_state["kbase_loaded"] = True
+k_base: Table = get_knowledge_base()
+st.session_state["kbase_loaded"] = True
 
 
 # Top Container
