@@ -1,22 +1,29 @@
 """
 Start app: `streamlit run app.py`
 View in browser: `http://localhost:8501`
+
+TODO:
+- connect knowledge base to app
+- save user feedback & chat history into database
 """
+
+from typing import Any
+from collections.abc import Iterable
 
 import streamlit as st
 from PIL import Image
 
 import src.constants as cst
-from src.app_utils import init_st_keys, stream_text
-from src.app_widgets import create_button, create_chat_msg, show_md_file
-from src.llm_api import get_llm_api_client_object, get_preferred_model
+from src.app_utils import connect_to_llm, init_st_keys
+from src.app_widgets import create_button, create_chat_msg, create_first_assistant_msg, show_chat_history, show_md_file
+from src.llm_api import build_full_llm_chat_input, stream_chat_response
 from src.prompt_building import WELCOME_MSG
 
 # Chat Parameters
 # -----------------------------
 BOT_AVATAR = Image.open(cst.BOT_AVATAR)
 chat_config = cst.get_rag_config()["chat"]
-USER_AVATAR: str = chat_config["user_avatar"]
+avatars = {"assistant": BOT_AVATAR, "user": chat_config["user_avatar"]}
 STREAM_DEFAULT: bool = chat_config["stream_default"]
 CHAT_HISTORY_HEIGHT: int = chat_config["chat_history_height"]
 show_hal_warning: int = 2  # after 1 user question show hallucination warning
@@ -28,7 +35,7 @@ ask_user_feedback: int = 4  # after 2 user questions ask user feedback
 llm_config = cst.get_rag_config()["llm"]
 LLM_TEMP: float = llm_config["settings"]["model_temp"]
 init_st_keys("model_temp", LLM_TEMP)
-LLM_API_NAME: str = llm_config["settings"]["api"]
+LLM_API_NAME: str = llm_config["settings"]["api_name"]
 llm_api_config: dict = llm_config["api"][LLM_API_NAME]
 LLM_API_KEY_NAME: str = llm_api_config["key_name"]
 TOTAL_MAX_TOKEN: int = llm_api_config["token"]["total_max"]
@@ -36,41 +43,41 @@ TOTAL_MAX_TOKEN: int = llm_api_config["token"]["total_max"]
 
 # Secrets
 # -----------------------------
-# load_dotenv(cst.REPO_PATH)
-# LLM_API_KEY: str = os.getenv(LLM_API_KEY_NAME)  # type: ignore
-
+LLM_API_KEY: str = st.secrets[LLM_API_KEY_NAME]
 
 # Chat Bot Elements
 # -----------------------------
-def create_first_assistant_msg(stream: bool = STREAM_DEFAULT):
-    # show 1st assistant message in the chat history
-    response: str = WELCOME_MSG
-    create_chat_msg(
-        content=stream_text(response) if stream else response,
-        role="assistant",
-        avatar=BOT_AVATAR,
-        stream=stream,
-    )
 
 
-def connect_to_llm(api_key: str, api_name: str, api_config: dict):
-    # Model Name
-    init_st_keys("model_name")
-    if not st.session_state["model_name"]:
-        model_name: str = api_config.get("model", {}).get("name", "")
-        if not model_name:
-            models_url: str = api_config.get("models", {}).get("url", "")
-            ranked_models: list[str] = api_config.get("models", {}).get("ranked", [])
-            model_name = get_preferred_model(api_key=api_key, models_url=models_url, ranked_models=ranked_models)
-        st.session_state["model_name"] = model_name
+def process_user_input(user_prompt: str, avatars: dict[str, Any], api_name: str, stream: bool = STREAM_DEFAULT):
+    if stream is False:
+        # error handling
+        raise ValueError("Stream=False is not supported in this version of the app")
 
-    # API Client
-    init_st_keys("llm_client")
-    if not st.session_state["llm_client"]:
-        with st.spinner("😴 Waking up for the digital clone..."):
-            llm_api_client = get_llm_api_client_object(api_name=api_name)
-            st.session_state["llm_client"] = llm_api_client(api_key=api_key)
-        st.success("The digital clone is awake!", icon="✅")
+    # show user message in the chat history
+    create_chat_msg(user_prompt, role="user", avatar=avatars["user"])
+
+    # create assistant response
+    client = st.session_state["llm_client"]
+    with st.spinner("I'm thinking..."):
+        with st.chat_message("assistant", avatar=avatars["assistant"]):
+            # build LLM chat input
+            # TODO: check when message gets too big
+            chat_history: list[dict[str, str]] = st.session_state["messages"]
+            messages: list[dict[str, str]] = build_full_llm_chat_input(user_prompt, chat_history)
+
+            # send message to LLM and get response
+            streamed_response_raw: Iterable = client.chat.completions.create(
+                model=st.session_state["model_name"],
+                messages=messages,
+                temperature=st.session_state["model_temp"],
+                stream=stream,
+                # max_tokens=RESPONSE_MAX_TOKENS,
+            )
+            streamed_response_str: Iterable[str] = stream_chat_response(streamed_response_raw, api_name=api_name)
+            full_response: str = st.write_stream(streamed_response_str)
+    # Add assistant response to chat history
+    st.session_state["messages"].append({"role": "assistant", "content": full_response})
 
 
 # Initialize chat history
@@ -96,7 +103,7 @@ st.header(page_title, divider="blue")
 # ------------
 init_st_keys("kbase_loaded", False)
 # k_base: Table = get_knowledge_base()
-st.session_state["kbase_loaded"] = True
+# st.session_state["kbase_loaded"] = True
 
 
 # Top Container
@@ -149,25 +156,39 @@ if st.session_state["start_chat"]:
                 st.success("Chat history has been reset.", icon="🗑️")
 
             # waking up assistant, if needed
-            # connect_to_llm(api_key=LLM_API_KEY, api_name=LLM_API_NAME, api_config=llm_api_config)
+            connect_to_llm(api_key=LLM_API_KEY, api_name=LLM_API_NAME, api_config=llm_api_config)
 
             if new_chat:
                 # show 1st assistant message in the chat history
-                create_first_assistant_msg()
+                create_first_assistant_msg(msg=WELCOME_MSG, avatar=BOT_AVATAR, stream=STREAM_DEFAULT)
             else:
                 # show chat message history
-                for i, message in enumerate(st.session_state["messages"]):
-                    role = message["role"]
-                    with st.chat_message(name=role, avatar=BOT_AVATAR if role == "assistant" else USER_AVATAR):
-                        message["content"]
+                show_chat_history(avatars=avatars)
 
         # User input widget (at the bottom, outside of the chat history)
         user_prompt = st.chat_input(
-            placeholder="Enter your question here, e.g 'What are your skills?'",
+            placeholder="Enter your question here, e.g 'How to eat healthy?'",
             key="user_input",
             max_chars=500,
             disabled=not st.session_state["start_chat"] or st.session_state["total_tokens"] >= TOTAL_MAX_TOKEN,
         )
+
+        if user_prompt:
+            with chat_history:  # show everything below in the chat history
+                process_user_input(user_prompt, avatars=avatars, api_name=LLM_API_NAME)
+
+            # # save chat history
+            # if st.session_state["mongodb_connected"]:
+            #     save_chat_history(
+            #         mongodb_client,
+            #         user_id=st.session_state["user_info"]["user_id"],
+            #         n_sessions=st.session_state["n_sessions"],
+            #         chat_history=st.session_state[MESSAGES],
+            #     )
+
+        with chat_history:
+            if st.session_state["total_tokens"] >= TOTAL_MAX_TOKEN:
+                st.error("Chat history is too long. Please reset it.", icon="🚫")
 
     # show warning
     # ----------------------

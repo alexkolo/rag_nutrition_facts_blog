@@ -1,8 +1,9 @@
 from collections.abc import Iterable
+from typing import Any
 
 import streamlit as st
 
-from src.app_utils import init_st_keys
+from src.app_utils import init_st_keys, stream_text
 
 
 def show_md_file(path, **kwargs):
@@ -28,8 +29,9 @@ def create_button(state_key: str, label: str, default: bool = False, **kwargs) -
 def create_chat_msg(
     content: str | Iterable[str],
     role: str,
-    avatar=None,
+    avatar: Any = None,
     stream: bool = False,
+    state_key: str = "messages",
 ):
     full_content: str
     with st.chat_message("assistant", avatar=avatar):
@@ -39,4 +41,17 @@ def create_chat_msg(
             st.write(content)
             full_content = str(content)
     # Add assistant response to chat history
-    st.session_state["messages"].append({"role": role, "content": full_content})
+    st.session_state[state_key].append({"role": role, "content": full_content})
+
+
+def create_first_assistant_msg(msg: str, stream: bool = False, **kwargs):
+    # show 1st assistant message in the chat history
+    create_chat_msg(content=stream_text(msg) if stream else msg, role="assistant", stream=stream, **kwargs)
+
+
+def show_chat_history(avatars: dict[str, Any], state_key: str = "messages"):
+    # show chat message history
+    for msg_dict in st.session_state[state_key]:
+        role: str = msg_dict["role"]
+        with st.chat_message(name=role, avatar=avatars[role]):
+            st.write(msg_dict["content"])

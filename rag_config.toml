@@ -31,11 +31,11 @@ chat_history_height = 600
 
 [llm.settings]
 model_temp = 0.5
-api = "groq"
+api_name = "groq"
 
 [llm.api.groq]
 key_name = "GROQ_TOKEN"
 token.total_max = 8192
 models.url = "https://api.groq.com/openai/v1/models"
 # as of 23/07/2024
-models.ranked = [ "llama3-70b-8192", "mixtral-8x7b-32768", "llama3-8b-8192", "gemma2-9b-it", "gemma-7b-it" ]
+models.ranked = [ "mixtral-8x7b-32768", "llama3-70b-8192", "llama3-8b-8192", "gemma2-9b-it", "gemma-7b-it" ]
