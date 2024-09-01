@@ -3,10 +3,7 @@ Start app: `streamlit run app.py`
 View in browser: `http://localhost:8501`
 """
 
-import os
-
 import streamlit as st
-from dotenv import load_dotenv
 from lancedb.table import Table
 from PIL import Image
 
@@ -41,8 +38,8 @@ TOTAL_MAX_TOKEN: int = llm_api_config["token"]["total_max"]
 
 # Secrets
 # -----------------------------
-load_dotenv(cst.REPO_PATH)
-LLM_API_KEY: str = os.getenv(LLM_API_KEY_NAME)  # type: ignore
+# load_dotenv(cst.REPO_PATH)
+# LLM_API_KEY: str = os.getenv(LLM_API_KEY_NAME)  # type: ignore
 
 
 # Chat Bot Elements
@@ -154,7 +151,7 @@ if st.session_state["start_chat"]:
                 st.success("Chat history has been reset.", icon="🗑️")
 
             # waking up assistant, if needed
-            connect_to_llm(api_key=LLM_API_KEY, api_name=LLM_API_NAME, api_config=llm_api_config)
+            # connect_to_llm(api_key=LLM_API_KEY, api_name=LLM_API_NAME, api_config=llm_api_config)
 
             if new_chat:
                 # show 1st assistant message in the chat history
