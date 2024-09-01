@@ -1,6 +1,6 @@
 """
 Start app: `streamlit run app/home.py`
-View in your browser: `http://localhost:8501`
+View in browser: `http://localhost:8501`
 """
 
 import os
@@ -25,7 +25,7 @@ USER_AVATAR: str = chat_config["user_avatar"]
 STREAM_DEFAULT: bool = chat_config["stream_default"]
 CHAT_HISTORY_HEIGHT: int = chat_config["chat_history_height"]
 show_hal_warning: int = 2  # after 1 user question show hallucination warning
-hal_warning_msg: str = "Please note that with the current state of technology, my digital clone may hallucinate! 🙃"
+hal_warning_msg: str = "Please note that with the current state of technology, the digital clone may hallucinate! 🙃"
 ask_user_feedback: int = 4  # after 2 user questions ask user feedback
 
 # LLM Parameters
@@ -175,10 +175,11 @@ if st.session_state["start_chat"]:
         )
 
     # show warning
+    # ----------------------
     if len(st.session_state["messages"]) > show_hal_warning:
         st.warning(hal_warning_msg)
 
-    # User Rating
+    # Ask for user feedback
     # ----------------------
     if len(st.session_state["messages"]) > ask_user_feedback:
         init_st_keys("user_rating")
@@ -218,6 +219,6 @@ if st.session_state["start_chat"]:
 # ==============
 st.divider()
 st.write(f"`{st.session_state['total_tokens']/TOTAL_MAX_TOKEN:.0%} of conversation capacity used.`")
-with st.expander("🤓 Debug Information", expanded=False):
+with st.expander("🤓 _Debug Information_", expanded=False):
     st.button("Reset All 🧹", on_click=st.session_state.clear)
     st.write(st.session_state)

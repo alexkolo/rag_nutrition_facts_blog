@@ -16,4 +16,7 @@ pip install torch==2.4.0+cpu --index-url https://download.pytorch.org/whl/cpu
 echo "Installing the package in editable mode..."
 pip install -e .
 
+# save to requirements.txt
+pip freeze --exclude-editable > requirements.txt
+
 echo "Installation and cleanup complete!"

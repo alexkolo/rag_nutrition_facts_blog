@@ -2,7 +2,7 @@ from collections.abc import Iterable
 
 import streamlit as st
 
-from app_utils import init_st_keys
+from src.app_utils import init_st_keys
 
 
 def show_md_file(path, **kwargs):

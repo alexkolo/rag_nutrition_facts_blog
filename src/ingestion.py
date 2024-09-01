@@ -10,8 +10,8 @@ from lancedb.pydantic import LanceModel, Vector
 from lancedb.table import Table
 from tqdm import tqdm
 
-from chunking import split_and_filter_paragraphs
-from embeddings import EmbeddingFunction
+from src.chunking import split_and_filter_paragraphs
+from src.embeddings import EmbeddingFunction
 
 # to ignore FutureWarning from `transformers/tokenization_utils_base.py`
 warnings.simplefilter(action="ignore", category=FutureWarning)
@@ -317,7 +317,7 @@ if __name__ == "__main__":
     print("Script started.")
 
     # fixed parameters
-    from constants import LANCEDB_URI, POST_JSON_PATH, get_rag_config
+    from src.constants import LANCEDB_URI, POST_JSON_PATH, get_rag_config
 
     # variable parameters
     n_files: int | None = None  # use `None` to process all files

@@ -11,5 +11,7 @@ pip install --no-cache-dir torch==2.4.0+cpu --index-url https://download.pytorch
 Write-Host "Installing the package in editable mode..."
 pip install --no-cache-dir -e .
 
+# save to requirements.txt
+pip freeze --exclude-editable > requirements.txt
 
 Write-Host "Installation and cleanup complete!"

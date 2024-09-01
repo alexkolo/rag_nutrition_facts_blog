@@ -4,7 +4,7 @@ from lancedb.db import DBConnection
 from lancedb.rerankers import LinearCombinationReranker
 from lancedb.table import Table
 
-from constants import LANCEDB_URI, get_rag_config
+from src.constants import LANCEDB_URI, get_rag_config
 
 
 def get_knowledge_base(table_name: str | None = None) -> Table:
