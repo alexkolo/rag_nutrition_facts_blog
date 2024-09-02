@@ -127,7 +127,7 @@ if not st.session_state["start_chat"]:
 init_st_keys("kbase_loaded", False)
 try:
     k_base_config: dict[str, Any] = cst.get_rag_config()["knowledge_base"]
-    K_BASE_URI: str | Path = k_base_config["uri"]
+    K_BASE_URI: str | Path = Path(k_base_config["uri"])
     K_BASE_NAME: str = k_base_config["table_name"]
     db: lancedb.db.DBConnection = lancedb.connect(uri=K_BASE_URI)
     k_base: KBaseTable = db.open_table(K_BASE_NAME)
@@ -136,11 +136,10 @@ try:
         n_entries = k_base.count_rows()
         st.session_state["kbase_loaded"] = True
         st.success(f"Connected to knowledge database. Found {n_entries} entries.", icon="✅")
-except Exception as e:
+except Exception:
     st.error("Connection to knowledge database failed!", icon="❌")
-    # st.code(e)
     # show traceback
-    st.exception(e)
+    raise
 
 
 # Top Container
