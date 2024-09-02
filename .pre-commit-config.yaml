@@ -14,9 +14,12 @@ repos:
       - id: check-yaml
       - id: detect-private-key
       - id: trailing-whitespace # Trims trailing whitespace.
+        exclude: '\.manifest$'
       - id: end-of-file-fixer # Makes sure files end in a newline and only a newline.
+        exclude: '\.manifest$'
       - id: mixed-line-ending
         args: [--fix=lf] # single control character (\n, ASCII code 10), most universal
+        exclude: '\.manifest$'
       - id: requirements-txt-fixer # Sorts entries in requirements.txt
       - id: check-case-conflict # Check for files with names that would conflict on a case-insensitive filesystem
 

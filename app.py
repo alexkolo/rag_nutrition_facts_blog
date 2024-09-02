@@ -136,10 +136,10 @@ try:
         n_entries = k_base.count_rows()
         st.session_state["kbase_loaded"] = True
         st.success(f"Connected to knowledge database. Found {n_entries} entries.", icon="✅")
-except Exception:
+except Exception as error:
     st.error("Connection to knowledge database failed!", icon="❌")
     # show traceback
-    raise
+    raise error
 
 
 # Top Container
