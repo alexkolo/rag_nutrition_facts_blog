@@ -1,3 +1,5 @@
+import re
+
 BOT_INSTRUCTION: str = """
 <instruction>
 You are my digital clone of Dr. Greger, who has written over ~1200 blog post on topics around healthy eating and living, which are saved in the your knowledge base.
@@ -25,3 +27,31 @@ WELCOME_MSG: str = "Hi, I'm a digital clone of Dr. Greger. Ask me anything about
 
 def build_system_msg(context: str) -> str:
     return BOT_INSTRUCTION + CONTEXT_TEMPLATE.format(context=context)
+
+
+def extract_context_from_msg(text: str) -> str | None:
+    """
+    Extracts and returns the text between <context> and </context> tags.
+
+
+    Parameters
+    ----------
+    text : str
+        The input string containing the context tags.
+
+    Returns
+    -------
+    str | None
+        The extracted text between the context tags, or None if no match is found.
+    """
+    # Regular expression to find text between <context> and </context>
+    pattern = r"<context>(.*?)</context>"
+
+    # Search for the pattern
+    match = re.search(pattern, text, re.DOTALL)
+
+    # Return the extracted text if a match is found, otherwise return None
+    if match:
+        return match.group(1)
+
+    return None

@@ -21,7 +21,7 @@ import src.constants as cst
 from src.app_utils import connect_to_llm, init_st_keys
 from src.app_widgets import create_button, create_chat_msg, create_first_assistant_msg, show_chat_history, show_md_file
 from src.llm_api import build_full_llm_chat_input, stream_chat_response
-from src.prompt_building import WELCOME_MSG
+from src.prompt_building import WELCOME_MSG, extract_context_from_msg
 
 # Chat Parameters
 # -----------------------------
@@ -32,7 +32,7 @@ STREAM_DEFAULT: bool = chat_config["stream_default"]
 CHAT_HISTORY_HEIGHT: int = chat_config["chat_history_height"]
 show_hal_warning: int = 2  # after 1 user question show hallucination warning
 hal_warning_msg: str = "Please note that with the current state of technology, the digital clone may hallucinate! 🙃"
-ask_user_feedback: int = 4  # after 2 user questions ask user feedback
+ask_user_feedback: int = 2  # after 1 user questions ask user feedback
 
 # LLM Parameters
 # -----------------------------
@@ -76,7 +76,7 @@ def process_user_input(
             chat_history: list[dict[str, str]] = st.session_state["messages"]
             messages: list[dict[str, str]] = build_full_llm_chat_input(user_prompt, chat_history, k_base)
             # save first message, which contains context
-            st.session_state["retrieval_tmp"].append(messages[0]["content"])
+            st.session_state["retrieval_tmp"].append(extract_context_from_msg(messages[0]["content"]))
 
             # send message to LLM and get response
             streamed_response_raw: Iterable = client.chat.completions.create(
@@ -101,6 +101,7 @@ init_st_keys("total_tokens", 0)
 init_st_keys("n_sessions", 1)
 init_st_keys("user_info", cst.USER_INFO_TEMPLATE)
 init_st_keys("model_temp", LLM_TEMP)
+init_st_keys("model_name")
 init_st_keys("retrieval_tmp", [])
 
 # Page starts here
@@ -135,7 +136,7 @@ try:
     if not st.session_state["kbase_loaded"]:
         n_entries = k_base.count_rows()
         st.session_state["kbase_loaded"] = True
-        st.success(f"Connected to knowledge database. Found {n_entries} entries.", icon="✅")
+        # st.success(f"Connected to knowledge database. Found {n_entries} entries.", icon="✅")
 except Exception as error:
     st.error("Connection to knowledge database failed!", icon="❌")
     # show traceback
@@ -241,7 +242,7 @@ if st.session_state["start_chat"]:
         fb_options: list[str] = ["😞", "🙁", "😐", "🙂", "😀"]
         with st.form(key="feedback_form", border=True):
             user_fb = st.radio(
-                label="**Please let me know how helpful you find my digital clone:**",
+                label="**Please let me know how helpful you find this digital clone:**",
                 options=fb_options,
                 index=st.session_state.get("user_rating", len(fb_options) - 1),
                 disabled=fb_disabled,
@@ -270,10 +271,12 @@ if st.session_state["start_chat"]:
 # Debug
 # ==============
 st.divider()
+st.write(f"`LLM used: '{st.session_state['model_name'] or 'not yet defined'}'`")
 st.write(
     f"`{st.session_state['total_tokens']/TOTAL_MAX_TOKEN:.0%}"
-    "of conversation capacity used before a chat history reset is required.`"
+    " of conversation capacity used before a chat history reset is required.`"
 )
 with st.expander("🤓 _Debug Information_", expanded=False):
     st.button("Reset All 🧹", on_click=st.session_state.clear)
-    st.write(st.session_state)
+    st.write("Session State:")
+    st.json(st.session_state, expanded=False)
