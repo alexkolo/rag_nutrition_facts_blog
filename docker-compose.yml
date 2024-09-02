@@ -1,0 +1,15 @@
+services:
+  streamlit_app:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    container_name: chatbot_dr_greger
+    ports:
+      - "8501:8501"
+    environment:
+      - PIP_NO_CACHE_DIR=1
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
