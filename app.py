@@ -8,11 +8,12 @@ TODO:
 - save user feedback & chat history into database
 """
 
+import uuid
 from collections.abc import Iterable
-from pathlib import Path
+from datetime import datetime
 from typing import Any
 
-import lancedb
+import pytz
 import streamlit as st
 from lancedb.table import Table as KBaseTable
 from PIL import Image
@@ -21,33 +22,36 @@ import src.constants as cst
 from src.app_utils import connect_to_llm, init_st_keys
 from src.app_widgets import create_button, create_chat_msg, create_first_assistant_msg, show_chat_history, show_md_file
 from src.llm_api import build_full_llm_chat_input, stream_chat_response
+from src.mongodb import MongodbClient, get_mongodb_config, save_chat_history
 from src.prompt_building import WELCOME_MSG, extract_context_from_msg
+from src.retrieval import connect_to_lancedb_table
 
 # Chat Parameters
 # -----------------------------
 BOT_AVATAR = Image.open(cst.BOT_AVATAR)
-chat_config = cst.get_rag_config()["chat"]
-avatars = {"assistant": BOT_AVATAR, "user": chat_config["user_avatar"]}
+chat_config: dict[str, Any] = cst.get_rag_config()["chat"]
+AVATARS: dict[str, Any] = {"assistant": BOT_AVATAR, "user": chat_config["user_avatar"]}
 STREAM_DEFAULT: bool = chat_config["stream_default"]
 CHAT_HISTORY_HEIGHT: int = chat_config["chat_history_height"]
-show_hal_warning: int = 2  # after 1 user question show hallucination warning
-hal_warning_msg: str = "Please note that with the current state of technology, the digital clone may hallucinate! 🙃"
-ask_user_feedback: int = 2  # after 1 user questions ask user feedback
+SHOW_HAL_WARNING: int = 2  # after 1 user question show hallucination warning
+HAL_WARNING_MSG: str = "Please note that with the current state of technology, the digital clone may hallucinate! 🙃"
+ASK_USER_FEEDBACK: int = 2  # after 1 user questions ask user feedback
+
 
 # LLM Parameters
 # -----------------------------
-llm_config = cst.get_rag_config()["llm"]
+llm_config: dict[str, Any] = cst.get_rag_config()["llm"]
 LLM_TEMP: float = llm_config["settings"]["model_temp"]
-init_st_keys("model_temp", LLM_TEMP)
 LLM_API_NAME: str = llm_config["settings"]["api_name"]
-llm_api_config: dict = llm_config["api"][LLM_API_NAME]
-LLM_API_KEY_NAME: str = llm_api_config["key_name"]
-TOTAL_MAX_TOKEN: int = llm_api_config["token"]["total_max"]
+LLM_API_CONFIG: dict[str, Any] = llm_config["api"][LLM_API_NAME]
+TOTAL_MAX_TOKEN: int = LLM_API_CONFIG["token"]["total_max"]
 
 
 # Secrets
 # -----------------------------
-LLM_API_KEY: str = st.secrets[LLM_API_KEY_NAME]
+LLM_API_KEY: str = st.secrets.get(LLM_API_CONFIG["key_name"], "")
+DEPLOYED: bool = st.secrets.get("deployed", False)
+
 
 # Chat Bot Elements
 # -----------------------------
@@ -76,7 +80,7 @@ def process_user_input(
             chat_history: list[dict[str, str]] = st.session_state["messages"]
             messages: list[dict[str, str]] = build_full_llm_chat_input(user_prompt, chat_history, k_base)
             # save first message, which contains context
-            st.session_state["retrieval_tmp"].append(extract_context_from_msg(messages[0]["content"]))
+            st.session_state["retrieval"].append(extract_context_from_msg(messages[0]["content"]))
 
             # send message to LLM and get response
             streamed_response_raw: Iterable = client.chat.completions.create(
@@ -102,7 +106,8 @@ init_st_keys("n_sessions", 1)
 init_st_keys("user_info", cst.USER_INFO_TEMPLATE)
 init_st_keys("model_temp", LLM_TEMP)
 init_st_keys("model_name")
-init_st_keys("retrieval_tmp", [])
+init_st_keys("retrieval", [])
+init_st_keys("deployed", DEPLOYED)
 
 # Page starts here
 # ==========================
@@ -127,11 +132,7 @@ if not st.session_state["start_chat"]:
 # ------------
 init_st_keys("kbase_loaded", False)
 try:
-    k_base_config: dict[str, Any] = cst.get_rag_config()["knowledge_base"]
-    K_BASE_URI: str | Path = Path(k_base_config["uri"])
-    K_BASE_NAME: str = k_base_config["table_name"]
-    db: lancedb.db.DBConnection = lancedb.connect(uri=K_BASE_URI)
-    k_base: KBaseTable = db.open_table(K_BASE_NAME)
+    k_base: KBaseTable = connect_to_lancedb_table(**cst.get_rag_config()["knowledge_base"])
     # test connection
     if not st.session_state["kbase_loaded"]:
         n_entries = k_base.count_rows()
@@ -143,46 +144,95 @@ except Exception as error:
     raise error
 
 
-# Top Container
+# Connect to User Database
 # ------------
-with st.container(border=False):
-    with st.popover(
-        "⚖ :red[**Please read this disclaimer before engaging with my digital clone:**]",
-        use_container_width=True,
-    ):
-        # inspired by: https://cloud.docs.tamr.com/page/ai-chatbot-disclaimer
-        # https://wow.groq.com/privacy-policy/
-        show_md_file(cst.BOT_DISCLAIMER)
+init_st_keys("mongodb_connected", False)
+with st.spinner("Connecting to user database..."):
+    mongodb_client = MongodbClient(**get_mongodb_config(DEPLOYED))
+if not mongodb_client.connection_test():
+    st.error("Connection to user database failed!", icon="❌")
+else:
+    st.session_state["mongodb_connected"] = True
 
-    left_button, middle_button, right_button = st.columns(3)
-    with left_button:
-        start_chat = create_button(
-            "start_chat",
-            "Wake up the digital clone ⏰",
-            default=False,
-            type="primary",
-            disabled=st.session_state["start_chat"],
-            use_container_width=True,
-        )
-    with middle_button:
-        reset_chat = st.button(
-            "Reset Chat History 🚮",
-            on_click=st.session_state["messages"].clear,
-            disabled=not st.session_state["start_chat"],
-            use_container_width=True,
-        )
-        if reset_chat:
-            st.session_state["n_sessions"] += 1
-    with right_button:
-        st.button(
-            "Reset All 🧹",
-            on_click=st.session_state.clear,
-            disabled=not st.session_state["start_chat"],
-            use_container_width=True,
-        )
+# Check LLM API Key
+# ------------
+if not LLM_API_KEY:
+    st.error(f"The LLM API key for the API provider '{LLM_API_NAME}' is missing!", icon="❌")
+
+# User-Name Container
+# ------------
+with st.expander(label="👤 User info", expanded=not st.session_state["start_chat"]):
+    with st.form(key="user_form", border=False):
+        st.subheader("Who are you?")
+        # User's name (required)
+        user_name = st.text_input(label="Please tell me your name:", placeholder="Sam Altman", key="user_name")
+
+        # Submit button
+        submit_button = st.form_submit_button(label="Save & continue", disabled=st.session_state["start_chat"])
+        if submit_button:
+            st.session_state["submit_button"] = True
+            st.session_state["user_info"].update(
+                {
+                    "user_id": str(uuid.uuid4()),
+                    "timestamp": datetime.now(tz=pytz.utc).strftime("%Y-%m-%d %H:%M:%S"),
+                    "user_name": user_name,
+                }
+            )
+            if user_name:
+                with st.spinner("Saving your information..."):
+                    if st.session_state["mongodb_connected"]:
+                        mongodb_client.insert_one(st.session_state["user_info"])
+                st.success(
+                    f"Hi **{user_name}**. Thank you for your information! Next step: Wake up the digital clone!",
+                    icon="✅",
+                )
 
 
-# Chat box
+# Chat-Control Container
+# ------------
+user_name = st.session_state["user_info"]["user_name"]
+if st.session_state["submit_button"] and user_name:
+    # -------
+    with st.container(border=False):
+        st.subheader("Start chatting")
+        with st.popover(
+            "⚖ :red[**Please read this disclaimer before engaging with my digital clone:**]",
+            use_container_width=True,
+        ):
+            # inspired by: https://cloud.docs.tamr.com/page/ai-chatbot-disclaimer
+            # https://wow.groq.com/privacy-policy/
+            show_md_file(cst.BOT_DISCLAIMER)
+
+        left_button, middle_button, right_button = st.columns(3)
+        with left_button:
+            start_chat = create_button(
+                "start_chat",
+                "Wake up the digital clone ⏰",
+                default=False,
+                type="primary",
+                disabled=st.session_state["start_chat"],
+                use_container_width=True,
+            )
+        with middle_button:
+            reset_chat = st.button(
+                "Reset Chat History 🚮",
+                on_click=st.session_state["messages"].clear,
+                disabled=not st.session_state["start_chat"],
+                use_container_width=True,
+            )
+            if reset_chat:
+                st.session_state["n_sessions"] += 1
+        with right_button:
+            st.button(
+                "Reset All 🧹",
+                on_click=st.session_state.clear,
+                disabled=not st.session_state["start_chat"],
+                use_container_width=True,
+            )
+
+
+# Chat-Box Container
+# ------------
 if st.session_state["start_chat"]:
     new_chat: bool = not st.session_state["messages"]
     with st.container(border=False):
@@ -193,14 +243,14 @@ if st.session_state["start_chat"]:
                 st.success("Chat history has been reset.", icon="🗑️")
 
             # waking up assistant, if needed
-            connect_to_llm(api_key=LLM_API_KEY, api_name=LLM_API_NAME, api_config=llm_api_config)
+            connect_to_llm(api_key=LLM_API_KEY, api_name=LLM_API_NAME, api_config=LLM_API_CONFIG)
 
             if new_chat:
                 # show 1st assistant message in the chat history
                 create_first_assistant_msg(msg=WELCOME_MSG, avatar=BOT_AVATAR, stream=STREAM_DEFAULT)
             else:
                 # show chat message history
-                show_chat_history(avatars=avatars)
+                show_chat_history(avatars=AVATARS)
 
         # User input widget (at the bottom, outside of the chat history)
         user_prompt = st.chat_input(
@@ -212,16 +262,17 @@ if st.session_state["start_chat"]:
 
         if user_prompt:
             with chat_history:  # show everything below in the chat history
-                process_user_input(user_prompt, avatars=avatars, api_name=LLM_API_NAME, k_base=k_base)
+                process_user_input(user_prompt, avatars=AVATARS, api_name=LLM_API_NAME, k_base=k_base)
 
-            # # save chat history
-            # if st.session_state["mongodb_connected"]:
-            #     save_chat_history(
-            #         mongodb_client,
-            #         user_id=st.session_state["user_info"]["user_id"],
-            #         n_sessions=st.session_state["n_sessions"],
-            #         chat_history=st.session_state[MESSAGES],
-            #     )
+            # save chat history
+            if st.session_state["mongodb_connected"]:
+                save_chat_history(
+                    mongodb_client,
+                    user_id=st.session_state["user_info"]["user_id"],
+                    n_sessions=st.session_state["n_sessions"],
+                    chat_history=st.session_state["messages"],
+                    retrieval=st.session_state["retrieval"],
+                )
 
         with chat_history:
             if st.session_state["total_tokens"] >= TOTAL_MAX_TOKEN:
@@ -229,12 +280,12 @@ if st.session_state["start_chat"]:
 
     # show warning
     # ----------------------
-    if len(st.session_state["messages"]) > show_hal_warning:
-        st.warning(hal_warning_msg)
+    if len(st.session_state["messages"]) > SHOW_HAL_WARNING:
+        st.warning(HAL_WARNING_MSG)
 
     # Ask for user feedback
     # ----------------------
-    if len(st.session_state["messages"]) > ask_user_feedback:
+    if len(st.session_state["messages"]) > ASK_USER_FEEDBACK:
         init_st_keys("user_rating")
         fb_disabled: bool = st.session_state["user_rating"] is not None
 
@@ -258,14 +309,13 @@ if st.session_state["start_chat"]:
             st.session_state["user_rating"] = value
             if user_likes_bot:
                 st.balloons()
-            # with st.spinner("Saving your feedback..."):
-            #     user_id: str = st.session_state["user_info"]["user_id"]
-            #     if st.session_state["mongodb_connected"]:
-            #         mongodb_client.update_single_field(
-            #             filter={"user_id": user_id},
-            #             field="like_bot",
-            #             value=value,
-            #         )
+            with st.spinner("Saving your feedback..."):
+                if st.session_state["mongodb_connected"]:
+                    mongodb_client.update_single_field(
+                        filter={"user_id": st.session_state["user_info"]["user_id"]},
+                        field="like_bot",
+                        value=value,
+                    )
             st.success("Thank you for your feedback!", icon="💚" if user_likes_bot else "🙏")
 
 # Debug

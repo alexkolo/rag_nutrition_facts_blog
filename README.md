@@ -34,7 +34,7 @@ TODO: expand it
 
 - using Docker Compose:
   - ensure docker compose exists: `docker compose version`, if not then [install it](https://docs.docker.com/compose/install/linux/)
-  - build & run container: `docker compose up -d`
+  - build & run container: `docker compose up`
   - view it in the browser via this url: <http://localhost:8501>
   - stop it: `docker compose down`
 
@@ -74,8 +74,9 @@ TODO: expand it
     .\setup.ps1
     ```
 
-- Start the app via `streamlit run app.py`
-- View it in the browser via this url: <http://localhost:8501>
+- start server for the user database: `docker-compose --file docker-mongodb.yml up`
+- start the app via `streamlit run app.py`
+- view it in the browser via this url: <http://localhost:8501>
 
 ## Help improve the bot
 

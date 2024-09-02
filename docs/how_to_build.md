@@ -140,10 +140,35 @@ TODO:
 
 ## Monitoring
 
-- create local MongoDB
-  - Run Docker Compose: `docker-compose --file docker-mongodb.yml up -d`
+- using MongoDB to save user data
   - created the class the `MongodbClient` based on this [documentation](https://www.w3schools.com/python/python_mongodb_getstarted.asp)
-  -
+
+- create local MongoDB Server via Docker Compose:
+  - Start Server: `docker-compose --file docker-mongodb.yml up`
+  - Stop Server: `docker-compose --file docker-mongodb.yml down`
+  - add config in `rag_config.toml` :
+
+    ```toml
+    [mongodb]
+    db_name = "rag_user_info"
+    coll_name = "chatbot_dr_greger"
+    uri = "mongodb://user:password@localhost:27017/admin"
+    ```
+
+- create remote MongoDB:
+  1. create account [here](https://account.mongodb.com/account/login)
+  2. create cluster
+  3. browse collections
+  4. create database & collection: "rag_user_info" and "chatbot_dr_greger" (use cluster index collection)
+  5. get "uri": (left menu) "Overview" -> "Application Development" -> "Get connection string" -> "Drivers"
+  - add config in `.streamlit/secrets.toml`:
+
+    ```toml
+    [mongodb]
+    db_name = "rag_user_info"
+    coll_name = "chatbot_dr_greger"
+    uri = "mongodb+srv://{username}:{password}@{cluster}.mongodb.net/?retryWrites=true&w=majority&appName={app_name}"
+    ```
 
 ## Evaluation
 

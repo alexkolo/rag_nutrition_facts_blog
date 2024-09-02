@@ -4,6 +4,13 @@ import streamlit as st
 from pymongo.collection import Collection
 from pymongo.mongo_client import MongoClient
 
+from src.constants import get_rag_config
+
+
+def get_mongodb_config(deployed: bool = False) -> dict[str, str]:
+    key: str = "mongodb"
+    return st.secrets[key] if deployed else get_rag_config()[key]
+
 
 # Uses st.cache_resource to only connect once per day
 @st.cache_resource(ttl="1 day", show_spinner=True)
