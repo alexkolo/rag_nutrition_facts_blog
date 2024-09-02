@@ -16,6 +16,7 @@ decorator==5.1.1
 deprecation==2.1.0
 distlib==0.3.8
 distro==1.9.0
+dnspython==2.6.1
 executing==2.0.1
 filelock==3.13.1
 fsspec==2024.2.0
@@ -68,6 +69,7 @@ pydantic_core==2.20.1
 pydeck==0.9.1
 Pygments==2.18.0
 pylance==0.16.0
+pymongo==4.8.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 pytz==2024.1
