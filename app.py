@@ -120,10 +120,10 @@ st.header(page_title, divider="blue")
 if not st.session_state["start_chat"]:
     st.info(
         """
-        This digital clone of the physician [Dr. Michael  Greger & his team](https://nutritionfacts.org/team/) will
-        help you answer any question you may have about healthy eating and living from the point of view of the
-        science-based nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/), which he
-        founded 2003.
+        This digital clone of the physician [Dr. Michael Greger & his team](https://nutritionfacts.org/team/) will help
+        you answer any question you may have about healthy eating and living from the perspective of the science-based
+        nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/), which has over 1200
+        well-researched blog posts since 2011.
         """,
         icon="💡",
     )
@@ -163,9 +163,11 @@ if not LLM_API_KEY:
 # ------------
 with st.expander(label="👤 User info", expanded=not st.session_state["start_chat"]):
     with st.form(key="user_form", border=False):
-        st.subheader("Who are you?")
+        # st.subheader("Who are you?")
         # User's name (required)
-        user_name = st.text_input(label="Please tell me your name:", placeholder="Sam Altman", key="user_name")
+        user_name = st.text_input(
+            label="Before you can start the chat, please tell me your name:", placeholder="Sam Altman", key="user_name"
+        )
 
         # Submit button
         submit_button = st.form_submit_button(label="Save & continue", disabled=st.session_state["start_chat"])
@@ -187,6 +189,9 @@ with st.expander(label="👤 User info", expanded=not st.session_state["start_ch
                     icon="✅",
                 )
 
+            if not user_name:
+                st.info("Please provide your name to use the digital clone.", icon="👆")
+
 
 # Chat-Control Container
 # ------------
@@ -196,7 +201,7 @@ if st.session_state["submit_button"] and user_name:
     with st.container(border=False):
         st.subheader("Start chatting")
         with st.popover(
-            "⚖ :red[**Please read this disclaimer before engaging with my digital clone:**]",
+            "⚖ :red[**Please read this disclaimer before engaging with the digital clone:**]",
             use_container_width=True,
         ):
             # inspired by: https://cloud.docs.tamr.com/page/ai-chatbot-disclaimer
