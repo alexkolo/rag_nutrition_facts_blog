@@ -49,9 +49,9 @@ MESSAGES: str = "messages"
 
 # Assets
 # ----------------
-BOT_AVATAR: Path = IMAGE_PATH / "dr-greger_f1b10472.png"
-APP_ASSETS: Path = DATA_PATH / "app_assets"
-BOT_DISCLAIMER: Path = APP_ASSETS / "chat_bot_disclaimer.md"
+ASSET_PATH: Path = REPO_PATH / "app_assets"
+BOT_AVATAR: Path = ASSET_PATH / "dr-greger_f1b10472.png"
+BOT_DISCLAIMER: Path = ASSET_PATH / "chat_bot_disclaimer.md"
 
 
 # User info

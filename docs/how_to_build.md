@@ -125,6 +125,19 @@ TODO:
 - ask for name
 - database
 
+## Docker
+
+- created minimal Dockerfile following the [official streamlit guide](https://docs.streamlit.io/deploy/tutorials/docker) and this [post](https://stackoverflow.com/questions/73063486/how-to-create-a-dockerfile-for-streamlit-app).
+  - I took advantage of install script `setup.sh`
+- used `.dockerignore` to ignore unneeded files and keep the image size small
+  - image size: ~2.13GB
+
+- Useful docker commands:
+  - After canceling a build, run `docker builder prune` for clean up
+  - Checking image size: `docker images` or `docker image ls`
+  - Disk usage summary by Docker: `docker system df`
+  - get detailed information about a specific image: `docker image inspect <image_id_or_name>`
+
 ## Monitoring
 
 TODO

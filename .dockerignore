@@ -1,0 +1,31 @@
+# Ignore the .git directory
+.git/
+
+# Ignore the virtual environment directory
+venv/
+tvenv/
+
+# Ignore data files
+data/
+
+# Ignore notebooks
+notebooks/
+
+# Ignore all Python cache files and directories
+__pycache__/
+*.pyc
+
+# Ignore egg-info directory (if you're using setuptools)
+src.egg-info/
+
+
+# Databases
+# -----------------
+# Exclude everything in the /databases/my_lancedb/ directory
+/databases/my_lancedb/*
+
+# Re-include the specific directory /databases/my_lancedb/table_simple03.lance/
+!/databases/my_lancedb/table_simple03.lance/
+
+# Ensure all contents inside table_simple03.lance/ are included
+!/databases/my_lancedb/table_simple03.lance/**

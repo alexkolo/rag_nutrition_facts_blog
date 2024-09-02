@@ -22,13 +22,20 @@ TODO: expand it
 
 ### Run it on your own
 
+- add your [Groq API key](https://console.groq.com/keys) in `.streamlit/secrets.toml` as `GROQ_TOKEN = "..."`
+
 #### Using a docker container
 
-TOOD: dockerfile
+- using a the Dockerfile:
+  - ensure docker is running: `docker version`
+  - build image: `docker build -t app:latest .`
+  - run image: `docker run -p 8501:8501 app:latest`
+  - View it in the browser via this url: <http://localhost:8501>
 
-- build image: `docker build -t app .`
-- run image: `docker run -p 8501:8501 app`
-- View it in the browser via this url: <http://localhost:8501>
+- using a Docker Compose file:
+  - ensure docker is running: `docker compose version`, if not [install it](https://docs.docker.com/compose/install/linux/)
+  - build and run image: `docker compose up -d`
+  - View it in the browser via this url: <http://localhost:8501>
 
 #### Using the source code
 
