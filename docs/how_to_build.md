@@ -125,11 +125,11 @@ TODO:
 - ask for name
 - database
 
-## Docker
+## Dockerization / Containerization
 
-- created minimal Dockerfile following the [official streamlit guide](https://docs.streamlit.io/deploy/tutorials/docker) and this [post](https://stackoverflow.com/questions/73063486/how-to-create-a-dockerfile-for-streamlit-app).
-  - I took advantage of install script `setup.sh`
-- used `.dockerignore` to ignore unneeded files and keep the image size small
+- I created a minimal Dockerfile following the [official streamlit guide](https://docs.streamlit.io/deploy/tutorials/docker) and this [post](https://stackoverflow.com/questions/73063486/how-to-create-a-dockerfile-for-streamlit-app).
+  - I took advantage of `setup.cfg` for the installation of the dependencies
+- I used `.dockerignore` to ignore unneeded files and keep the image size small
   - image size: ~2.13GB
 
 - Useful docker commands:
@@ -140,7 +140,10 @@ TODO:
 
 ## Monitoring
 
-TODO
+- create local MongoDB
+  - Run Docker Compose: `docker-compose --file docker-mongodb.yml up -d`
+  - created the class the `MongodbClient` based on this [documentation](https://www.w3schools.com/python/python_mongodb_getstarted.asp)
+  -
 
 ## Evaluation
 

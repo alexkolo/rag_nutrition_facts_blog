@@ -7,6 +7,11 @@ from lancedb.table import Table
 from src.constants import LANCEDB_URI, get_rag_config
 
 
+def connect_to_lancedb_table(uri: str, table_name: str) -> Table:
+    db: DBConnection = lancedb.connect(uri=uri)
+    return db.open_table(table_name)
+
+
 def get_knowledge_base(table_name: str | None = None) -> Table:
     db: DBConnection = lancedb.connect(uri=LANCEDB_URI)
     _table_name: str = table_name or get_rag_config()["knowledge_base"]["table_name"]

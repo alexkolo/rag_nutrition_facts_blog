@@ -56,13 +56,12 @@ BOT_DISCLAIMER: Path = ASSET_PATH / "chat_bot_disclaimer.md"
 
 # User info
 # -----------------------------
-USER_DB_NAME = "bot_usage"
-USER_COLL_NAME = "user_info"
 USER_INFO_TEMPLATE = {
     "user_id": None,
     "timestamp": None,
-    "user_language": None,
+    "user_name": None,
     "like_bot": None,
     "n_sessions": None,
     "chat_history": None,
+    "retrieval": None,
 }

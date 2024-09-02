@@ -165,9 +165,10 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# Database
+# Databases
 /databases/my_lancedb/*
 !/databases/my_lancedb/table_simple03.lance/
+/databases/mongodb/*
 
 ### streamlit
 *secrets*

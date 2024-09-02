@@ -1,0 +1,14 @@
+version: "3.1"
+
+services:
+  mongodb:
+    image: mongo:latest
+    restart: unless-stopped
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: alex
+      MONGO_INITDB_ROOT_PASSWORD: llm
+    volumes:
+      - ./databases/mongodb/:/data/db
