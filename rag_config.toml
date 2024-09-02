@@ -26,9 +26,9 @@ uri = "databases/my_lancedb" # relative to the project root
 table_name = "table_simple03"
 
 [chat]
-user_avatar = "❔"  # "👀"  # "🙂"
+user_avatar = "❔"
 stream_default = true
-chat_history_height = 600
+chat_history_height = 650
 
 [llm.settings]
 model_temp = 0.5

@@ -247,14 +247,18 @@ if st.session_state["start_chat"]:
 
             if new_chat:
                 # show 1st assistant message in the chat history
-                create_first_assistant_msg(msg=WELCOME_MSG, avatar=BOT_AVATAR, stream=STREAM_DEFAULT)
+                create_first_assistant_msg(
+                    msg=WELCOME_MSG.format(user_name=user_name),
+                    avatar=BOT_AVATAR,
+                    stream=STREAM_DEFAULT,
+                )
             else:
                 # show chat message history
                 show_chat_history(avatars=AVATARS)
 
         # User input widget (at the bottom, outside of the chat history)
         user_prompt = st.chat_input(
-            placeholder="Enter your question here, e.g. 'Is Wi-Fi dangerous?' 'How to eat healthy?'",
+            placeholder="Ask your question here, e.g. 'Is Wi-Fi dangerous?', 'Is a microwave dangerous?', 'How to eat healthy?'",
             key="user_input",
             max_chars=500,
             disabled=not st.session_state["start_chat"] or st.session_state["total_tokens"] >= TOTAL_MAX_TOKEN,
@@ -316,7 +320,7 @@ if st.session_state["start_chat"]:
                         field="like_bot",
                         value=value,
                     )
-            st.success("Thank you for your feedback!", icon="💚" if user_likes_bot else "🙏")
+            st.success(f"Thank you, **{user_name}**, for your feedback!", icon="💚" if user_likes_bot else "🙏")
 
 # Debug
 # ==============

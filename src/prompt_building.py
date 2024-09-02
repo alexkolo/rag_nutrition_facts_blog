@@ -22,7 +22,9 @@ Here is a list of blog posts and their relevant paragraphs that have been retrie
 """
 
 
-WELCOME_MSG: str = "Hi, I'm a digital clone of Dr. Greger. Ask me anything about healthy eating and living, and I will do my best to answer your questions. Just be aware that this is not a substitute for real advice from a medical professional, like Dr. Greger himself."
+WELCOME_MSG: str = """
+Hi **{user_name}**, I'm a digital clone of [Dr. Michael  Greger & his team](https://nutritionfacts.org/team/) of the science-based nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/). Ask me anything about healthy eating and living, and I will do my best to answer your questions. Just be aware that this is not a substitute for real advice from a medical professional, like Dr. Greger himself.
+"""
 
 
 def build_system_msg(context: str) -> str:
