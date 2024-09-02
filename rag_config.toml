@@ -22,6 +22,7 @@ overlap = 100 # The number of characters to overlap between chunks. Default is 1
 
 
 [knowledge_base]
+uri = "databases/my_lancedb" # relative to the project root
 table_name = "table_simple03"
 
 [chat]

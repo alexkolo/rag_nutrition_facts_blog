@@ -9,10 +9,12 @@ TODO:
 """
 
 from collections.abc import Iterable
+from pathlib import Path
 from typing import Any
 
+import lancedb
 import streamlit as st
-from lancedb.table import Table
+from lancedb.table import Table as KBaseTable
 from PIL import Image
 
 import src.constants as cst
@@ -20,7 +22,6 @@ from src.app_utils import connect_to_llm, init_st_keys
 from src.app_widgets import create_button, create_chat_msg, create_first_assistant_msg, show_chat_history, show_md_file
 from src.llm_api import build_full_llm_chat_input, stream_chat_response
 from src.prompt_building import WELCOME_MSG
-from src.retrieval import get_knowledge_base
 
 # Chat Parameters
 # -----------------------------
@@ -56,7 +57,7 @@ def process_user_input(
     user_prompt: str,
     avatars: dict[str, Any],
     api_name: str,
-    k_base: Table,
+    k_base: KBaseTable,
     stream: bool = STREAM_DEFAULT,
 ):
     if stream is False:
@@ -74,6 +75,8 @@ def process_user_input(
             # TODO: check when message gets too big
             chat_history: list[dict[str, str]] = st.session_state["messages"]
             messages: list[dict[str, str]] = build_full_llm_chat_input(user_prompt, chat_history, k_base)
+            # save first message, which contains context
+            st.session_state["retrieval_tmp"].append(messages[0]["content"])
 
             # send message to LLM and get response
             streamed_response_raw: Iterable = client.chat.completions.create(
@@ -98,6 +101,7 @@ init_st_keys("total_tokens", 0)
 init_st_keys("n_sessions", 1)
 init_st_keys("user_info", cst.USER_INFO_TEMPLATE)
 init_st_keys("model_temp", LLM_TEMP)
+init_st_keys("retrieval_tmp", [])
 
 # Page starts here
 # ==========================
@@ -107,12 +111,32 @@ st.set_page_config(page_title=page_title, page_icon=BOT_AVATAR)  # , layout="wid
 # Header
 # ------------
 st.header(page_title, divider="blue")
+if not st.session_state["start_chat"]:
+    st.info(
+        """
+        This digital clone of the physician [Dr. Michael  Greger & his team](https://nutritionfacts.org/team/) will
+        help you answer any question you may have about healthy eating and living from the point of view of the
+        science-based nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/), which he
+        founded 2003.
+        """,
+        icon="💡",
+    )
 
-# Get Knowledge Base
+# Connect to Knowledge Base
 # ------------
 init_st_keys("kbase_loaded", False)
-k_base: Table = get_knowledge_base()
-st.session_state["kbase_loaded"] = True
+try:
+    k_base_config: dict[str, Any] = cst.get_rag_config()["knowledge_base"]
+    K_BASE_URI: str | Path = k_base_config["uri"]
+    K_BASE_NAME: str = k_base_config["table_name"]
+    db: lancedb.db.DBConnection = lancedb.connect(uri=K_BASE_URI)
+    k_base: KBaseTable = db.open_table(K_BASE_NAME)
+    # test connection
+    n_entries = k_base.count_rows()
+    st.session_state["kbase_loaded"] = True
+    st.success(f"Connected to knowledge database. Found {n_entries} entries.", icon="✅")
+except Exception:
+    st.error("Connection to knowledge database failed!", icon="❌")
 
 
 # Top Container
@@ -176,7 +200,7 @@ if st.session_state["start_chat"]:
 
         # User input widget (at the bottom, outside of the chat history)
         user_prompt = st.chat_input(
-            placeholder="Enter your question here, e.g 'How to eat healthy?'",
+            placeholder="Enter your question here, e.g. 'Is Wi-Fi dangerous?' 'How to eat healthy?'",
             key="user_input",
             max_chars=500,
             disabled=not st.session_state["start_chat"] or st.session_state["total_tokens"] >= TOTAL_MAX_TOKEN,
@@ -243,7 +267,10 @@ if st.session_state["start_chat"]:
 # Debug
 # ==============
 st.divider()
-st.write(f"`{st.session_state['total_tokens']/TOTAL_MAX_TOKEN:.0%} of conversation capacity used.`")
+st.write(
+    f"`{st.session_state['total_tokens']/TOTAL_MAX_TOKEN:.0%}"
+    "of conversation capacity used before a chat history reset is required.`"
+)
 with st.expander("🤓 _Debug Information_", expanded=False):
     st.button("Reset All 🧹", on_click=st.session_state.clear)
     st.write(st.session_state)

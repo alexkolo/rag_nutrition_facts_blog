@@ -70,7 +70,7 @@ TOOD
 
 - Information Retrieval (IR):
   - Full-text search (aka Keyword-Search): [Tantivy Library](https://github.com/quickwit-oss/tantivy) (based on BM25) ([LanceDB Doc](https://lancedb.github.io/lancedb/fts/)).
-  - Vector Search Metric: Cosine Similarity ([LanceDB Doc](https://lancedb.github.io/lancedb/search/)).
+  - Vector Search (aka Search for nearest neighbors) Metric: Cosine Similarity ([LanceDB Doc](https://lancedb.github.io/lancedb/search/)).
   - Reranker: TBA ([LanceDB Doc](https://lancedb.github.io/lancedb/reranking/)).
 
 - LLM API: [Groq Cloud](https://groq.com/) (free tier)
