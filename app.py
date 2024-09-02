@@ -132,9 +132,10 @@ try:
     db: lancedb.db.DBConnection = lancedb.connect(uri=K_BASE_URI)
     k_base: KBaseTable = db.open_table(K_BASE_NAME)
     # test connection
-    n_entries = k_base.count_rows()
-    st.session_state["kbase_loaded"] = True
-    st.success(f"Connected to knowledge database. Found {n_entries} entries.", icon="✅")
+    if not st.session_state["kbase_loaded"]:
+        n_entries = k_base.count_rows()
+        st.session_state["kbase_loaded"] = True
+        st.success(f"Connected to knowledge database. Found {n_entries} entries.", icon="✅")
 except Exception:
     st.error("Connection to knowledge database failed!", icon="❌")
 
