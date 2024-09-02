@@ -92,21 +92,42 @@ The script `src/ingestion.py` is used for the ingestion of the data:
 
 ## Building the Q&A Bot Web-App
 
-- I decided to use the [Streamlit Library](https://streamlit.io/) for the app, given it's fast and easy to use.
-- I also wanted to create a chat experience rather than a simple query/response experience since that feels more natural.
-  - For this to work, I decided to feed the retrieved context from the last user query into the system message at the beginning of the chat history. See `src.llm_api.build_full_llm_chat_input` for more details. Hence, the bot always gets a new system message after each new user query but is still aware of the previous user queries and bot answers for a given chat session and is able take advantage of that.
-  - As LLM API provider, I choose as [Groq](https://groq.com), as it is free, fast and sufficient for this use case.
-    - TODO: user can provide their own Groq API key
-  - As a chat history could get too long to be handled as a input to an LLM, the app keeps track of the token length of the chat history and blocks any user query, when a threshold of the LLM API provider is reached and suggests a reset of the chat history.
+### App Framework
+
+- I use the [Streamlit Library](https://streamlit.io/), given it's fast and easy to use and it can be deployed for free with the [Streamlit Cloud](https://streamlit.io/cloud) (given some constrains).
+  - See `app.py` for details
+  - Start the app via `streamlit run app.py` in the terminal & view it in browser via this url: `http://localhost:8501`
+
+- Streamlit Issues:
+  - if new imports are added to the `app.py`, the app needs to be rebooted.
+
+### App Design Choices
+
+- As LLM API provider, I choose [Groq](https://groq.com), as it is free, fast and sufficient for this use case.
+  - It has an interesting collection of recent open-weights LLMs to choose from: [List of Groq's Models](https://console.groq.com/docs/models)
+    - The App picks a LLM based on the current active LLMs of Groq and a ranked list of LLMs made by me.
+  - TODO:
+    - user can provide their own Groq API key to reduce problems with rate limits.
+    - user can choose their own LLM.
+
+- I created a chat experience rather than a simple query/response experience since that feels more natural.
+  - For this to work, the retrieved context from the last user query is feed into the system message at the beginning of the chat history. Hence, the bot always gets a new system message after each new user query while being also aware of the previous user queries and bot answers for a given chat session and is able take advantage of that. See `src.llm_api.build_full_llm_chat_input` for more details.
+  - As a chat history could get too long to be handled as a input to an LLM, the app keeps track of the token length of the chat history and blocks any user query, when it reaches a threshold of the LLM API provider and suggests a reset of the chat history.
   - To keep global token usage low, each user query is limited to 500 characters.
 
 TODO:
 
 - bot avatar
+- wake up boot
+- welcome message
 - disclaimers
 - user feedback rating
 - ask for name
 - database
+
+## Monitoring
+
+TODO
 
 ## Evaluation
 
