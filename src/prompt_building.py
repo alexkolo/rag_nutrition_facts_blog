@@ -22,8 +22,15 @@ Here is a list of blog posts and their relevant paragraphs that have been retrie
 """
 
 
+# WELCOME_MSG: str = """
+# Hi **{user_name}**, I'm a digital clone of [Dr. Michael  Greger & his team](https://nutritionfacts.org/team/) of the science-based nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/). Ask me anything about healthy eating and living, and I will do my best to answer your questions. Just be aware that this is not a substitute for real advice from a medical professional, like Dr. Greger himself.
+# """
 WELCOME_MSG: str = """
-Hi **{user_name}**, I'm a digital clone of [Dr. Michael  Greger & his team](https://nutritionfacts.org/team/) of the science-based nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/). Ask me anything about healthy eating and living, and I will do my best to answer your questions. Just be aware that this is not a substitute for real advice from a medical professional, like Dr. Greger himself.
+Hi **{user_name}**! 🌟 Welcome to your personal guide on healthy eating and lifestyle habits. I'm here to help you
+navigate the world of nutrition with science-backed insights from
+[Dr. Michael Greger & his team](https://nutritionfacts.org/team/)
+at [NutritionFacts.org](https://nutritionfacts.org/about/). Whether you have a quick question or need detailed advice,
+I'm ready to assist you on your journey to a healthier, happier life. Let's get started! 💚
 """
 
 

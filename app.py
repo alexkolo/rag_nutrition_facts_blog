@@ -111,22 +111,27 @@ init_st_keys("deployed", DEPLOYED)
 
 # Page starts here
 # ==========================
-page_title = "Chat with Dr. Greger's digital clone 🤖"
+# page_title = "Chat with Dr. Greger's digital clone 🤖"
+page_title = "Nutrition Insights with Dr. Greger's Digital Twin 🥦"
 st.set_page_config(page_title=page_title, page_icon=BOT_AVATAR)  # , layout="wide")
 
 # Header
 # ------------
 st.header(page_title, divider="blue")
+# app_intro: str = """
+# This digital clone of the physician [Dr. Michael Greger & his team](https://nutritionfacts.org/team/) will help
+# you answer any question you may have about healthy eating and living from the perspective of the science-based
+# nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/), which has over 1200
+# well-researched blog posts since 2011.
+# """
+app_intro: str = """
+This digital assistant, inspired by [Dr. Michael Greger & his team](https://nutritionfacts.org/team/) at
+[NutritionFacts.org](https://nutritionfacts.org/about/), is here to answer your questions about healthy eating and
+lifestyle choices. Drawing from over 1,200 well-researched blog posts since 2011, it provides science-backed insights
+to help you live a healthier, more informed life.
+"""
 if not st.session_state["start_chat"]:
-    st.info(
-        """
-        This digital clone of the physician [Dr. Michael Greger & his team](https://nutritionfacts.org/team/) will help
-        you answer any question you may have about healthy eating and living from the perspective of the science-based
-        nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/), which has over 1200
-        well-researched blog posts since 2011.
-        """,
-        icon="💡",
-    )
+    st.info(app_intro, icon="💡")
 
 # Connect to Knowledge Base
 # ------------
