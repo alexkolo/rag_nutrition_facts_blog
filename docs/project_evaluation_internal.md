@@ -2,7 +2,7 @@
 
 [Ref](https://github.com/DataTalksClub/llm-zoomcamp/blob/main/project.md)
 
-03/09/2024: Total: 18 / 23 points (~78%)
+03/09/2024: Total: 16 / 23 points (~70%)
 
 - ✅ Problem description
   - [ ] 0 points: The problem is not described
@@ -27,22 +27,22 @@
 - ✅ Interface
   - [ ] 0 points: No way to interact with the application at all
   - [ ] 1 point: Command line interface, a script, or a Jupyter notebook
-  - [x] 2 points: UI (e.g., Streamlit), web application (e.g., Django), or an API (e.g., built with FastAPI)
+  - [x] 2 points: UI (e.g., Streamlit), ~~web application (e.g., Django), or an API (e.g., built with FastAPI)~~
 
 - ✅ Ingestion pipeline
   - [ ] 0 points: No ingestion
   - [ ] 1 point: Semi-automated ingestion of the dataset into the knowledge base, e.g., with a Jupyter notebook
-  - [x] 2 points: Automated ingestion with a **Python script** or a special tool (e.g., Mage, dlt, Airflow, Prefect)
+  - [x] 2 points: Automated ingestion with a **Python script** ~~or a special tool (e.g., Mage, dlt, Airflow, Prefect)~~
 
 - 🚧 Monitoring: IMPROVE
   - [ ] 0 points: No monitoring
   - [x] 1 point: User feedback is collected ~~OR there's a monitoring dashboard~~
   - [ ] 2 points: User feedback is collected and there's a dashboard with at least 5 charts
 
-- 🚧 Containerization: IMPROVE
+- ✅ Containerization:
   - [ ] 0 points: No containerization
-  - [x] 1 point: Dockerfile is provided for the main application ~~OR there's a docker-compose for the dependencies only~~
-  - [ ] 2 points: Everything is in docker-compose
+  - [ ] 1 point: Dockerfile is provided for the main application OR there's a docker-compose for the dependencies only
+  - [x] 2 points: Everything is in docker-compose
 
 - 🚧 Reproducibility: IMPROVE
   - [ ] 0 points: No instructions on how to run the code, the data is missing, or it's unclear how to access it

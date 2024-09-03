@@ -28,16 +28,17 @@ TODO: expand it
 
 #### Using docker
 
+- ensure docker exists: `docker version`
+- ensure docker compose exists: `docker compose version`, if not then [install it](https://docs.docker.com/compose/install/linux/)
+
 - using a Dockerfile:
-  - ensure docker exists: `docker version`
-  - start mongodb server: `docker-compose --file docker-mongodb.yml up`
+  - start mongodb server: `docker-compose --file docker-mongodb.yml up -d`
   - build app container: `docker build -t app:latest .`
-  - run app  container: `docker run -p 8501:8501 app:latest`
+  - run app container: `docker run -p 8501:8501 app:latest`
   - view it in the browser via this url: <http://localhost:8501>
 
 - using Docker Compose:
-  - ensure docker compose exists: `docker compose version`, if not then [install it](https://docs.docker.com/compose/install/linux/)
-  - build & run container: `docker compose up`
+  - build & run container: `docker compose up --build`
   - view it in the browser via this url: <http://localhost:8501>
   - stop it: `docker compose down`
 
@@ -77,7 +78,7 @@ TODO: expand it
     .\setup.ps1
     ```
 
-- start server for the user database: `docker-compose --file docker-mongodb.yml up`
+- start server for the user database: `docker-compose --file docker-mongodb.yml up -d`
 - start the app via `streamlit run app.py`
 - view it in the browser via this url: <http://localhost:8501>
 
@@ -85,12 +86,12 @@ TODO: expand it
 
 - setup "Developer Environment"
   - `pip install --no-cache-dir -e .[dev]`
-  - pre-commit setup: `pre-commit install` (update: `pre-commit autoupdate`)
+  - pre-commit setup: `pre-commit install`
     - test: `pre-commit run --all-files`
 
 ## Technologies
 
-This bot was build with the following technologies:
+This chatbot was build with the following technologies:
 
 - Web Scraping: [Beautiful Soup Library](https://www.crummy.com/software/BeautifulSoup/)
 
