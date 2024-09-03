@@ -1,3 +1,4 @@
+import os
 from typing import Any
 
 import streamlit as st
@@ -9,7 +10,15 @@ from src.constants import get_rag_config
 
 def get_mongodb_config(deployed: bool = False) -> dict[str, str]:
     key: str = "mongodb"
-    return st.secrets[key] if deployed else get_rag_config()[key]
+
+    if deployed:
+        return st.secrets[key]
+
+    if os.getenv("RUNNING_IN_DOCKER") is not None:
+        return get_rag_config()[key]["docker"]
+
+    # Assumes it is local
+    return get_rag_config()[key]["local"]
 
 
 # Uses st.cache_resource to only connect once per day

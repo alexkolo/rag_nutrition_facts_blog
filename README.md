@@ -30,8 +30,9 @@ TODO: expand it
 
 - using a Dockerfile:
   - ensure docker exists: `docker version`
-  - build container: `docker build -t app:latest .`
-  - run container: `docker run -p 8501:8501 app:latest`
+  - start mongodb server: `docker-compose --file docker-mongodb.yml up`
+  - build app container: `docker build -t app:latest .`
+  - run app  container: `docker run -p 8501:8501 app:latest`
   - view it in the browser via this url: <http://localhost:8501>
 
 - using Docker Compose:

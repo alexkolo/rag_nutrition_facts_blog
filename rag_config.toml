@@ -41,7 +41,12 @@ models.url = "https://api.groq.com/openai/v1/models"
 # as of 23/07/2024
 models.ranked = [ "mixtral-8x7b-32768", "llama3-70b-8192", "llama3-8b-8192", "gemma2-9b-it", "gemma-7b-it" ]
 
-[mongodb]
+[mongodb.local]
 db_name = "rag_user_info"
 coll_name = "chatbot_dr_greger"
 uri = "mongodb://user:password@localhost:27017/admin"
+
+[mongodb.docker]
+db_name = "rag_user_info"
+coll_name = "chatbot_dr_greger"
+uri = "mongodb://user:password@mongodb:27017/admin"

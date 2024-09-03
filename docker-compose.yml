@@ -1,4 +1,15 @@
 services:
+  mongodb:
+    image: mongo:7.0.14
+    restart: unless-stopped
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./databases/mongodb/:/data/db
   streamlit_app:
     build:
       context: ./
@@ -13,3 +24,5 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    depends_on:
+      - mongodb

@@ -1,15 +1,10 @@
 # Ignore the .git directory
 .git/
+.gitignore
 
 # Ignore the virtual environment directory
 venv/
 tvenv/
-
-# Ignore data files
-data/
-
-# Ignore notebooks
-notebooks/
 
 # Ignore all Python cache files and directories
 __pycache__/
@@ -18,14 +13,33 @@ __pycache__/
 # Ignore egg-info directory (if you're using setuptools)
 src.egg-info/
 
+# Various Folders
+data/
+docs/
+notebooks/
+
+# Docker-related files
+Dockerfile
+docker-compose.yml
+docker-mongodb.yml
+
+# Various root files
+.env
+.mypy_cache
+.pre-commit-config.yaml
+LICENSE
+README.md
+pyproject.toml
+requirements.txt
+setup.ps1
+setup.sh
+
 
 # Databases
 # -----------------
-# Exclude everything in the /databases/my_lancedb/ directory
-/databases/my_lancedb/*
+# Exclude everything in the /databases/ directory
+/databases/*
 
-# Re-include the specific directory /databases/my_lancedb/table_simple03.lance/
+# Re-include the specific directory /databases/my_lancedb/table_simple03.lance/ & its contents
 !/databases/my_lancedb/table_simple03.lance/
-
-# Ensure all contents inside table_simple03.lance/ are included
 !/databases/my_lancedb/table_simple03.lance/**
