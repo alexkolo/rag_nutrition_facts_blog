@@ -12,7 +12,9 @@ TODO: expand it
 
 ## Docs
 
+- [Problem Statement: What problem helps my project solves?](docs/project_description.md)
 - [How I build this chatbot](docs/how_to_build.md)
+- [Internal project evaluation](docs/project_evaluation_internal.md)
 
 ## Use the chatbot
 
@@ -100,10 +102,12 @@ This bot was build with the following technologies:
 - Information Retrieval (IR):
   - Full-text search (aka Keyword-Search): [Tantivy Library](https://github.com/quickwit-oss/tantivy) (based on BM25) ([LanceDB Doc](https://lancedb.github.io/lancedb/fts/)).
   - Vector Search (aka Search for nearest neighbors) Metric: Cosine Similarity ([LanceDB Doc](https://lancedb.github.io/lancedb/search/)).
-  - Reranker: TBA ([LanceDB Doc](https://lancedb.github.io/lancedb/reranking/)).
+  - Reranker: Linear Combination Reranker with 30% for Vector Search ([LanceDB Doc](https://lancedb.github.io/lancedb/reranking/linear_combination/)).
 
 - LLM API: [Groq Cloud](https://groq.com/) (free tier)
   - [List of Groq's Models](https://console.groq.com/docs/models)
 
 - Web App: [Streamlit Library](https://streamlit.io/)
 - Deployment: [Streamlit Cloud](https://streamlit.io/cloud) (free tier)
+
+- Database for User Data: [MongoDB](https://www.mongodb.com/)
