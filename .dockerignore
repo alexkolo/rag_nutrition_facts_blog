@@ -19,9 +19,12 @@ docs/
 notebooks/
 
 # Docker-related files
-Dockerfile
+.dockerignore
 docker-compose.yml
+docker-grafana.yml
 docker-mongodb.yml
+docker.env
+Dockerfile
 
 # Various root files
 .env
@@ -33,6 +36,7 @@ pyproject.toml
 requirements.txt
 setup.ps1
 setup.sh
+
 
 
 # Databases

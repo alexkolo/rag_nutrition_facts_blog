@@ -21,6 +21,7 @@ TODO: expand it
 ### In the cloud
 
 - got to the streamlit app [here](https://dr-greger-blog-bot.streamlit.app/)
+  - the corresponding Dashboard for monitoring the app interaction is [here](https://chatbotdrgreger.grafana.net/public-dashboards/1ae4a1c3c47c41478e16d97aaa5a2276)
 
 ### Run it on your own
 

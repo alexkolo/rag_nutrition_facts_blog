@@ -1,0 +1,40 @@
+services:
+  mongodb:
+    image: mongo:${MONGODB_IMAGE_TAG}  # Use the MongoDB version specified in docker.env
+    container_name: mongodb
+    env_file:
+      - docker.env    # Load non-sensitive path information
+    volumes:
+      - ${MONGODB_DATA_PATH}:/data/db  # Persistent storage for MongoDB data, defined in docker.env
+    ports:
+      - "27017:27017"
+
+  middleware:
+    build:
+      dockerfile: ./middleware/Dockerfile
+    container_name: middleware
+    env_file:
+      - docker.env  # Load non-sensitive path information
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+
+  grafana:
+    image: grafana/grafana:${GRAFANA_IMAGE_TAG} # Use the Grafana version specified in docker.env
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-simple-json-datasource
+    volumes:
+      - ${GRAFANA_DATA_PATH}:/var/lib/grafana  # Persistent storage for Grafana data, defined in docker.env
+    depends_on:
+      - middleware
+
+
+
+
+volumes:
+  mongodb_data:
+  grafana_data:

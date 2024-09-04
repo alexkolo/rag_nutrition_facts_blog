@@ -140,20 +140,29 @@ TODO:
 
 ## Monitoring
 
-- using MongoDB to save user data
-  - created the class the `MongodbClient` based on this [documentation](https://www.w3schools.com/python/python_mongodb_getstarted.asp)
+### User Database
 
-- create local MongoDB Server via Docker Compose:
+- I decided to a MongoDB to save user data, as I can get a free online database, which I can use for the deployed app.
+- I created the python class `MongodbClient` based on this [documentation](https://www.w3schools.com/python/python_mongodb_getstarted.asp) to interact with MongoDB.
+
+- I create a local MongoDB Server via Docker Compose:
   - Start Server: `docker-compose --file docker-mongodb.yml up`
   - Stop Server: `docker-compose --file docker-mongodb.yml down`
   - add config in `rag_config.toml` :
 
     ```toml
-    [mongodb]
+    [mongodb.local]
     db_name = "rag_user_info"
     coll_name = "chatbot_dr_greger"
     uri = "mongodb://user:password@localhost:27017/admin"
+
+    [mongodb.docker]
+    db_name = "rag_user_info"
+    coll_name = "chatbot_dr_greger"
+    uri = "mongodb://user:password@mongodb:27017/admin"
     ```
+
+  - Apprently, the uri changes, when the server access via
 
 - create remote MongoDB:
   1. create account [here](https://account.mongodb.com/account/login)
@@ -169,6 +178,29 @@ TODO:
     coll_name = "chatbot_dr_greger"
     uri = "mongodb+srv://{username}:{password}@{cluster}.mongodb.net/?retryWrites=true&w=majority&appName={app_name}"
     ```
+
+### Dashboard
+
+- dashboard: <https://chatbotdrgreger.grafana.net>
+- needed to connect withthe MongoDB, entering the uri as some stage
+- query data examples [here](https://grafana.com/docs/plugins/grafana-mongodb-datasource/latest/mongodb-query-editor/)
+  - `rag_user_info.chatbot_dr_greger.find({})` # get all entries
+  - `rag_user_info.chatbot_dr_greger.aggregate([{ $count: "totalEntries" } ])` # count all entries
+  - `rag_user_info.chatbot_dr_greger.find({user_name : "Sam"})` # get all entries for Sam
+
+- published dashboard: [here](https://chatbotdrgreger.grafana.net/public-dashboards/1ae4a1c3c47c41478e16d97aaa5a2276?from=now-24h&to=now&timezone=browser)
+  - Go to Dashboard -> "Share" icon in  top-right corner -> Public Dashboard
+- export/save dashboard: Settings -> JSON Model -> copy & past
+  - see example: `docs/20240903_dashboard.json`
+  -
+
+- run locally
+  - `sudo chown -R 472:472 ./databases/grafana`
+  - Start Server: `docker-compose --env-file=docker.env -f docker-grafana.yml up --build`
+  - open url: <http://localhost:3000/login>
+    - login: admin : admin
+  - Grafana offers the MongoDB Plugin only for [enterprise version](https://grafana.com/docs/grafana/latest/introduction/grafana-enterprise/) 😡
+  -
 
 ## Evaluation
 

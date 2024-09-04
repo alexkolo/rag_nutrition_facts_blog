@@ -1,15 +1,14 @@
 services:
   mongodb:
-    image: mongo:7.0.14
-    restart: unless-stopped
+    image: mongo:${MONGODB_IMAGE_TAG}  # Use the MongoDB version specified in docker.env
     container_name: mongodb
-    ports:
-      - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: user
-      MONGO_INITDB_ROOT_PASSWORD: password
+    env_file:
+      - .env          # Load sensitive information
+      - docker.env    # Load non-sensitive path information
     volumes:
-      - ./databases/mongodb/:/data/db
+      - ${MONGODB_DATA_PATH}:/data/db  # Persistent storage for MongoDB data, defined in docker.env
+    ports:
+      - "27017:27017"
   streamlit_app:
     build:
       context: ./
@@ -26,3 +25,6 @@ services:
       retries: 3
     depends_on:
       - mongodb
+
+volumes:
+  mongodb_data:
