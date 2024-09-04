@@ -1,0 +1,112 @@
+[
+    {
+        "$addFields": {
+            "assistantAnswers": {
+                "$filter": {
+                    "input": {
+                        "$slice": [
+                            {
+                                "$ifNull": [
+                                    "$chat_history.1",
+                                    []
+                                ]
+                            },
+                            1,
+                            {
+                                "$max": [
+                                    {
+                                        "$size": {
+                                            "$ifNull": [
+                                                "$chat_history.1",
+                                                []
+                                            ]
+                                        }
+                                    },
+                                    1
+                                ]
+                            }
+                        ]
+                    },
+                    "as": "chat",
+                    "cond": {
+                        "$eq": [
+                            "$$chat.role",
+                            "assistant"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    {
+        "$addFields": {
+            "answerLengths": {
+                "$map": {
+                    "input": {
+                        "$ifNull": [
+                            "$assistantAnswers",
+                            []
+                        ]
+                    },
+                    "as": "answer",
+                    "in": {
+                        "$strLenCP": "$$answer.content"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "$addFields": {
+            "averageAnswerLength": {
+                "$cond": {
+                    "if": {
+                        "$gt": [
+                            {
+                                "$size": "$answerLengths"
+                            },
+                            0
+                        ]
+                    },
+                    "then": {
+                        "$avg": "$answerLengths"
+                    },
+                    "else": 0
+                }
+            }
+        }
+    },
+    {
+        "$addFields": {
+            "convertedTimestamp": {
+                "$dateFromString": {
+                    "dateString": "$timestamp",
+                    "format": "%Y-%m-%d %H:%M:%S"
+                }
+            }
+        }
+    },
+    {
+        "$match": {
+            "convertedTimestamp": {
+                "$gte": "{{start_time}}",
+                "$lte": "{{end_time}}"
+            }
+        }
+    },
+    {
+        "$group": {
+            "_id": {
+                "time": "$convertedTimestamp"
+            },
+            "avgAnswerLength": {
+                "$avg": "$averageAnswerLength"
+            }
+        }
+    },
+    {
+        "$sort": {
+            "_id.time": 1
+        }
+    }
+]

@@ -1,0 +1,89 @@
+[
+    {
+        "$addFields": {
+            "questionLengths": {
+                "$map": {
+                    "input": {
+                        "$ifNull": [
+                            {
+                                "$filter": {
+                                    "input": {
+                                        "$ifNull": [
+                                            "$chat_history.1",
+                                            []
+                                        ]
+                                    },
+                                    "as": "chat",
+                                    "cond": {
+                                        "$eq": [
+                                            "$$chat.role",
+                                            "user"
+                                        ]
+                                    }
+                                }
+                            },
+                            []
+                        ]
+                    },
+                    "as": "question",
+                    "in": {
+                        "$strLenCP": "$$question.content"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "$addFields": {
+            "averageQuestionLength": {
+                "$cond": {
+                    "if": {
+                        "$gt": [
+                            {
+                                "$size": "$questionLengths"
+                            },
+                            0
+                        ]
+                    },
+                    "then": {
+                        "$avg": "$questionLengths"
+                    },
+                    "else": 0
+                }
+            }
+        }
+    },
+    {
+        "$addFields": {
+            "convertedTimestamp": {
+                "$dateFromString": {
+                    "dateString": "$timestamp",
+                    "format": "%Y-%m-%d %H:%M:%S"
+                }
+            }
+        }
+    },
+    {
+        "$match": {
+            "convertedTimestamp": {
+                "$gte": "{{start_time}}",
+                "$lte": "{{end_time}}"
+            }
+        }
+    },
+    {
+        "$group": {
+            "_id": {
+                "time": "$convertedTimestamp"
+            },
+            "avgQuestionLength": {
+                "$avg": "$averageQuestionLength"
+            }
+        }
+    },
+    {
+        "$sort": {
+            "_id.time": 1
+        }
+    }
+]

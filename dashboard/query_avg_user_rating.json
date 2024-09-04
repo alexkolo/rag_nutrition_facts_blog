@@ -1,0 +1,31 @@
+[
+    {
+        "$addFields": {
+            "convertedTimestamp": {
+                "$dateFromString": {
+                    "dateString": "$timestamp",
+                    "format": "%Y-%m-%d %H:%M:%S"
+                }
+            }
+        }
+    },
+    {
+        "$match": {
+            "convertedTimestamp": {
+                "$gte": "{{start_time}}",
+                "$lte": "{{end_time}}"
+            },
+            "like_bot": {
+                "$ne": null
+            }
+        }
+    },
+    {
+        "$group": {
+            "_id": null,
+            "averageScore": {
+                "$avg": "$like_bot"
+            }
+        }
+    }
+]

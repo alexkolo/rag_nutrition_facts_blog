@@ -1,11 +1,6 @@
 """
 Start app: `streamlit run app.py`
 View in browser: `http://localhost:8501`
-
-TODO:
-- connect knowledge base to app
-- create user ID
-- save user feedback & chat history into database
 """
 
 import uuid
