@@ -12,10 +12,13 @@ WORKDIR /app
 
 # Copy the current directory contents into the container
 # "." from the directory of the dockerfile
-COPY . /app
+COPY ./requirements.txt /app
 
 # Install the necessary packages
 RUN pip install --no-cache-dir -r requirements.txt
+
+# copy source
+COPY ./middleware.py /app
 
 # Make port 5000 available to the world outside this container
 EXPOSE 5000

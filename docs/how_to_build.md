@@ -200,7 +200,11 @@ TODO:
   - open url: <http://localhost:3000/login>
     - login: admin : admin
   - Grafana offers the MongoDB Plugin only for [enterprise version](https://grafana.com/docs/grafana/latest/introduction/grafana-enterprise/) 😡
-  -
+
+- using middleware that convert a json request into the mongodb query
+  - install as data source: JSON API
+  - URL in : <http://middleware:5000>
+  - deaad end;
 
 ## Evaluation
 

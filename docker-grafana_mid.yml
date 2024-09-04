@@ -1,3 +1,9 @@
+# build & run: docker-compose --env-file=docker.env --file docker-grafana_mid.yml up --build
+# testing connection from middelware to grafana
+#  docker exec -it grafana /bin/sh
+#  curl http://middleware:5000/test
+
+
 services:
   mongodb:
     image: mongo:${MONGODB_IMAGE_TAG}  # Use the MongoDB version specified in docker.env
@@ -11,7 +17,8 @@ services:
 
   middleware:
     build:
-      dockerfile: ./middleware/Dockerfile
+      context: ./middleware
+      dockerfile: ./Dockerfile
     container_name: middleware
     env_file:
       - docker.env  # Load non-sensitive path information
@@ -25,14 +32,14 @@ services:
     container_name: grafana
     ports:
       - "3000:3000"
+    env_file:
+      - docker.env  # Load non-sensitive path information
     environment:
       - GF_INSTALL_PLUGINS=grafana-simple-json-datasource
     volumes:
       - ${GRAFANA_DATA_PATH}:/var/lib/grafana  # Persistent storage for Grafana data, defined in docker.env
     depends_on:
       - middleware
-
-
 
 
 volumes:
