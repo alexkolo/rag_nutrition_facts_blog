@@ -1,0 +1,539 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 12,
+    "links": [],
+    "panels": [
+        {
+            "datasource": {
+                "type": "grafana-mongodb-datasource",
+                "uid": "ddwtay6orjfggc"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 4,
+                "x": 0,
+                "y": 0
+            },
+            "id": 6,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
+            },
+            "pluginVersion": "11.3.0-75420",
+            "targets": [
+                {
+                    "parsedQuery": "rag_user_info.chatbot_dr_greger.aggregate([{\"$addFields\":{\"convertedTimestamp\":{\"$dateFromString\":{\"dateString\":\"$timestamp\",\"format\":\"%Y-%m-%d %H:%M:%S\"}}}},{\"$match\":{\"convertedTimestamp\":{\"$gte\":$__timeFrom,\"$lte\":$__timeTo}}},{\"$count\":\"totalEntries\"}])\n",
+                    "query": "rag_user_info.chatbot_dr_greger.aggregate([\r\n  {\r\n    $addFields: {\r\n      convertedTimestamp: {\r\n        $dateFromString: {\r\n          dateString: \"$timestamp\",\r\n          format: \"%Y-%m-%d %H:%M:%S\"\r\n        }\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $match: {\r\n      convertedTimestamp: {\r\n        $gte: $__timeFrom,\r\n        $lte: $__timeTo\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $count: \"totalEntries\"\r\n  }\r\n])\r\n",
+                    "queryType": "query",
+                    "refId": "A"
+                }
+            ],
+            "title": "Number of Users",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "grafana-mongodb-datasource",
+                "uid": "ddwtay6orjfggc"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "continuous-RdYlGr"
+                    },
+                    "decimals": 1,
+                    "mappings": [],
+                    "max": 4,
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 8,
+                "x": 4,
+                "y": 0
+            },
+            "id": 1,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "11.3.0-75420",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "grafana-mongodb-datasource",
+                        "uid": "ddwtay6orjfggc"
+                    },
+                    "parsedQuery": "rag_user_info.chatbot_dr_greger.aggregate([{\"$addFields\":{\"convertedTimestamp\":{\"$dateFromString\":{\"dateString\":\"$timestamp\",\"format\":\"%Y-%m-%d %H:%M:%S\"}}}},{\"$match\":{\"convertedTimestamp\":{\"$gte\":$__timeFrom,\"$lte\":$__timeTo},\"like_bot\":{\"$ne\":null}}},{\"$group\":{\"_id\":null,\"averageScore\":{\"$avg\":\"$like_bot\"}}}])",
+                    "query": "rag_user_info.chatbot_dr_greger.aggregate([\r\n  {\r\n    $addFields: {\r\n      convertedTimestamp: {\r\n        $dateFromString: {\r\n          dateString: \"$timestamp\",\r\n          format: \"%Y-%m-%d %H:%M:%S\"\r\n        }\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $match: {\r\n      convertedTimestamp: {\r\n        $gte: $__timeFrom,\r\n        $lte: $__timeTo\r\n      },\r\n      like_bot: { $ne: null }\r\n    }\r\n  },\r\n  {\r\n    $group: {\r\n      _id: null,\r\n      averageScore: { $avg: \"$like_bot\" }\r\n    }\r\n  }\r\n])",
+                    "queryType": "query",
+                    "refId": "Avg"
+                }
+            ],
+            "title": "Avg. User Rating of the App (0 = bad, 4 = very good)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "grafana-mongodb-datasource",
+                "uid": "ddwtay6orjfggc"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "axisSoftMax": 4,
+                        "axisSoftMin": 0,
+                        "barAlignment": 0,
+                        "barWidthFactor": 0.6,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 0
+            },
+            "id": 2,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "11.3.0-75420",
+            "targets": [
+                {
+                    "parsedQuery": "rag_user_info.chatbot_dr_greger.aggregate([{\"$addFields\":{\"convertedTimestamp\":{\"$dateFromString\":{\"dateString\":\"$timestamp\",\"format\":\"%Y-%m-%d %H:%M:%S\"}}}},{\"$match\":{\"convertedTimestamp\":{\"$gte\":$__timeFrom,\"$lte\":$__timeTo},\"like_bot\":{\"$ne\":null}}},{\"$group\":{\"_id\":{\"time\":\"$convertedTimestamp\"},\"averageRating\":{\"$avg\":\"$like_bot\"}}},{\"$project\":{\"_id\":0,\"time\":\"$_id.time\",\"averageRating\":1}},{\"$sort\":{\"time\":1}}])\n",
+                    "query": "rag_user_info.chatbot_dr_greger.aggregate([\r\n  {\r\n    $addFields: {\r\n      convertedTimestamp: {\r\n        $dateFromString: {\r\n          dateString: \"$timestamp\",\r\n          format: \"%Y-%m-%d %H:%M:%S\"\r\n        }\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $match: {\r\n      convertedTimestamp: {\r\n        $gte: $__timeFrom,\r\n        $lte: $__timeTo,\r\n      },\r\n      like_bot: { $ne: null }\r\n    }\r\n  },\r\n  {\r\n    $group: {\r\n      _id: {\r\n        time: \"$convertedTimestamp\"\r\n      },\r\n      averageRating: { $avg: \"$like_bot\" }\r\n    }\r\n  },\r\n  {\r\n    $project: {\r\n      _id: 0,\r\n      time: \"$_id.time\",\r\n      averageRating: 1\r\n    }\r\n  },\r\n  {\r\n    $sort: { \"time\": 1 }\r\n  }\r\n])\r\n",
+                    "queryType": "query",
+                    "refId": "A"
+                }
+            ],
+            "title": "Time series of User Ratings",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "grafana-mongodb-datasource",
+                "uid": "ddwtay6orjfggc"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "barWidthFactor": 0.6,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 8
+            },
+            "id": 3,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "11.3.0-75420",
+            "targets": [
+                {
+                    "parsedQuery": "rag_user_info.chatbot_dr_greger.aggregate([{\"$addFields\":{\"questionCount\":{\"$size\":{\"$ifNull\":[{\"$filter\":{\"input\":{\"$ifNull\":[\"$chat_history.1\",[]]},\"as\":\"chat\",\"cond\":{\"$eq\":[\"$$chat.role\",\"user\"]}}},[]]}}}},{\"$addFields\":{\"convertedTimestamp\":{\"$dateFromString\":{\"dateString\":\"$timestamp\",\"format\":\"%Y-%m-%d %H:%M:%S\"}}}},{\"$match\":{\"convertedTimestamp\":{\"$gte\":$__timeFrom,\"$lte\":$__timeTo}}},{\"$group\":{\"_id\":{\"time\":\"$convertedTimestamp\"},\"totalQuestions\":{\"$sum\":\"$questionCount\"}}},{\"$project\":{\"_id\":0,\"time\":\"$_id.time\",\"totalQuestions\":1}},{\"$sort\":{\"time\":1}}])\n",
+                    "query": "rag_user_info.chatbot_dr_greger.aggregate([\r\n  {\r\n    $addFields: {\r\n      questionCount: {\r\n        $size: {\r\n          $ifNull: [\r\n            {\r\n              $filter: {\r\n                input: { $ifNull: [\"$chat_history.1\", []] },\r\n                as: \"chat\",\r\n                cond: { $eq: [\"$$chat.role\", \"user\"] }\r\n              }\r\n            },\r\n            []\r\n          ]\r\n        }\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $addFields: {\r\n      convertedTimestamp: {\r\n        $dateFromString: {\r\n          dateString: \"$timestamp\",\r\n          format: \"%Y-%m-%d %H:%M:%S\"\r\n        }\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $match: {\r\n      convertedTimestamp: {\r\n        $gte: $__timeFrom,\r\n        $lte: $__timeTo\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $group: {\r\n      _id: {\r\n        time: \"$convertedTimestamp\"\r\n      },\r\n      totalQuestions: { $sum: \"$questionCount\" }\r\n    }\r\n  },\r\n  {\r\n    $project: {\r\n      _id: 0,\r\n      time: \"$_id.time\",\r\n      totalQuestions: 1\r\n    }\r\n  },\r\n  {\r\n    $sort: { \"time\": 1 }\r\n  }\r\n])\r\n",
+                    "queryType": "query",
+                    "refId": "A"
+                }
+            ],
+            "title": "Number of User Questions",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "grafana-mongodb-datasource",
+                "uid": "ddwtay6orjfggc"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "barWidthFactor": 0.6,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 8
+            },
+            "id": 4,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "11.3.0-75420",
+            "targets": [
+                {
+                    "parsedQuery": "rag_user_info.chatbot_dr_greger.aggregate([{\"$addFields\":{\"questionLengths\":{\"$map\":{\"input\":{\"$ifNull\":[{\"$filter\":{\"input\":{\"$ifNull\":[\"$chat_history.1\",[]]},\"as\":\"chat\",\"cond\":{\"$eq\":[\"$$chat.role\",\"user\"]}}},[]]},\"as\":\"question\",\"in\":{\"$strLenCP\":\"$$question.content\"}}}}},{\"$addFields\":{\"averageQuestionLength\":{\"$cond\":{\"if\":{\"$gt\":[{\"$size\":\"$questionLengths\"},0]},\"then\":{\"$avg\":\"$questionLengths\"},\"else\":0}}}},{\"$addFields\":{\"convertedTimestamp\":{\"$dateFromString\":{\"dateString\":\"$timestamp\",\"format\":\"%Y-%m-%d %H:%M:%S\"}}}},{\"$match\":{\"convertedTimestamp\":{\"$gte\":$__timeFrom,\"$lte\":$__timeTo}}},{\"$group\":{\"_id\":{\"time\":\"$convertedTimestamp\"},\"avgQuestionLength\":{\"$avg\":\"$averageQuestionLength\"}}},{\"$project\":{\"_id\":0,\"time\":\"$_id.time\",\"avgQuestionLength\":1}},{\"$sort\":{\"time\":1}}])\n",
+                    "query": "rag_user_info.chatbot_dr_greger.aggregate([\r\n  {\r\n    $addFields: {\r\n      questionLengths: {\r\n        $map: {\r\n          input: {\r\n            $ifNull: [\r\n              {\r\n                $filter: {\r\n                  input: { $ifNull: [\"$chat_history.1\", []] },\r\n                  as: \"chat\",\r\n                  cond: { $eq: [\"$$chat.role\", \"user\"] }\r\n                }\r\n              },\r\n              []\r\n            ]\r\n          },\r\n          as: \"question\",\r\n          in: { $strLenCP: \"$$question.content\" }\r\n        }\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $addFields: {\r\n      averageQuestionLength: { \r\n        $cond: {\r\n          if: { $gt: [{ $size: \"$questionLengths\" }, 0] },\r\n          then: { $avg: \"$questionLengths\" },\r\n          else: 0\r\n        }\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $addFields: {\r\n      convertedTimestamp: {\r\n        $dateFromString: {\r\n          dateString: \"$timestamp\",\r\n          format: \"%Y-%m-%d %H:%M:%S\"\r\n        }\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $match: {\r\n      convertedTimestamp: {\r\n        $gte: $__timeFrom,\r\n        $lte: $__timeTo\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $group: {\r\n      _id: {\r\n        time: \"$convertedTimestamp\"\r\n      },\r\n      avgQuestionLength: { $avg: \"$averageQuestionLength\" }\r\n    }\r\n  },\r\n  {\r\n    $project: {\r\n      _id: 0,\r\n      time: \"$_id.time\",\r\n      avgQuestionLength: 1\r\n    }\r\n  },\r\n  {\r\n    $sort: { \"time\": 1 }\r\n  }\r\n])\r\n",
+                    "queryType": "query",
+                    "refId": "A"
+                }
+            ],
+            "title": "Avg. Characters of User Question",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "grafana-mongodb-datasource",
+                "uid": "ddwtay6orjfggc"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "barWidthFactor": 0.6,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 16
+            },
+            "id": 5,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "11.3.0-75420",
+            "targets": [
+                {
+                    "parsedQuery": "rag_user_info.chatbot_dr_greger.aggregate([{\"$addFields\":{\"assistantAnswers\":{\"$filter\":{\"input\":{\"$slice\":[{\"$ifNull\":[\"$chat_history.1\",[]]},1,{\"$max\":[{\"$size\":{\"$ifNull\":[\"$chat_history.1\",[]]}},1]}]},\"as\":\"chat\",\"cond\":{\"$eq\":[\"$$chat.role\",\"assistant\"]}}}}},{\"$addFields\":{\"answerLengths\":{\"$map\":{\"input\":{\"$ifNull\":[\"$assistantAnswers\",[]]},\"as\":\"answer\",\"in\":{\"$strLenCP\":\"$$answer.content\"}}}}},{\"$addFields\":{\"averageAnswerLength\":{\"$cond\":{\"if\":{\"$gt\":[{\"$size\":\"$answerLengths\"},0]},\"then\":{\"$avg\":\"$answerLengths\"},\"else\":0}}}},{\"$addFields\":{\"convertedTimestamp\":{\"$dateFromString\":{\"dateString\":\"$timestamp\",\"format\":\"%Y-%m-%d %H:%M:%S\"}}}},{\"$match\":{\"convertedTimestamp\":{\"$gte\":$__timeFrom,\"$lte\":$__timeTo}}},{\"$group\":{\"_id\":{\"time\":\"$convertedTimestamp\"},\"avgAnswerLength\":{\"$avg\":\"$averageAnswerLength\"}}},{\"$project\":{\"_id\":0,\"time\":\"$_id.time\",\"avgAnswerLength\":1}},{\"$sort\":{\"time\":1}}])\n",
+                    "query": "rag_user_info.chatbot_dr_greger.aggregate([\r\n  {\r\n    $addFields: {\r\n      assistantAnswers: {\r\n        $filter: {\r\n          input: {\r\n            $slice: [\r\n              { $ifNull: [\"$chat_history.1\", []] },\r\n              1,\r\n              { $max: [{ $size: { $ifNull: [\"$chat_history.1\", []] } }, 1] }\r\n            ]\r\n          },\r\n          as: \"chat\",\r\n          cond: { $eq: [\"$$chat.role\", \"assistant\"] }\r\n        }\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $addFields: {\r\n      answerLengths: {\r\n        $map: {\r\n          input: { $ifNull: [\"$assistantAnswers\", []] },\r\n          as: \"answer\",\r\n          in: { $strLenCP: \"$$answer.content\" }\r\n        }\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $addFields: {\r\n      averageAnswerLength: { \r\n        $cond: {\r\n          if: { $gt: [{ $size: \"$answerLengths\" }, 0] },\r\n          then: { $avg: \"$answerLengths\" },\r\n          else: 0\r\n        }\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $addFields: {\r\n      convertedTimestamp: {\r\n        $dateFromString: {\r\n          dateString: \"$timestamp\",\r\n          format: \"%Y-%m-%d %H:%M:%S\"\r\n        }\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $match: {\r\n      convertedTimestamp: {\r\n        $gte: $__timeFrom,\r\n        $lte: $__timeTo\r\n      }\r\n    }\r\n  },\r\n  {\r\n    $group: {\r\n      _id: {\r\n        time: \"$convertedTimestamp\"\r\n      },\r\n      avgAnswerLength: { $avg: \"$averageAnswerLength\" }\r\n    }\r\n  },\r\n  {\r\n    $project: {\r\n      _id: 0,\r\n      time: \"$_id.time\",\r\n      avgAnswerLength: 1\r\n    }\r\n  },\r\n  {\r\n    $sort: { \"time\": 1 }\r\n  }\r\n])\r\n",
+                    "queryType": "query",
+                    "refId": "A"
+                }
+            ],
+            "title": "Avg. Number of Characters of the Answer",
+            "type": "timeseries"
+        }
+    ],
+    "preload": false,
+    "schemaVersion": 39,
+    "tags": [],
+    "templating": {
+        "list": []
+    },
+    "time": {
+        "from": "now-2d",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "App \"Nutrition Insights with Dr. Greger's Digital Twin 🥦\" : User Data",
+    "uid": "ddwte6ytnsnb4e",
+    "version": 10,
+    "weekStart": ""
+}

@@ -8,11 +8,10 @@ Test it in this [web app](https://dr-greger-blog-bot.streamlit.app/).
 
 ## Problem statement
 
-TODO: expand it
+- [Problem Statement: What problem helps my project solves?](docs/project_description.md)
 
 ## Docs
 
-- [Problem Statement: What problem helps my project solves?](docs/project_description.md)
 - [How I build this chatbot](docs/how_to_build.md)
 - [Internal project evaluation](docs/project_evaluation_internal.md)
 
@@ -21,7 +20,12 @@ TODO: expand it
 ### In the cloud
 
 - got to the streamlit app [here](https://dr-greger-blog-bot.streamlit.app/)
-  - the corresponding Dashboard for monitoring the app interaction is [here](https://chatbotdrgreger.grafana.net/public-dashboards/1ae4a1c3c47c41478e16d97aaa5a2276)
+- the corresponding Dashboard for monitoring the app interaction is [here](https://chatbotdrgreger.grafana.net/public-dashboards/1ae4a1c3c47c41478e16d97aaa5a2276)
+
+    > [!IMPORTANT]
+    > Dashboard will stop working properly on 18.09.2024 due to 14-day trial period ending by Grafana 😭
+  - I'm using a MongoDB plugin that is only available for the Enterprise version of Grafana. Unfortunately, I found this out only after setting up my own MongoDB and creating the dashboard.
+  - I tried to rebuild it using MongoDB's own dashboard tool "Charts". See the result [here](https://charts.mongodb.com/charts-project-0-dwgewmy/public/dashboards/10ed0c93-9fb1-4b89-a1e3-966fddef4f27). However, I was only able to reproduce the simplest panels. Moreover, I couldn't figure out to set up a time filter as in Grafana.
 
 ### Run it on your own
 

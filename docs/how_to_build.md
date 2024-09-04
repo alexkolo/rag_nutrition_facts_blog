@@ -206,6 +206,9 @@ TODO:
   - URL in : <http://middleware:5000>
   - deaad end;
 
+- I  `14-day unlimited usage trial`
+  - my dashboard will stop working on 18.09.2024
+
 ## Evaluation
 
 ### Retrieval Quality
