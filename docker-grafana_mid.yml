@@ -1,3 +1,4 @@
+# FAILED!
 # build & run: docker-compose --env-file=docker.env --file docker-grafana_mid.yml up --build
 # testing connection from middelware to grafana
 #  docker exec -it grafana /bin/sh
@@ -9,7 +10,7 @@ services:
     image: mongo:${MONGODB_IMAGE_TAG}  # Use the MongoDB version specified in docker.env
     container_name: mongodb
     env_file:
-      - docker.env    # Load non-sensitive path information
+      - docker.env    # Load non-sensitive information
     volumes:
       - ${MONGODB_DATA_PATH}:/data/db  # Persistent storage for MongoDB data, defined in docker.env
     ports:
@@ -21,7 +22,7 @@ services:
       dockerfile: ./Dockerfile
     container_name: middleware
     env_file:
-      - docker.env  # Load non-sensitive path information
+      - docker.env  # Load non-sensitive information
     ports:
       - "5000:5000"
     depends_on:
@@ -33,7 +34,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - docker.env  # Load non-sensitive path information
+      - docker.env  # Load non-sensitive information
     environment:
       - GF_INSTALL_PLUGINS=grafana-simple-json-datasource
     volumes:

@@ -1,14 +1,17 @@
+# build & run: docker-compose --env-file=docker.env up --build
+
 services:
+
   mongodb:
     image: mongo:${MONGODB_IMAGE_TAG}  # Use the MongoDB version specified in docker.env
     container_name: mongodb
     env_file:
-      - .env          # Load sensitive information
-      - docker.env    # Load non-sensitive path information
+      - docker.env    # Load non-sensitive information
     volumes:
       - ${MONGODB_DATA_PATH}:/data/db  # Persistent storage for MongoDB data, defined in docker.env
     ports:
       - "27017:27017"
+
   streamlit_app:
     build:
       context: ./
