@@ -1,53 +1,69 @@
-# Q&A Chatbot about healthy eating & lifestyle habits
+# Nutrition Insights with Dr. Greger's Digital Twin 🥦 (a RAG-based Q&A chatbot)
 
-This is a chatbot intended to help answer questions around a healthy eating and lifestyle habits.
+This digital assistant, inspired by [Dr. Michael Greger & his team](https://nutritionfacts.org/team/) at [NutritionFacts.org](https://nutritionfacts.org/about/), was created to answer user questions about healthy eating and lifestyle choices. Drawing from [over 1,200 well-researched blog posts since 2011](https://nutritionfacts.org/blog/), it provides science-backed insights to help users live a healthier, more informed life.
 
-It based on [Dr. Greger's Blog Posts on nutritionfacts.org](https://nutritionfacts.org/blog/) (spanning over ~13 years), which are usually well researched and facts-based.
-
-Test it in this [web app](https://dr-greger-blog-bot.streamlit.app/).
+Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.streamlit.app/).
 
 ## Problem statement
 
-- [Problem Statement: What problem helps my project solves?](docs/project_description.md)
+- [What kind of problems does this digital assistant help mitigate?](docs/project_description.md)
 
 ## Docs
 
-- [How I build this chatbot](docs/how_to_build.md)
+- [Internal log on how I build this chatbot](docs/how_to_build.md)
 - [Internal project evaluation](docs/project_evaluation_internal.md)
+
+## Dataset (aka RAG knowledge base)
+
+The raw data used to build the RAG knowledge base is stored in `data/blog_posts/json`. It consists of all blog posts from [https://nutritionfacts.org/blog/](https://nutritionfacts.org/blog/) (as of 28.08.2024). See the `notebooks/web_scraping.ipynb` notebook for more technical details on the web scraping process.
+
+The data was automatically ingested into a vector store located in `databases/my_lancedb/table_simple03.lance` using the [LanceDB Library](https://lancedb.github.io/lancedb/) and the Python script `src/ingestion.py`.
+
+To take advantage of the vector search, the text was embedded using the pre-trained model [`multi-qa-MiniLM-L6-cos-v1`](https://huggingface.co/sentence-transformers/multi-qa-MiniLM-L6-cos-v1) from the [Sentence Transformers Library](https://www.sbert.net/index.html), as it is tuned for Q&A chatbots.
+
+## Information Retrieval (IR)
+
+TODO
+
+## Evaluation
+
+TODO
 
 ## Use the chatbot
 
-### In the cloud
+### In the cloud (aka deployed)
 
-- got to the streamlit app [here](https://dr-greger-blog-bot.streamlit.app/)
-- the corresponding Dashboard for monitoring the app interaction is [here](https://chatbotdrgreger.grafana.net/public-dashboards/1ae4a1c3c47c41478e16d97aaa5a2276)
+- got to the streamlit app [here](https://dr-greger-blog-bot.streamlit.app/).
+- the corresponding dashboard for monitoring the app usage is [here](https://chatbotdrgreger.grafana.net/public-dashboards/1ae4a1c3c47c41478e16d97aaa5a2276).
 
     > [!IMPORTANT]
-    > Dashboard will stop working properly on 18.09.2024 due to 14-day trial period ending by Grafana 😭
-  - I'm using a MongoDB plugin that is only available for the Enterprise version of Grafana. Unfortunately, I found this out only after setting up my own MongoDB and creating the dashboard.
-  - I tried to rebuild it using MongoDB's own dashboard tool "Charts". See the result [here](https://charts.mongodb.com/charts-project-0-dwgewmy/public/dashboards/10ed0c93-9fb1-4b89-a1e3-966fddef4f27). However, I was only able to reproduce the simplest panels. Moreover, I couldn't figure out to set up a time filter as in Grafana.
+    > The online dashboard will stop working properly (aka won't show any data) on 18.09.2024 due to the 14-day trial period ending by Grafana. 😭
+  - I'm using a MongoDB plugin that is only available for the Enterprise version of Grafana. Unfortunately, I found this out only after setting up my own MongoDB and creating the dashboard. 😒
+  - I tried to rebuild it using MongoDB's own dashboard tool "Charts". See the result [here](https://charts.mongodb.com/charts-project-0-dwgewmy/public/dashboards/10ed0c93-9fb1-4b89-a1e3-966fddef4f27). However, I was only able to reproduce the simplest panels. Moreover, I couldn't figure out to set up a time filter as in Grafana. 😓
 
 ### Run it on your own
 
-- add your [Groq API key](https://console.groq.com/keys) in `.streamlit/secrets.toml` as `GROQ_TOKEN = "..."`
+- add a [Groq API key](https://console.groq.com/keys) in `.streamlit/secrets.toml` as `GROQ_TOKEN = "..."` (since the app is using [Groq Cloud](https://groq.com/) as my LLM API provider, as it is free tier).
 
-#### Using docker
+> [!NOTE]
+> There is no local dashboard to monitor the app usage, since Grafana doesn't offer the MongoDB data plugin for the free tier. [Source](https://grafana.com/docs/grafana/latest/introduction/grafana-enterprise/#enterprise-data-sources) (see comment above for the deployed version)
+
+#### In a container (using docker)
 
 - ensure docker exists: `docker version`
 - ensure docker compose exists: `docker compose version`, if not then [install it](https://docs.docker.com/compose/install/linux/)
 
-- using a Dockerfile:
-  - start mongodb server: `docker-compose --file docker-mongodb.yml up -d`
+- using Docker Compose:
+  - build & run containers: `docker compose up --build`
+  - view app in the browser via this url: <http://localhost:8501>
+
+- for developers: using the Dockerfile of the app:
+  - start server for the user database: `docker-compose --file docker-mongodb.yml up -d`
   - build app container: `docker build -t app:latest .`
   - run app container: `docker run -p 8501:8501 app:latest`
-  - view it in the browser via this url: <http://localhost:8501>
+  - view app in the browser via this url: <http://localhost:8501>
 
-- using Docker Compose:
-  - build & run container: `docker compose up --build`
-  - view it in the browser via this url: <http://localhost:8501>
-  - stop it: `docker compose down`
-
-#### Using the source code
+#### From the source code
 
 - clone this repository: `git clone https://github.com/alexkolo/rag_nutrition_facts_blog`
 
@@ -96,7 +112,7 @@ Test it in this [web app](https://dr-greger-blog-bot.streamlit.app/).
 
 ## Technologies
 
-This chatbot was build with the following technologies:
+The chatbot was build with the following technologies:
 
 - Web Scraping: [Beautiful Soup Library](https://www.crummy.com/software/BeautifulSoup/)
 
