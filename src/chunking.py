@@ -62,6 +62,63 @@ def recursive_text_splitter(text: str, n_char_max: int = 1000, overlap: int = 10
     return result
 
 
+def recursive_text_splitter02(text: str, n_char_max: int = 1000, overlap: int = 100) -> list[str]:
+    """
+    Helper function for chunking text recursively.
+
+    This function splits a long text into smaller chunks based on a specified
+    maximum chunk length (`n_char_max`) and an overlap size (`overlap`).
+    It aims to maintain logical continuity by avoiding breaking sentences or
+    paragraphs at inappropriate places.
+
+    Parameters
+    ----------
+    text : str
+        The input text to be split into chunks.
+    n_char_max : int, optional
+        The maximum number of characters of each chunk. Default is 1000 (~250 tokens).
+    overlap : int, optional
+        The number of characters to overlap between chunks. Default is 100 (~25 tokens).
+
+    Returns
+    -------
+    list[str]
+        A list of text chunks, each no longer than `n_char_max`.
+    """
+
+    # List to hold the chunks
+    result = []
+
+    # Start splitting from the beginning
+    start = 0
+    text_length = len(text)
+
+    while start < text_length:
+        # Find the end of the chunk
+        end = start + n_char_max
+
+        # If the end exceeds the text length, adjust it
+        if end >= text_length:
+            chunk = text[start:]
+            result.append(chunk)
+            break
+
+        # Split at the last space before the maximum chunk size to avoid breaking words
+        last_space = text.rfind(" ", start, end)
+
+        if last_space != -1 and last_space > start:
+            end = last_space
+
+        # Add the chunk to the result list
+        chunk = text[start:end].strip()
+        result.append(chunk)
+
+        # Move the start position forward with overlap
+        start = end - overlap
+
+    return result
+
+
 def text_has_only_questions(text: str) -> bool:
     """
     Returns True if the input string contains question marks but not periods or exclamation marks.
@@ -95,6 +152,8 @@ def split_and_filter_paragraphs(paragraphs: list[str], n_char_max: int = 1000, o
             continue
         if len(para) > n_char_max:
             para_chunks: list[str] = recursive_text_splitter(para, n_char_max, overlap)
+            # search the list for chunkgs that 2 x n_char_max and split them in half
+
             paragraphs_new.extend(para_chunks)
         else:
             paragraphs_new.append(para)

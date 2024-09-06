@@ -57,7 +57,7 @@ The script `src/ingestion.py` is used for the ingestion of the data:
   class DataModel(LanceModel):
     vector: Vector(n_dim_vec)
     text: str # from paragraphs only
-    # meta data (the same for all paragraphs of the same blog post)
+    # meta data (the same for all chunks  of the same blog post)
     title: str
     url: str
     tags: str

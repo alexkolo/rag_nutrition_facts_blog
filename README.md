@@ -8,11 +8,6 @@ Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.
 
 - [What kind of problems does this digital assistant help mitigate?](docs/project_description.md)
 
-## Docs
-
-- [Internal log on how I build this chatbot](docs/how_to_build.md)
-- [Internal project evaluation](docs/project_evaluation_internal.md)
-
 ## Dataset (aka RAG knowledge base)
 
 The raw data used to build the RAG knowledge base is stored in `data/blog_posts/json`. It consists of all blog posts from [https://nutritionfacts.org/blog/](https://nutritionfacts.org/blog/) (as of 28.08.2024). See the `notebooks/web_scraping.ipynb` notebook for more technical details on the web scraping process.
@@ -134,3 +129,8 @@ The chatbot was build with the following technologies:
 - Deployment: [Streamlit Cloud](https://streamlit.io/cloud) (free tier)
 
 - Database for User Data: [MongoDB](https://www.mongodb.com/)
+
+## Docs
+
+- [Internal log on how I build this chatbot](docs/how_to_build.md)
+- [Internal project evaluation](docs/project_evaluation_internal.md)
