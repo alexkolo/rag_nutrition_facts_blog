@@ -19,15 +19,15 @@ The raw data used to build the RAG knowledge base is stored in `data/blog_posts/
 
 The data was automatically ingested into a vector store located in `databases/my_lancedb/table_simple03.lance` using the [LanceDB Library](https://lancedb.github.io/lancedb/) and the Python script `src/ingestion.py`.
 
-To take advantage of the vector search, the text was embedded using the pre-trained model [`multi-qa-MiniLM-L6-cos-v1`](https://huggingface.co/sentence-transformers/multi-qa-MiniLM-L6-cos-v1) from the [Sentence Transformers Library](https://www.sbert.net/index.html), as it is tuned for Q&A chatbots.
-
 ## Information Retrieval (IR)
 
-TODO
+To take advantage of the vector search, the text was embedded using the pre-trained model [`multi-qa-MiniLM-L6-cos-v1`](https://huggingface.co/sentence-transformers/multi-qa-MiniLM-L6-cos-v1) from the [Sentence Transformers Library](https://www.sbert.net/index.html), as it is tuned for Q&A chatbots.
+
+{TOOD: Add description here}
 
 ## Evaluation
 
-TODO
+{TOOD: Add description here}
 
 ## Use the chatbot
 

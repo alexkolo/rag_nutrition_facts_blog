@@ -14,8 +14,15 @@ LLM_CLIENTS: dict[str, Any] = {"groq": Groq}
 
 def get_model_list(api_key: str, models_url: str) -> list[dict]:
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-    response = requests.get(url=models_url, headers=headers, timeout=5)
-    response.raise_for_status()  # Raise an HTTPError for bad responses
+    try:
+        response = requests.get(url=models_url, headers=headers, timeout=5)
+        response.raise_for_status()  # Raise an HTTPError for bad responses
+    # cache a 401 error, Unauthorized  and say that api key wrong
+    except requests.exceptions.HTTPError as e:
+        if response.status_code == 401:
+            raise ValueError("You probably provided an invalid API key.")
+        raise e
+
     return response.json()["data"]
 
 

@@ -36,6 +36,7 @@ api_name = "groq"
 
 [llm.api.groq]
 key_name = "GROQ_TOKEN"
+key_url = "https://console.groq.com/keys"
 token.total_max = 8192
 models.url = "https://api.groq.com/openai/v1/models"
 # as of 23/07/2024

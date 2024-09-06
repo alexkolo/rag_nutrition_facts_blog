@@ -52,7 +52,7 @@ MESSAGES: str = "messages"
 ASSET_PATH: Path = REPO_PATH / "app_assets"
 BOT_AVATAR: Path = ASSET_PATH / "dr-greger_f1b10472.png"
 BOT_DISCLAIMER: Path = ASSET_PATH / "chat_bot_disclaimer.md"
-
+BKG_IMG: Path = ASSET_PATH / "DALL·E 2024-09-06 09.48.30.png"
 
 # User info
 # -----------------------------

@@ -3,6 +3,7 @@ Start app: `streamlit run app.py`
 View in browser: `http://localhost:8501`
 """
 
+import os
 import uuid
 from collections.abc import Iterable
 from datetime import datetime
@@ -11,10 +12,9 @@ from typing import Any
 import pytz
 import streamlit as st
 from lancedb.table import Table as KBaseTable
-from PIL import Image
 
 import src.constants as cst
-from src.app_utils import connect_to_llm, init_st_keys
+from src.app_utils import connect_to_llm, init_st_keys, load_image
 from src.app_widgets import create_button, create_chat_msg, create_first_assistant_msg, show_chat_history, show_md_file
 from src.llm_api import build_full_llm_chat_input, stream_chat_response
 from src.mongodb import MongodbClient, get_mongodb_config, save_chat_history
@@ -23,7 +23,7 @@ from src.retrieval import connect_to_lancedb_table
 
 # Chat Parameters
 # -----------------------------
-BOT_AVATAR = Image.open(cst.BOT_AVATAR)
+BOT_AVATAR = load_image(cst.BOT_AVATAR)
 chat_config: dict[str, Any] = cst.get_rag_config()["chat"]
 AVATARS: dict[str, Any] = {"assistant": BOT_AVATAR, "user": chat_config["user_avatar"]}
 STREAM_DEFAULT: bool = chat_config["stream_default"]
@@ -39,13 +39,15 @@ llm_config: dict[str, Any] = cst.get_rag_config()["llm"]
 LLM_TEMP: float = llm_config["settings"]["model_temp"]
 LLM_API_NAME: str = llm_config["settings"]["api_name"]
 LLM_API_CONFIG: dict[str, Any] = llm_config["api"][LLM_API_NAME]
+LLM_API_KEY_NAME: str = LLM_API_CONFIG["key_name"]
+LLM_API_KEY_URL: str = LLM_API_CONFIG["key_url"]
 TOTAL_MAX_TOKEN: int = LLM_API_CONFIG["token"]["total_max"]
 
 
 # Secrets
 # -----------------------------
-LLM_API_KEY: str = st.secrets.get(LLM_API_CONFIG["key_name"], "")
 DEPLOYED: bool = st.secrets.get("deployed", False)
+LLM_API_KEY: str = st.secrets.get(LLM_API_KEY_NAME, st.session_state.get(LLM_API_KEY_NAME, ""))
 
 
 # Chat Bot Elements
@@ -103,12 +105,15 @@ init_st_keys("model_temp", LLM_TEMP)
 init_st_keys("model_name")
 init_st_keys("retrieval", [])
 init_st_keys("deployed", DEPLOYED)
+init_st_keys("llm_api_key_available", LLM_API_KEY != "")
+init_st_keys(LLM_API_KEY_NAME, "")
 
 # Page starts here
 # ==========================
 # page_title = "Chat with Dr. Greger's digital clone 🤖"
 page_title = "Nutrition Insights with Dr. Greger's Digital Twin 🥦"
 st.set_page_config(page_title=page_title, page_icon=BOT_AVATAR)  # , layout="wide")
+
 
 # Header
 # ------------
@@ -156,8 +161,7 @@ else:
 
 # Check LLM API Key
 # ------------
-if not LLM_API_KEY:
-    st.error(f"The LLM API key for the API provider '{LLM_API_NAME}' is missing!", icon="❌")
+
 
 # User-Name Container
 # ------------
@@ -165,9 +169,28 @@ with st.expander(label="👤 User info", expanded=not st.session_state["start_ch
     with st.form(key="user_form", border=False):
         # st.subheader("Who are you?")
         # User's name (required)
-        user_name = st.text_input(
+        user_name: str = st.text_input(
             label="Before you can start the chat, please tell me your name:", placeholder="Sam Altman", key="user_name"
         )
+
+        # toggle option to enter own LLM API key
+        # use_own_key = st.checkbox(label="Use own LLM API key", value=not st.session_state["llm_api_key_available"])
+
+        if not st.session_state["llm_api_key_available"]:
+            user_llm_key: str = st.text_input(
+                label=(
+                    f"Insert an [API KEY of '{LLM_API_NAME.capitalize()}']({LLM_API_KEY_URL}) here, since it's used as LLM API provider. It's for **free**! "
+                    f'  \n_As a developer you could also add it to the `.streamlit/secrets.toml` file as `{LLM_API_KEY_NAME} = "..."`_.'
+                ),
+                placeholder=f"Enter your LLM API key of '{LLM_API_NAME.capitalize()}' here",
+                type="password",
+                key="user_llm_key",
+                value="",
+            )
+            if user_llm_key:
+                st.session_state["llm_api_key_available"] = True
+                LLM_API_KEY = user_llm_key
+                st.session_state[LLM_API_KEY_NAME] = user_llm_key
 
         # Submit button
         submit_button = st.form_submit_button(label="Save & continue", disabled=st.session_state["start_chat"])
@@ -192,11 +215,13 @@ with st.expander(label="👤 User info", expanded=not st.session_state["start_ch
             if not user_name:
                 st.info("Please provide your name to use the digital clone.", icon="👆")
 
+            if not LLM_API_KEY:
+                st.error(f"The LLM API key for the API provider '{LLM_API_NAME}' is missing!", icon="❌")
 
 # Chat-Control Container
 # ------------
 user_name = st.session_state["user_info"]["user_name"]
-if st.session_state["submit_button"] and user_name:
+if st.session_state["submit_button"] and user_name and st.session_state["llm_api_key_available"]:
     # -------
     with st.container(border=False):
         st.subheader("Start chatting")
@@ -338,4 +363,10 @@ st.write(
 with st.expander("🤓 _Debug Information_", expanded=False):
     st.button("Reset All 🧹", on_click=st.session_state.clear)
     st.write("Session State:")
-    st.json(st.session_state, expanded=False)
+    session_state: dict = dict(st.session_state)
+    del session_state[LLM_API_KEY_NAME]
+    st.json(session_state, expanded=False)
+
+    # show env. variables
+    st.write("Environment Variables:")
+    st.json(dict(os.environ), expanded=False)
