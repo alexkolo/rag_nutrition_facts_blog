@@ -2,6 +2,9 @@
 # Device (like "cuda", "cpu", "mps", "npu") that should be used for computation
 device = "cpu"
 
+# similarity function
+metric = "cosine"
+
 model_provider = "sentence-transformers"
 # Pretrained Models : https://www.sbert.net/docs/sentence_transformer/pretrained_models.html
 #

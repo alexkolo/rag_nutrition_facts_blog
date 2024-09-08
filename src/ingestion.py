@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import lancedb
+import numpy as np
 from lancedb.db import DBConnection
 from lancedb.embeddings import get_registry
 from lancedb.embeddings.base import TextEmbeddingFunction
@@ -119,8 +120,9 @@ def lancedb_ingestion_setup(
     # Embedding model Configuration
     emb_model_provider: str = emb_config["model_provider"]
     emb_model_name: str = emb_config["model_name"]
+    emb_model_metric: str = emb_config["metric"]
     n_dim_vec: int = emb_config["n_dim_vec"]
-    device = emb_config.get("device", "cpu")
+    device: str = emb_config["device"]
 
     # 1. create/connect to the database
     print("1. Connecting to lancedb database")
@@ -129,7 +131,9 @@ def lancedb_ingestion_setup(
     # Define the embedding method
     print("2. Loading embedding model")
     lancedb_emb_model: TextEmbeddingFunction = (
-        get_registry().get(emb_model_provider).create(name=emb_model_name, device=device)
+        get_registry()
+        .get(emb_model_provider)
+        .create(name=emb_model_name, device=device, similarity_fn_name=emb_model_metric)
     )
     emb_func: EmbeddingFunction = lancedb_emb_model.generate_embeddings
 
@@ -353,6 +357,23 @@ def create_hash_of_str(text: str, n_char: int = 12) -> str:
     return hashlib.md5(text.encode()).hexdigest()[:n_char]
 
 
+def cosine_similarity(
+    vec_a: list[float],
+    vec_b: list[float],
+    norm_a: float | None = None,
+    norm_b: float | None = None,
+) -> float:
+    # Compute the dot product between vecA and vecB
+    dot_product: float = np.dot(vec_a, vec_b)
+
+    # Compute the L2 norms (magnitudes) of vecA and vecB
+    _norm_a: float = np.linalg.norm(vec_a) if norm_a is None else norm_a
+    _norm_b: float = np.linalg.norm(vec_b) if norm_b is None else norm_b
+
+    # Compute the cosine similarity
+    return dot_product / (_norm_a * _norm_b)
+
+
 def lancedb_ingestion_meta(
     file_list: list[Path],
     lancedb_uri: Path,
@@ -363,23 +384,27 @@ def lancedb_ingestion_meta(
     n_files: int | None = None,
 ) -> Table:
     # chunking configuration is calibrated to the embedding model
-    n_char_max = emb_config.get("n_char_max", 1000)
-    overlap = emb_config.get("overlap", 100)
+    n_char_max: int = emb_config.get("n_char_max", 1000)
+    overlap: int = emb_config.get("overlap", 100)
 
     # Define additional metadata fields
     meta_fields: dict[str, Any] = {
         # Meta Data of the text chunk of a blog post
         "hash_doc": str,  # Unique ID of text chunk (as a hash of url + title + text)
-        "rank": int,  # Rank of the text chunk in the blog post
+        "rank_abs": int,  # Rank of the text chunk in the blog post
+        "rank_rel": float,  # Relative rank of the text chunk in the blog post
         "tags_doc": str,  # Tags of "tags_all" that exists in the text chunk
         "n_tags_doc": int,  # Number of matching tags in the text chunk
         "n_words_doc": int,  # Number of words in the text chunk
         "n_char_doc": int,  # Number of characters in the text chunk
+        "sim_doc_title": float,  # Similarity between the text chunk and the title
+        "sim_doc_tags": float,  # Similarity between the text chunk and the tags
         # Meta Data of the blog post (same value for its all text chunks)
         "title": str,  # Title of blog post
         "url": str,  # URL of blog post
         "tags_all": str,  # Tags of blog post
         "hash_title": str,  # Unique ID of blog post (as a hash of the url + title)
+        "n_docs": int,  # Number of text chunks in the blog post (after chunking)
     }
 
     # LanceDB Ingestion setup
@@ -396,8 +421,17 @@ def lancedb_ingestion_meta(
         mode=mode,
     )
 
+    # Embedding Model
+    # emb_model = SentenceTransformer(
+    #     emb_config["model_name"],
+    #     device=emb_config["device"],
+    #     similarity_fn_name=emb_config["metric"],
+    # )
+    # emb_confg = {"convert_to_numpy": True, "normalize_embeddings": True}
+
     # Ingestion
-    print(f"5. Ingesting the content of {n_files or len(file_list)} files:")
+    _n_files: int = n_files or len(file_list)
+    print(f"5. Ingesting the content of {_n_files} files:")
     n_rows: int = 0
     empty_files: list[str] = []
     pbar = tqdm(file_list[0:n_files])
@@ -406,61 +440,76 @@ def lancedb_ingestion_meta(
 
         # load data
         with open(json_file, encoding="utf-8") as f:
-            doc: dict[str, Any] = json.load(f)
+            blog_post: dict[str, Any] = json.load(f)
 
-        # extract data
-        raw_chunks: list[str] = doc["paragraphs"]
+        # extract paragraphs
+        paragraphs: list[str] = blog_post["paragraphs"]
 
-        # ignore files without any text
-        if not raw_chunks:
+        # ignore files without any paragraphs
+        if not paragraphs:
             empty_files.append(json_file.name)
             continue
 
-        # split paragraphs if necessary and remove paragraphs that only contain questions
-        full_text: str = " ".join(raw_chunks)
-        even_chunks: list[str] = recursive_text_splitter02(text=full_text, n_char_max=n_char_max, overlap=overlap)
+        # merge all paragraphs into a single string and chunk it
+        full_text: str = " ".join(paragraphs)
+        doc_list: list[str] = recursive_text_splitter02(text=full_text, n_char_max=n_char_max, overlap=overlap)
+        n_docs: int = len(doc_list)
 
-        # Fixed Meta Data (same for all chunks)
-        metadata_fixed: dict[str, str] = {"title": doc["title"], "url": doc["url"]}
+        # Create fixed Meta Data (same for all chunks)
+        metadata_fixed: dict[str, str] = {"title": blog_post["title"], "url": blog_post["url"], "n_docs": n_docs}
         hash_title_src: str = f"{metadata_fixed['url']}-{metadata_fixed['title']}"
         metadata_fixed["hash_title"] = create_hash_of_str(hash_title_src)
 
         # get set of tags
-        raw_tags: list[str] = doc["raw_tags"]
+        raw_tags: list[str] = blog_post["raw_tags"]
         tags_set: set[str] = {
-                tag
-                for tag_str in raw_tags
-                if tag_str.startswith("tag-")
-                for tag in tag_str.split("-")[1:]
-                if len(tag) > 3
+            tag for tag_str in raw_tags if tag_str.startswith("tag-") for tag in tag_str.split("-")[1:] if len(tag) > 3
         }
         metadata_fixed["tags_all"] = " ".join(sorted(tags_set))
 
-        # Individual Meta Data (different for each chunk)
-        metadata_ind: list[dict[str, Any]] = []
-        for rank, chunk in enumerate(even_chunks):
-            word_list: list[str] = chunk.lower().translate(str.maketrans(REPLACEMENTS)).split()
+        # Vector Embedding of Title and tags-string
+        meta_vec: list[list[float]] = emb_func([metadata_fixed["title"], metadata_fixed["tags_all"]])
+        # title_vec: list[float] = emb_func(metadata_fixed["title"])
+        title_vec_norm: float = np.linalg.norm(meta_vec[0])
+        # tags_vec: list[float] = emb_func(metadata_fixed["tags_all"])
+        tags_vec_norm: float = np.linalg.norm(meta_vec[1])
+        # meta_vec: list[list[float]] = emb_model.encode([metadata_fixed["title"], metadata_fixed["tags_all"]])
+
+        # Create table entries
+        table_entries: list[dict[str, Any]] = []
+        for rank, text in enumerate(doc_list):
+            # split doc into words (remove special characters beforehand)
+            word_list: list[str] = text.lower().translate(str.maketrans(REPLACEMENTS)).split()
             # Tags of "tags_all" that exists in the text chunk
             tags_doc: set[str] = set(word_list) & tags_set
-            metadata_ind.append(
-                {
-                    "rank": rank,
-                    "hash_doc": create_hash_of_str(f"{hash_title_src}-{chunk:20}"),
-                    "tags_doc": " ".join(sorted(tags_doc)),
-                    "n_tags_doc": len(tags_doc),
-                    "n_words_doc": len(word_list),
-                    "n_char_doc": len(chunk),
-                }
-            )
+            chunk_entry = {
+                "text": text,
+                "rank_abs": rank + 1,
+                "rank_rel": (rank + 1) / n_docs,
+                "hash_doc": create_hash_of_str(f"{hash_title_src}-{text:30}"),
+                "tags_doc": " ".join(sorted(tags_doc)),
+                "n_tags_doc": len(tags_doc),
+                "n_words_doc": len(word_list),
+                "n_char_doc": len(text),
+                **metadata_fixed,
+            }
 
-        # convert data into table entries
-        table_entries: list[dict[str, str | list[float]]] = generate_table_entries(
-            text_chunks=raw_chunks,
-            metadata_fixed=metadata_fixed,
-            metadata_ind=metadata_ind,
-            emb_manual=emb_manual,
-            emb_func=emb_func,
-        )
+            # compute cosine similarity between doc and title & tags
+            doc_vec: list[float] = emb_func([text])[0]
+            doc_vec_norm: float = np.linalg.norm(doc_vec)
+            chunk_entry["sim_doc_title"] = np.dot(doc_vec, meta_vec[0]) / (doc_vec_norm * title_vec_norm)
+            chunk_entry["sim_doc_tags"] = np.dot(doc_vec, meta_vec[1]) / (doc_vec_norm * tags_vec_norm)
+            # # based on: https://sbert.net/docs/sentence_transformer/usage/semantic_textual_similarity.html
+            # doc_vec: list[float] = emb_model.encode([text])[0]
+            # similarities: list[float] = emb_model.similarity([doc_vec], meta_vec).tolist()[0]
+            # chunk_entry["sim_doc_title"] = similarities[0]
+            # chunk_entry["sim_doc_tags"] = similarities[1]
+
+            # embed text manually
+            if emb_manual:
+                chunk_entry["vector"] = doc_vec
+
+            table_entries.append(chunk_entry)
 
         # add data to the table
         table.add(data=table_entries)
@@ -469,7 +518,10 @@ def lancedb_ingestion_meta(
     # optimize the table for faster reads.
     table.compact_files()
 
-    print(f"Ingestion complete 🚀.  {n_rows} text chunks of {n_files or len(file_list)} files have been added.")
+    print(
+        f"Ingestion complete 🚀.  {n_rows} text chunks of {_n_files} files have been added."
+        f" ({n_rows/_n_files:.1f} chunks per file)"
+    )
 
     if empty_files:
         print(f"\n{len(empty_files)} empty files:\n{empty_files}\n")
@@ -479,6 +531,9 @@ def lancedb_ingestion_meta(
 
 if __name__ == "__main__":
     print("Script started.")
+    import warnings
+
+    warnings.simplefilter(action="ignore", category=UserWarning)
 
     # fixed parameters
     from src.constants import LANCEDB_URI, POST_JSON_PATH, get_rag_config
@@ -544,13 +599,21 @@ if __name__ == "__main__":
         """
 
     # ingestion for full text posts
+    table_name: str = "table_simple05"
     if True:
-        table_name: str = "table_simple04"
         table: Table = lancedb_ingestion_meta(
             table_name=table_name,
             emb_manual=False,
             **ing_pipe_config,
         )
+        """
+        table_simple04: 06/09/2024
+            [27:50<00:00,  1.30s/it]
+            7015 text chunks of 1281 files have been added.
+        table_simple05: 07/09/2024
+            [12:01<00:00,  1.77it/s]
+            7023 text chunks of 1281 files have been added. (5.5 chunks per file)
+        """
 
     # Testing
     db: DBConnection = lancedb.connect(uri=LANCEDB_URI)
@@ -559,6 +622,6 @@ if __name__ == "__main__":
     tbl: Table = db.open_table(table_name)
     print(f"Number of entries in the table '{table_name}': {tbl.count_rows()}")
     print(f"\nShowing first 2 entries of table '{table_name}':")
-    print(tbl.head(2))
+    print(tbl.head(2).drop(["vector"]).to_pydict())
 
     print("\nScript finished.")
