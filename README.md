@@ -12,7 +12,7 @@ Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.
 
 The raw data used to build the RAG knowledge base is stored in `data/blog_posts/json`. It consists of all blog posts from [https://nutritionfacts.org/blog/](https://nutritionfacts.org/blog/) (as of 28.08.2024). See the `notebooks/web_scraping.ipynb` notebook for more technical details on the web scraping process.
 
-The data was automatically ingested into a vector store located in `databases/my_lancedb/table_simple03.lance` using the [LanceDB Library](https://lancedb.github.io/lancedb/) and the Python script `src/ingestion.py`.
+The data was automatically ingested into a vector store located in `databases/my_lancedb/` using the [LanceDB Library](https://lancedb.github.io/lancedb/) and the Python script `src/ingestion.py`.
 
 ## Information Retrieval (IR)
 

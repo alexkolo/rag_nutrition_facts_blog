@@ -167,7 +167,7 @@ cython_debug/
 
 # Databases
 /databases/*
-!/databases/my_lancedb/table_simple03.lance/
+!/databases/my_lancedb/table_simple05.lance/
 
 ### streamlit
 *secrets*

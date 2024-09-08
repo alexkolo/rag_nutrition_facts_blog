@@ -44,6 +44,6 @@ setup.sh
 # Exclude everything in the /databases/ directory
 /databases/*
 
-# Re-include the specific directory /databases/my_lancedb/table_simple03.lance/ & its contents
-!/databases/my_lancedb/table_simple03.lance/
-!/databases/my_lancedb/table_simple03.lance/**
+# Re-include the specific directory /databases/my_lancedb/table_simple0x.lance/ & its contents
+!/databases/my_lancedb/table_simple05.lance/
+!/databases/my_lancedb/table_simple05.lance/**
