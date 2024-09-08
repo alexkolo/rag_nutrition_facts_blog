@@ -374,6 +374,10 @@ def cosine_similarity(
     return dot_product / (_norm_a * _norm_b)
 
 
+def create_title_hash(doc: dict[str, Any], n_char: int = 12) -> str:
+    return create_hash_of_str(text=f"{doc['url']}-{doc['title']}", n_char=n_char)
+
+
 def lancedb_ingestion_meta(
     file_list: list[Path],
     lancedb_uri: Path,
@@ -457,8 +461,7 @@ def lancedb_ingestion_meta(
 
         # Create fixed Meta Data (same for all chunks)
         metadata_fixed: dict[str, str] = {"title": blog_post["title"], "url": blog_post["url"], "n_docs": n_docs}
-        hash_title_src: str = f"{metadata_fixed['url']}-{metadata_fixed['title']}"
-        metadata_fixed["hash_title"] = create_hash_of_str(hash_title_src)
+        metadata_fixed["hash_title"] = create_title_hash(blog_post)
 
         # get set of tags
         raw_tags: list[str] = blog_post["raw_tags"]
@@ -486,7 +489,7 @@ def lancedb_ingestion_meta(
                 "text": text,
                 "rank_abs": rank + 1,
                 "rank_rel": (rank + 1) / n_docs,
-                "hash_doc": create_hash_of_str(f"{hash_title_src}-{text:30}"),
+                "hash_doc": create_hash_of_str(f"{blog_post['url']}-{blog_post['title']}-{text:30}"),
                 "tags_doc": " ".join(sorted(tags_doc)),
                 "n_tags_doc": len(tags_doc),
                 "n_words_doc": len(word_list),

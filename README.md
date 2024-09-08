@@ -20,6 +20,11 @@ To take advantage of the vector search, the text was embedded using the pre-trai
 
 {TOOD: Add description here}
 
+### Improving Ideas
+
+- if similar blog post title (cosine similarity > 0.9), take the more recent one (unless the from the save year)
+- also provider the chunk before and after the retrieve chunk from the same blog post
+
 ## Evaluation
 
 {TOOD: Add description here}
