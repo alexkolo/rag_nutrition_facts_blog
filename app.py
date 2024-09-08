@@ -29,7 +29,9 @@ AVATARS: dict[str, Any] = {"assistant": BOT_AVATAR, "user": chat_config["user_av
 STREAM_DEFAULT: bool = chat_config["stream_default"]
 CHAT_HISTORY_HEIGHT: int = chat_config["chat_history_height"]
 SHOW_HAL_WARNING: int = 2  # after 1 user question show hallucination warning
-HAL_WARNING_MSG: str = "Please note that with the current state of technology, the digital clone may hallucinate! 🙃"
+HAL_WARNING_MSG: str = (
+    "Please note that with the current state of technology, the digital assistant may hallucinate! 🙃"
+)
 ASK_USER_FEEDBACK: int = 2  # after 1 user questions ask user feedback
 
 
@@ -110,7 +112,6 @@ init_st_keys(LLM_API_KEY_NAME, "")
 
 # Page starts here
 # ==========================
-# page_title = "Chat with Dr. Greger's digital clone 🤖"
 page_title = "Nutrition Insights with Dr. Greger's Digital Twin 🥦"
 st.set_page_config(page_title=page_title, page_icon=BOT_AVATAR)  # , layout="wide")
 
@@ -118,12 +119,6 @@ st.set_page_config(page_title=page_title, page_icon=BOT_AVATAR)  # , layout="wid
 # Header
 # ------------
 st.header(page_title, divider="blue")
-# app_intro: str = """
-# This digital clone of the physician [Dr. Michael Greger & his team](https://nutritionfacts.org/team/) will help
-# you answer any question you may have about healthy eating and living from the perspective of the science-based
-# nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/), which has over 1200
-# well-researched blog posts since 2011.
-# """
 app_intro: str = """
 This digital assistant, inspired by [Dr. Michael Greger & his team](https://nutritionfacts.org/team/) at
 [NutritionFacts.org](https://nutritionfacts.org/about/), is here to answer your questions about healthy eating and
@@ -208,12 +203,12 @@ with st.expander(label="👤 User info", expanded=not st.session_state["start_ch
                     if st.session_state["mongodb_connected"]:
                         mongodb_client.insert_one(st.session_state["user_info"])
                 st.success(
-                    f"Hi **{user_name}**. Thank you for your information! Next step: Wake up the digital clone!",
+                    f"Hi **{user_name}**. Thank you for your information! Next step: Wake up the digital assistant!",
                     icon="✅",
                 )
 
             if not user_name:
-                st.info("Please provide your name to use the digital clone.", icon="👆")
+                st.info("Please provide your name to use the digital assistant.", icon="👆")
 
             if not LLM_API_KEY:
                 st.error(f"The LLM API key for the API provider '{LLM_API_NAME}' is missing!", icon="❌")
@@ -226,7 +221,7 @@ if st.session_state["submit_button"] and user_name and st.session_state["llm_api
     with st.container(border=False):
         st.subheader("Start chatting")
         with st.popover(
-            "⚖ :red[**Please read this disclaimer before engaging with the digital clone:**]",
+            "⚖ :red[**Please read this disclaimer before engaging with the digital assistant:**]",
             use_container_width=True,
         ):
             # inspired by: https://cloud.docs.tamr.com/page/ai-chatbot-disclaimer
@@ -237,7 +232,7 @@ if st.session_state["submit_button"] and user_name and st.session_state["llm_api
         with left_button:
             start_chat = create_button(
                 "start_chat",
-                "Wake up the digital clone ⏰",
+                "Wake up the digital assistant ⏰",
                 default=False,
                 type="primary",
                 disabled=st.session_state["start_chat"],
@@ -323,11 +318,10 @@ if st.session_state["start_chat"]:
         init_st_keys("user_rating")
         fb_disabled: bool = st.session_state["user_rating"] is not None
 
-        # st.write("Do you find my digital clone helpful?")
         fb_options: list[str] = ["😞", "🙁", "😐", "🙂", "😀"]
         with st.form(key="feedback_form", border=True):
             user_fb = st.radio(
-                label="**Please let me know how helpful you find this digital clone:**",
+                label="**Please let me know how helpful you find this digital assistant:**",
                 options=fb_options,
                 index=st.session_state.get("user_rating", len(fb_options) - 1),
                 disabled=fb_disabled,

@@ -40,10 +40,10 @@ def connect_to_llm(api_key: str, api_name: str, api_config: dict):
     # Setup LLM API Client
     init_st_keys("llm_client")
     if not st.session_state["llm_client"]:
-        with st.spinner("😴 Waking up for the digital clone..."):
+        with st.spinner("😴 Waking up for the digital assistant..."):
             llm_api_client = get_llm_api_client_object(api_name=api_name)
             st.session_state["llm_client"] = llm_api_client(api_key=api_key)
-        st.success("The digital clone is awake!", icon="✅")
+        st.success("The digital assistant is awake!", icon="✅")
 
 
 @st.cache_data(ttl="1d", show_spinner=False)

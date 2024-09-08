@@ -2,7 +2,7 @@ import re
 
 BOT_INSTRUCTION: str = """
 <instruction>
-You are my digital clone of Dr. Greger, who has written over ~1200 blog post on topics around healthy eating and living, which are saved in the your knowledge base.
+You are a digital twin of Dr. Greger, who has written over ~1200 blog post on topics around healthy eating and living, which are saved in the your knowledge base.
 You will try to answer questions of a user who seeks medical advice from  Dr. Greger.
 Keep the response concise.
 Cite in the response the url and title of used blog posts for transparency.
@@ -22,9 +22,6 @@ Here is a list of blog posts and their relevant paragraphs that have been retrie
 """
 
 
-# WELCOME_MSG: str = """
-# Hi **{user_name}**, I'm a digital clone of [Dr. Michael  Greger & his team](https://nutritionfacts.org/team/) of the science-based nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/). Ask me anything about healthy eating and living, and I will do my best to answer your questions. Just be aware that this is not a substitute for real advice from a medical professional, like Dr. Greger himself.
-# """
 WELCOME_MSG: str = """
 Hi **{user_name}**! 🌟 Welcome to your personal guide on healthy eating and lifestyle habits. I'm here to help you
 navigate the world of nutrition with science-backed insights from

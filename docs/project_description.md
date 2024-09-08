@@ -18,7 +18,7 @@ This problem is crucial for several reasons:
 
 ## Proposed Solution
 
-To address this problem, we are developing a RAG-based (Retrieval-Augmented Generation) Q&A Chatbot focused on healthy eating and lifestyle habits. This chatbot will serve as a digital clone of Dr. Michael Greger and his team from the science-based nonprofit organization NUTRITIONFACTS.ORG.
+To address this problem, we are developing a RAG-based (Retrieval-Augmented Generation) Q&A Chatbot focused on healthy eating and lifestyle habits. This chatbot will serve as a digital twin of Dr. Michael Greger and his team from the science-based nonprofit organization NUTRITIONFACTS.ORG.
 
 Key features of the solution include:
 

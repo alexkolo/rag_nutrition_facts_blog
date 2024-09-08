@@ -6,7 +6,7 @@ This is a RAG-based Q&A Chatbot about healthy eating & lifestyle habits
 
 This is a chatbot intended to help answer questions around a healthy eating and lifestyle habits.
 
-This chatbot (aka digital clone of the physician [Dr. Michael Greger & his team](https://nutritionfacts.org/team/)) will help answer any question you may have about healthy eating and living from the perspective of the science-based nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/), which has over 1200 well-researched blog posts since 2011.
+This chatbot (aka digital twin of the physician [Dr. Michael Greger & his team](https://nutritionfacts.org/team/)) will help answer any question you may have about healthy eating and living from the perspective of the science-based nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/), which has over 1200 well-researched blog posts since 2011.
 
 ## Questions
 
@@ -44,7 +44,7 @@ This chatbot (aka digital clone of the physician [Dr. Michael Greger & his team]
 
 Access to reliable and accurate information on healthy eating and lifestyle habits is a significant challenge for the general public. Although many individuals seek to improve their health by making informed choices, they often face obstacles in obtaining trustworthy advice. The internet is saturated with conflicting and sometimes misleading information, making it difficult for non-medical professionals to discern the quality and credibility of the sources. Additionally, accessing professional advice typically requires scheduling appointments with healthcare providers, which can be time-consuming and costly.
 
-This project aims to bridge this gap by providing a RAG-based Q&A chatbot that offers reliable, science-backed answers to questions related to healthy eating and lifestyle habits. The chatbot serves as a digital clone of Dr. Michael Greger and his team at NutritionFacts.org, a well-respected, science-based nonprofit organization dedicated to sharing evidence-based insights on nutrition. By leveraging over 1,200 thoroughly researched blog posts, this chatbot empowers users to obtain accurate and actionable information easily.
+This project aims to bridge this gap by providing a RAG-based Q&A chatbot that offers reliable, science-backed answers to questions related to healthy eating and lifestyle habits. The chatbot serves as a digital twin of Dr. Michael Greger and his team at NutritionFacts.org, a well-respected, science-based nonprofit organization dedicated to sharing evidence-based insights on nutrition. By leveraging over 1,200 thoroughly researched blog posts, this chatbot empowers users to obtain accurate and actionable information easily.
 
 The primary goal of this project is to educate individuals about healthy living, enabling them to make informed decisions that could lead to healthier, happier lives with reduced reliance on medical interventions. In the long term, widespread use of this tool could contribute to alleviating the burden on the healthcare system by promoting preventative health practices.
 
