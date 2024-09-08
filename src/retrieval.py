@@ -1,7 +1,7 @@
 import lancedb
 import pandas as pd
 from lancedb.db import DBConnection
-from lancedb.rerankers import LinearCombinationReranker
+from lancedb.rerankers import RRFReranker
 from lancedb.table import Table
 
 from src.constants import LANCEDB_URI, get_rag_config
@@ -20,9 +20,12 @@ def get_knowledge_base(table_name: str | None = None) -> Table:
 
 def retrieve_context(k_base: Table, query_text: str, n_retrieve: int = 10, weight: float = 0.3) -> list[dict]:
     # Use `weight` as the weight for vector search (instead of 0.7)
-    reranker_lc = LinearCombinationReranker(weight=weight)
+    # reranker_lc = LinearCombinationReranker(weight=weight)
+    reranker_rrf = RRFReranker()
 
-    return k_base.search(query=query_text, query_type="hybrid").rerank(reranker=reranker_lc).limit(n_retrieve).to_list()
+    return (
+        k_base.search(query=query_text, query_type="hybrid").rerank(reranker=reranker_rrf).limit(n_retrieve).to_list()
+    )
 
 
 def reorder_context(resp: list[dict], n_use: int = 5) -> list[dict]:
