@@ -541,6 +541,8 @@ if __name__ == "__main__":
     # fixed parameters
     from src.constants import LANCEDB_URI, POST_JSON_PATH, get_rag_config
 
+    emb_config = get_rag_config()["embeddings"]
+
     # variable parameters
     n_files: int | None = None  # use `None` to process all files
 
@@ -548,7 +550,7 @@ if __name__ == "__main__":
     ing_pipe_config: dict[str, Any] = {
         "file_list": list(POST_JSON_PATH.glob("*.json")),
         "lancedb_uri": LANCEDB_URI,
-        "emb_config": get_rag_config()["embeddings"],
+        "emb_config": emb_config,
         "n_files": n_files,
     }
 
@@ -603,7 +605,7 @@ if __name__ == "__main__":
 
     # ingestion for full text posts
     table_name: str = "table_simple05"
-    if True:
+    if False:
         table: Table = lancedb_ingestion_meta(
             table_name=table_name,
             emb_manual=False,
@@ -617,6 +619,16 @@ if __name__ == "__main__":
             [12:01<00:00,  1.77it/s]
             7023 text chunks of 1281 files have been added. (5.5 chunks per file)
         """
+
+        # Full-text search (aka keyword-based search)
+        # - https://lancedb.github.io/lancedb/fts/
+        print("\nCreating full-text search index...")
+        table.create_fts_index(["text"], replace=True)
+
+        # Vector search
+        print("\nCreating vector search index...")
+        device: str = emb_config["device"]
+        table.create_index(metric=emb_config["metric"], accelerator="cuda" if device == "cuda" else None, replace=True)
 
     # Testing
     db: DBConnection = lancedb.connect(uri=LANCEDB_URI)
