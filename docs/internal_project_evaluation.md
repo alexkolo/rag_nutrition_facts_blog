@@ -1,6 +1,6 @@
-# Project Evaluation
+# Personal Project Evaluation
 
-[Ref](https://github.com/DataTalksClub/llm-zoomcamp/blob/main/project.md)
+Reference: The [evaluation criteria](https://github.com/DataTalksClub/llm-zoomcamp/blob/main/project.md#evaluation-criteria) of the [LLM-zoomcamp course](https://github.com/DataTalksClub/llm-zoomcamp) (as of 09/09/2024).
 
 09/09/2024: Total: 19 / 23 points (~83%)
 
@@ -34,20 +34,20 @@
   - [ ] 1 point: Semi-automated ingestion of the dataset into the knowledge base, e.g., with a Jupyter notebook
   - [x] 2 points: Automated ingestion with a **Python script** ~~or a special tool (e.g., Mage, dlt, Airflow, Prefect)~~
 
-- 🚧 Monitoring: IMPROVE
+- ✅ Monitoring:
   - [ ] 0 points: No monitoring
-  - [x] 1 point: User feedback is collected ~~OR there's a monitoring dashboard~~
-  - [ ] 2 points: User feedback is collected and there's a dashboard with at least 5 charts
+  - [ ] 1 point: User feedback is collected OR there's a monitoring dashboard
+  - [x] 2 points: User feedback is collected and there's a dashboard with at least 5 charts
 
 - ✅ Containerization:
   - [ ] 0 points: No containerization
   - [ ] 1 point: Dockerfile is provided for the main application OR there's a docker-compose for the dependencies only
   - [x] 2 points: Everything is in docker-compose
 
-- 🚧 Reproducibility: IMPROVE
+- ✅ Reproducibility:
   - [ ] 0 points: No instructions on how to run the code, the data is missing, or it's unclear how to access it
-  - [x] 1 point: Some instructions are provided but are incomplete, OR instructions are clear and complete, the code works, but the data is missing
-  - [ ] 2 points: Instructions are clear, the dataset is accessible, it's easy to run the code, and it works. The versions for all dependencies are specified.
+  - [ ] 1 point: Some instructions are provided but are incomplete, OR instructions are clear and complete, the code works, but the data is missing
+  - [x] 2 points: Instructions are clear, the dataset is accessible, it's easy to run the code, and it works. The versions for all dependencies are specified.
 
 - 🚧 Best practices: IMPROVE
   - [x] Hybrid search: combining both text and vector search (at least evaluating it) (1 point)

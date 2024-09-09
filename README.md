@@ -9,6 +9,7 @@ Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.
 - [What problems does the chatbot try to mitigate](docs/offical_project_description.md)
 - [How you can run & test the chatbot yourself](docs/offical_how_to_run_yourself.md)
 - [How I built and evaluated this chatbot](docs/offical_how_i_build_it.md)
+- [Personal project evaluation](docs/internal_project_evaluation.md) based on the [criteria](https://github.com/DataTalksClub/llm-zoomcamp/blob/main/project.md#evaluation-criteria) of the [LLM-zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp) course
 
 ## Dataset
 
