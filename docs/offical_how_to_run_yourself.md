@@ -6,7 +6,7 @@
 - the corresponding dashboard for monitoring the app usage is [here](https://dr-greger-blog-bot-dashboard-usage.streamlit.app/).
 
     > [!NOTE]
-    > I used Grafana at first for the online dashboard (see [here](https://chatbotdrgreger.grafana.net/public-dashboards/1ae4a1c3c47c41478e16d97aaa5a2276)). However, due to limitation of the free tier version of Grafana, it stops working properly (aka won't show any data) on 18.09.2024. For the same reason, it will not work locally.
+    > I used Grafana at first for the online dashboard (see [here](https://chatbotdrgreger.grafana.net/public-dashboards/1ae4a1c3c47c41478e16d97aaa5a2276)). However, due to limitation of the free tier version, it stops working properly (aka won't show any data) on 18.09.2024. For the same reason, it will not work locally.
     > For more details on my drama around the dashboard see [here](offical_how_i_build_it.md#dashboard).
 
 ## Run it on your own
