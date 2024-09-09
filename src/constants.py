@@ -21,6 +21,7 @@ DATA_PATH: Path = REPO_PATH / "data"
 blog_posts_root: Path = DATA_PATH / "blog_posts"
 POST_JSON_PATH: Path = blog_posts_root / "json"
 IMAGE_PATH: Path = DATA_PATH / "images"
+GROUND_TRUTH_PATH: Path = DATA_PATH / "ground_truth"
 
 # Chat bot
 

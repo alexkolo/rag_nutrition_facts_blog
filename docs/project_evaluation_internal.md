@@ -2,7 +2,7 @@
 
 [Ref](https://github.com/DataTalksClub/llm-zoomcamp/blob/main/project.md)
 
-03/09/2024: Total: 16 / 23 points (~70%)
+03/09/2024: Total: 18 / 23 points (~70%)
 
 - ✅ Problem description
   - [ ] 0 points: The problem is not described
@@ -14,10 +14,10 @@
   - [ ] 1 point: No knowledge base is used, and the LLM is queried directly
   - [x] 2 points: Both a knowledge base and an LLM are used in the RAG flow
 
-- ❗ Retrieval evaluation: TODO
-  - [x] 0 points: No evaluation of retrieval is provided
+- ✅ Retrieval evaluation:
+  - [ ] 0 points: No evaluation of retrieval is provided
   - [ ] 1 point: Only one retrieval approach is evaluated
-  - [ ] 2 points: Multiple retrieval approaches are evaluated, and the best one is used
+  - [x] 2 points: Multiple retrieval approaches are evaluated, and the best one is used
 
 - ❗ RAG evaluation: TODO
   - [x] 0 points: No evaluation of RAG is provided

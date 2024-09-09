@@ -12,20 +12,99 @@ Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.
 
 The raw data used to build the RAG knowledge base is stored in `data/blog_posts/json`. It consists of all blog posts from [https://nutritionfacts.org/blog/](https://nutritionfacts.org/blog/) (as of 28.08.2024). See the `notebooks/web_scraping.ipynb` notebook for more technical details on the web scraping process.
 
-The data was automatically ingested into a vector store located in `databases/my_lancedb/` using the [LanceDB Library](https://lancedb.github.io/lancedb/) and the Python script `src/ingestion.py`.
+The data was automatically ingested into a vector store located in `databases/my_lancedb/` using the [LanceDB Library](https://lancedb.github.io/lancedb/) and the Python script `src/ingestion.py`. The text chunk where enriched with following meta data:
+
+```python
+# Meta Data of the text chunk of a blog post
+"hash_doc": str,  # Unique ID of text chunk (as a hash of url + title + text)
+"rank_abs": int,  # Rank of the text chunk in the blog post
+"rank_rel": float,  # Relative rank of the text chunk in the blog post
+"tags_doc": str,  # Tags of "tags_all" that exists in the text chunk
+"n_tags_doc": int,  # Number of matching tags in the text chunk
+"n_words_doc": int,  # Number of words in the text chunk
+"n_char_doc": int,  # Number of characters in the text chunk
+"sim_doc_title": float,  # Similarity between the text chunk and the title
+"sim_doc_tags": float,  # Similarity between the text chunk and the tags
+# Meta Data of the blog post (same value for its all text chunks)
+"title": str,  # Title of blog post
+"url": str,  # URL of blog post
+"tags_all": str,  # Tags of blog post
+"hash_title": str,  # Unique ID of blog post (as a hash of the url + title)
+"n_docs": int,  # Number of text chunks in the blog post (after chunking)
+```
 
 ## Information Retrieval (IR)
 
-To take advantage of the vector search, the text was embedded using the pre-trained model [`multi-qa-MiniLM-L6-cos-v1`](https://huggingface.co/sentence-transformers/multi-qa-MiniLM-L6-cos-v1) from the [Sentence Transformers Library](https://www.sbert.net/index.html), as it is tuned for Q&A chatbots.
+**Embeddings**: To take advantage of the vector search, the text was embedded using the pre-trained model [`multi-qa-MiniLM-L6-cos-v1`](https://huggingface.co/sentence-transformers/multi-qa-MiniLM-L6-cos-v1) from the [Sentence Transformers Library](https://www.sbert.net/index.html), as it is tuned for Q&A chatbots.
 
-{TOOD: Add description here}
+**Retriever**: Based on the retrieval evaluation results (see section below), a hybrid of vector and full-text search with the [Reciprocal Rank Fusion](https://lancedb.github.io/lancedb/reranking/rrf/) reranker was used a retriever of text chunks.
 
-### Improving Ideas
+**Post-processing**: The top 10 retrieved text chunks are further processed and enriched with metadata: They are grouped by their blog post title, and the groups are ordered by the sum of the chunks' relevance scores from the retriever. Finally, the blog post URL is added to each group.
 
-- if similar blog post title (cosine similarity > 0.9), take the more recent one (unless the from the save year)
-- also provider the chunk before and after the retrieve chunk from the same blog post
+### Ideas for improvement
+
+- if similar blog post title (cosine similarity > 0.8), prioritize the more recent one (unless the from the same year)
+- also provide the chunk before and after the retrieve chunk from the same blog post for enrichment
 
 ## Evaluation
+
+### Retrieval Performance
+
+The evaluation was done with the `notebooks/evaluation_retrieval.ipynb` notebook.
+See it for more technical details.
+
+#### Ground Truth
+
+We need a user query - text chunk mapping, where we know that the text chunk is relevant to the user query. To make it easy for me, I used the titles of the blog posts as user queries and measured whether a text chunk from the blog post with the same title was retrieved among the top results.
+
+This simple approach has two obvious caveats (or maybe more):
+
+1. A text chunk from a blog post with a completely different title may be more relevant to the user's query. Therefore, my current retrieval evaluation is biased towards finding the text chunk that has the most relevant title, but not necessarily the most relevant information for a user query.
+
+2. Blog posts can have semantically very similar titles.
+
+I mitigated the second point by grouping blog posts with semantically similar titles.
+To do this, I computed the cosine similarity between all titles and grouped titles with a cosine similarity `> 0.8` together.
+The list of title hashes for each group is stored in the file `data/ground_truth/eva_title_groups.csv'.
+During retrieval evaluation, if a title from a group is used as a user query, then a retrieved text chunk with a title from the same group will also be considered relevant.
+
+The ground truth table for retrieval evaluation is stored here: `data/ground_truth/eva_title_groups.csv'. It has 3 columns:
+
+- Blog post title, which serves as the user query
+- The hash of the title itself, for easy lookup in the database
+- The list of title hashes that belong to the same group, where the collective cosine similarity is > 0.8.
+
+1248 titles were included in the ground truth table, after filtering out titles that were more about self-advertisement.
+There are 65 groups in the ground truth table, where the collective cosine similarity is > 0.8.
+
+#### Test results
+
+With the ground truth table, different types of retrievers were evaluated suing the the hit rate and Mean Reciprocal Rank (mrr) as metrics.
+Below are the result sorted by Hit Rate.
+
+```test
+retrievers     hit_rate       mrr
+---------------------------------
+rrf            0.843750  1.159802
+hybrid         0.841346  1.138715
+lc_weight_0.7  0.841346  1.138715
+lc_weight_0.3  0.841346  1.138715
+fts            0.818910  0.947983
+vector         0.809295  1.054688
+```
+
+_(For details on the different types of retrievers, see the `notebooks/evaluation_retrieval.ipynb` notebook.)_
+
+The retriever `rrf`, a hybrid of vector and full-text search with the [Reciprocal Rank Fusion](https://lancedb.github.io/lancedb/reranking/rrf/) as reranker, delivered this highest score and was finally selected.
+It is interesting to note that pure vector search (`vector`) performed worse than pure full-text search (`fts`, aka keyword search), and that both performed worse than any hybrid search. Due to the limitation of available resources, not [all available rerankers from the LanceDB Library](https://lancedb.github.io/lancedb/reranking/) could be evaluated.
+
+Excluded from the evaluation were following rerankers:
+
+- [Cohere](https://lancedb.github.io/lancedb/reranking/cohere/) due to a too low rate limit in free tier
+- [Cross Encoder](https://lancedb.github.io/lancedb/reranking/cross_encoder/) due to being too slow when using CPU as engine
+- [ColBERT](https://lancedb.github.io/lancedb/reranking/colbert/) due to being too slow when using CPU as engine
+
+### RAG Performance
 
 {TOOD: Add description here}
 
