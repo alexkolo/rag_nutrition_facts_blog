@@ -5,6 +5,10 @@ device = "cpu"
 # similarity function
 metric = "cosine"
 
+# whether the embeddings should be done before the ingestion or if LanceDB should take care of it
+# To use hybrid search, this should be set to `false
+emb_manual = false
+
 model_provider = "sentence-transformers"
 # Pretrained Models : https://www.sbert.net/docs/sentence_transformer/pretrained_models.html
 #

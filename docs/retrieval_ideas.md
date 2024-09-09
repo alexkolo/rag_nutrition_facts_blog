@@ -8,11 +8,6 @@
 
 - try HyDE
 
-## Search
-
-- hydrid search
-- - try rrf
-
 ## Re-ranking
 
 TBA

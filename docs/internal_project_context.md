@@ -27,7 +27,7 @@ This chatbot (aka digital twin of the physician [Dr. Michael Greger & his team](
 
 4. **How does your project address the problem?**
    - What approach or methodology are you using? Is there a specific technology, tool, or technique that's central to your solution?
-    - RAG-based Q&A Chatbot that is build on the 1200 well-researched blog posts of the science-based nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/) run by the physician [Dr. Michael Greger & his team](https://nutritionfacts.org/team/)).
+    - RAG-based Q&A Chatbot that is build on the 1200 well-researched blog posts of the science-based nonprofit organization [NUTRITIONFACTS.ORG](https://nutritionfacts.org/about/) run by the physician [Dr. Michael Greger & his team](https://nutritionfacts.org/team/).
 
 5. **What are the expected outcomes or benefits of your solution?**
    - What changes or improvements do you expect as a result of your project?

@@ -552,6 +552,7 @@ if __name__ == "__main__":
         "lancedb_uri": LANCEDB_URI,
         "emb_config": emb_config,
         "n_files": n_files,
+        "emb_manual": emb_config["emb_manual"],
     }
 
     # ingestion with simple method
@@ -559,7 +560,6 @@ if __name__ == "__main__":
     if False:
         table: Table = lancedb_ingestion_simple(
             table_name=table_name,
-            emb_manual=False,
             **ing_pipe_config,
         )
 
@@ -589,7 +589,6 @@ if __name__ == "__main__":
         table_name: str = "fulltext01"
         table: Table = lancedb_ingestion_full_text(
             table_name=table_name,
-            emb_manual=False,
             **ing_pipe_config,
         )
 
@@ -608,7 +607,6 @@ if __name__ == "__main__":
     if False:
         table: Table = lancedb_ingestion_meta(
             table_name=table_name,
-            emb_manual=False,
             **ing_pipe_config,
         )
         """
