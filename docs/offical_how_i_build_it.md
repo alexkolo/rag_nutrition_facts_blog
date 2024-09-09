@@ -175,6 +175,7 @@ The user name, the chat history, and user feedback are stored in the database.
 First, I build a dashboard with Grafana, which can be seen [here](https://chatbotdrgreger.grafana.net/public-dashboards/1ae4a1c3c47c41478e16d97aaa5a2276).
 The online dashboard won't work properly (aka won't show any data) after 17/09/2024 because the 14-day trial period of Grafana ends. 😭
 That's because I need to use a MongoDB plugin to connect to MongoDB, which is only available for the Enterprise version of Grafana.
+For the same reason, a local deployment of Grafana will not possible, as it can't connect to MongoDB with the free tier version.
 Unfortunately, I only found this out after setting up my own MongoDB and creating the dashboard. 😒
 
 My second attempt was to rebuild it using MongoDB's own dashboard tool "Charts".
@@ -182,4 +183,5 @@ The result can be seen [here](https://charts.mongodb.com/charts-project-0-dwgewm
 However, I was only able to reproduce the simplest panels.
 I also couldn't figure out how to set up a time filter like in Grafana. 😓
 
-Finally, I decided to use [Streamlit](https://streamlit.io/) to rebuild the Grafana dashboard from scratch. See `dashboard/app.py`.
+Finally, I decided to use [Streamlit](https://streamlit.io/) to rebuild the Grafana dashboard from scratch. See `dashboard/app.py` for details.
+The deployed version can be seen [here](https://dr-greger-blog-bot-dashboard-usage.streamlit.app/). 🚀

@@ -13,9 +13,12 @@ import streamlit as st
 import tomli
 from pymongo.collection import Collection
 
+# Secrets
+# -----------------------------
+DEPLOYED: bool = st.secrets.get("deployed", False)
+
 # Parameters
 # -----------------------------
-
 RAG_CONFIG_TOML: str = "rag_config.toml"
 
 
@@ -23,28 +26,24 @@ RAG_CONFIG_TOML: str = "rag_config.toml"
 # -----------------------------
 
 
-def get_rag_config() -> dict:
-    with open(RAG_CONFIG_TOML, mode="rb") as toml_file:
-        config = tomli.load(toml_file)
-    return config
-
-
 def get_mongodb_config(deployed: bool = False) -> dict[str, str]:
     key: str = "mongodb"
 
+    # run as streamlit app
     if deployed:
         return st.secrets[key]
 
+    # load local config file
+    with open(RAG_CONFIG_TOML, mode="rb") as toml_file:
+        config = tomli.load(toml_file)
+
+    # running in a docker container
     if os.getenv("RUNNING_IN_DOCKER") is not None:
-        return get_rag_config()[key]["docker"]
+        return config[key]["docker"]
 
-    # Assumes it is local
-    return get_rag_config()[key]["local"]
+    # running locally
+    return config[key]["local"]
 
-
-# Secrets
-# -----------------------------
-DEPLOYED: bool = st.secrets.get("deployed", False)
 
 # Setup MongoDB connection
 # -----------------------------

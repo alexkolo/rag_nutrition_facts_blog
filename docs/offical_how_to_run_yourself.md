@@ -3,19 +3,15 @@
 ## In the cloud (aka deployed)
 
 - got to the streamlit app [here](https://dr-greger-blog-bot.streamlit.app/).
-- the corresponding dashboard for monitoring the app usage is [here](https://chatbotdrgreger.grafana.net/public-dashboards/1ae4a1c3c47c41478e16d97aaa5a2276).
+- the corresponding dashboard for monitoring the app usage is [here](https://dr-greger-blog-bot-dashboard-usage.streamlit.app/).
 
-    > [!IMPORTANT]
-    > The online dashboard will stop working properly (aka won't show any data) on 18.09.2024 due to the 14-day trial period ending by Grafana. 😭
-  - I'm using a MongoDB plugin that is only available for the Enterprise version of Grafana. Unfortunately, I found this out only after setting up my own MongoDB and creating the dashboard. 😒
-  - I tried to rebuild it using MongoDB's own dashboard tool "Charts". See the result [here](https://charts.mongodb.com/charts-project-0-dwgewmy/public/dashboards/10ed0c93-9fb1-4b89-a1e3-966fddef4f27). However, I was only able to reproduce the simplest panels. Moreover, I couldn't figure out to set up a time filter as in Grafana. 😓
+    > [!NOTE]
+    > I used Grafana at first for the online dashboard (see [here](https://chatbotdrgreger.grafana.net/public-dashboards/1ae4a1c3c47c41478e16d97aaa5a2276)). However, due to limitation of the free tier version of Grafana, it stops working properly (aka won't show any data) on 18.09.2024. For the same reason, it will not work locally.
+    > For more details on my drama around the dashboard see [here](offical_how_i_build_it.md#dashboard).
 
 ## Run it on your own
 
 - add a [Groq API key](https://console.groq.com/keys) in `.streamlit/secrets.toml` as `GROQ_TOKEN = "..."` (since the app is using [Groq Cloud](https://groq.com/) as my LLM API provider, as it is free tier).
-
-> [!NOTE]
-> There is no local dashboard to monitor the app usage, since Grafana doesn't offer the MongoDB data plugin for the free tier. [Source](https://grafana.com/docs/grafana/latest/introduction/grafana-enterprise/#enterprise-data-sources) (see comment above for the deployed version)
 
 ### In a container (using docker)
 
