@@ -74,7 +74,7 @@ The ground truth table for retrieval evaluation is stored here: `data/ground_tru
 - The hash of the title itself, for easy lookup in the database
 - The list of title hashes that belong to the same group, where the collective cosine similarity is > 0.8.
 
-1248 titles were included in the ground truth table, after filtering out titles that were more about self-advertisement.
+1248 of 1281 titles were included  in the ground truth table, after filtering out titles that were about self-advertisement.
 There are 65 groups in the ground truth table, where the collective cosine similarity is > 0.8.
 
 #### Test results
