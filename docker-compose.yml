@@ -12,17 +12,34 @@ services:
     ports:
       - "27017:27017"
 
-  streamlit_app:
+  chatbot:
     build:
       context: ./
       dockerfile: ./Dockerfile
-    container_name: chatbot_dr_greger
+    container_name: chatbot
     ports:
       - "8501:8501"
     environment:
-      - PIP_NO_CACHE_DIR=1
+      - PIP_NO_CACHE_DIR=off
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - mongodb
+
+  dashboard:
+    build:
+      context: ./
+      dockerfile: ./dashboard/Dockerfile
+    container_name: dashboard
+    ports:
+      - "8080:8080"
+    environment:
+      - PIP_NO_CACHE_DIR=off
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/_stcore/health"]
       interval: 30s
       timeout: 10s
       retries: 3

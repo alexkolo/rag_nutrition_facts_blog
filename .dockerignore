@@ -17,6 +17,7 @@ src.egg-info/
 data/
 docs/
 notebooks/
+middleware/
 
 # Docker-related files
 .dockerignore

@@ -1,6 +1,6 @@
 # How you can run & test the chatbot yourself
 
-## In the cloud (aka deployed)
+## Test the deployed Streamlit app
 
 - got to the streamlit app [here](https://dr-greger-blog-bot.streamlit.app/).
 - the corresponding dashboard for monitoring the app usage is [here](https://dr-greger-blog-bot-dashboard-usage.streamlit.app/).
@@ -19,20 +19,27 @@
 - ensure docker compose exists: `docker compose version`, if not then [install it](https://docs.docker.com/compose/install/linux/)
 
 - using Docker Compose:
-  - build & run containers: `docker compose up --build`
-  - view app in the browser via this url: <http://localhost:8501>
+  - build & run containers: `docker-compose --env-file=docker.env up --build`
+  - view Chatbot in browser: <http://localhost:8501>
+  - view Dashboard in browser: <http://localhost:8080>
 
-- for developers: using the Dockerfile of the app:
-  - start server for the user database: `docker-compose --file docker-mongodb.yml up -d`
-  - build app container: `docker build -t app:latest .`
-  - run app container: `docker run -p 8501:8501 app:latest`
-  - view app in the browser via this url: <http://localhost:8501>
+- for developers (using the dockerfiles):
+  - user database (mongodb):
+    - start server with `docker-compose --env-file=docker.env --file docker-mongodb.yml up -d`
+  - Chatbot (Streamlit App):
+    - build container: `docker build -t app:latest .`
+    - run container: `docker run -p 8501:8501 app:latest`
+    - view in browser: <http://localhost:8501>
+  - Dashboard for monitoring (Streamlit App)
+    - build container: `docker build -f dashboard/Dockerfile -t dashboard .`
+    - run container: `docker run -p 8080:8080 dashboard`
+    - view in browser: <http://localhost:8080>
 
 ### From the source code
 
 - clone this repository: `git clone https://github.com/alexkolo/rag_nutrition_facts_blog`
 
-- get right Python version
+- get the right Python version
   - it was build with version `3.12.3`
   - setup suggestions using `pyenv`:
 
@@ -64,6 +71,11 @@
     .\setup.ps1
     ```
 
-- start server for the user database: `docker-compose --file docker-mongodb.yml up -d`
-- start the app via `streamlit run app.py`
-- view it in the browser via this url: <http://localhost:8501>
+- user database (mongodb):
+  - start the server with `docker-compose --env-file=docker.env --file docker-mongodb.yml up -d`
+- Chatbot (Streamlit App):
+  - start it via `streamlit run ./app.py --server.port 8501`
+  - view in browser: <http://localhost:8501>
+- Dashboard for monitoring (Streamlit App):
+  - start it via `streamlit run ./dashboard/app.py --server.port 8080`
+  - view in browser: <http://localhost:8080>
