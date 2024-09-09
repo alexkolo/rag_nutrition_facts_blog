@@ -82,6 +82,8 @@ def process_user_input(
             st.session_state["retrieval"].append(extract_context_from_msg(messages[0]["content"]))
 
             # send message to LLM and get response
+            token_current: int = st.session_state["total_tokens"]
+            t_start = datetime.now()
             streamed_response_raw: Iterable = client.chat.completions.create(
                 model=st.session_state["model_name"],
                 messages=messages,
@@ -89,10 +91,20 @@ def process_user_input(
                 stream=stream,
                 # max_tokens=RESPONSE_MAX_TOKENS,
             )
+            t_duration = datetime.now() - t_start
             streamed_response_str: Iterable[str] = stream_chat_response(streamed_response_raw, api_name=api_name)
+            token_delta: int = st.session_state["total_tokens"] - token_current
             full_response: str = st.write_stream(streamed_response_str)
     # Add assistant response to chat history
-    st.session_state["messages"].append({"role": "assistant", "content": full_response})
+    st.session_state["messages"].append(
+        {
+            "role": "assistant",
+            "content": full_response,
+            "response_time": t_duration.total_seconds(),
+            "token_delta": token_delta,
+            "llm_usage": st.session_state["llm_usage"],
+        }
+    )
 
 
 # Initialize chat history
@@ -101,6 +113,7 @@ init_st_keys("messages", [])
 init_st_keys("submit_button", False)
 init_st_keys("start_chat", False)
 init_st_keys("total_tokens", 0)
+init_st_keys("llm_usage", {})
 init_st_keys("n_sessions", 1)
 init_st_keys("user_info", cst.USER_INFO_TEMPLATE)
 init_st_keys("model_temp", LLM_TEMP)
@@ -291,7 +304,9 @@ if st.session_state["start_chat"]:
 
         if user_prompt:
             with chat_history:  # show everything below in the chat history
+                t_start = datetime.now()
                 process_user_input(user_prompt, avatars=AVATARS, api_name=LLM_API_NAME, k_base=k_base)
+                t_duration = datetime.now() - t_start
 
             # save chat history
             if st.session_state["mongodb_connected"]:

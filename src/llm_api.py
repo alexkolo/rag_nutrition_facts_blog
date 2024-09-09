@@ -79,5 +79,17 @@ def stream_chat_response(response: Iterable, api_name: str) -> Iterable[str]:
         text = chunk.choices[0].delta.content
         if text is None and api_name == "groq":
             st.session_state["total_tokens"] = chunk.x_groq.usage.total_tokens
+            st.session_state["llm_usage"] = dict(chunk.x_groq.usage)
+            """
+            https://console.groq.com/docs/api-reference#chat-create
+            "usage": {
+                "prompt_tokens": 24,
+                "completion_tokens": 377,
+                "total_tokens": 401,
+                "prompt_time": 0.009,
+                "completion_time": 0.774,
+                "total_time": 0.783
+            }
+            """
         else:
             yield text
