@@ -21,7 +21,7 @@
 
 - ❗ RAG evaluation: TODO
   - [x] 0 points: No evaluation of RAG is provided
-  - [ ] 1 point: Only one RAG approach (e.g., one prompt) is evaluated
+  - [x] 1 point: Only one RAG approach (e.g., one prompt) is evaluated
   - [ ] 2 points: Multiple RAG approaches are evaluated, and the best one is used
 
 - ✅ Interface
