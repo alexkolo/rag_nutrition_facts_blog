@@ -7,7 +7,7 @@ Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.
 ## Documentation
 
 - [What problems does the chatbot try to mitigate](docs/offical_project_description.md)
-- [How you can run & test the chatbot yourself](docs/offical_how_to_run_yourself.md.md)
+- [How you can run & test the chatbot yourself](docs/offical_how_to_run_yourself.md)
 - [How I built and evaluated this chatbot](docs/offical_how_i_build_it.md)
 
 ## Dataset

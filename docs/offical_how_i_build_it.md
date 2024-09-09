@@ -161,7 +161,7 @@ In `data/ground_truth/eva_rag_similarity.csv` only the hash of the most relevant
 Using this file, we can calculate an average similarity score between the expected and the generated answer of `0.85+-0.04`, which agrees with our baseline score of `0.83+-0.02` (see figure below).
 Therefore, we can conclude from this evaluation that the RAG flow is able to produce useful results when the user query is covered by the RAG knowledge base. 🥳
 
-![RAG evaluation: Similarity of expected vs generated answer](./data/ground_truth/eva_rag_sim_box.png)
+![RAG evaluation: Similarity of expected vs generated answer](./../data/ground_truth/eva_rag_sim_box.png)
 
 ## Monitoring User Interaction
 
