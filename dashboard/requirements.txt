@@ -1,0 +1,4 @@
+pandas==2.2.2
+pymongo==4.8.0 # for monitoring
+streamlit==1.38.0 # streamlit app
+tomli==2.0.1 # read TOML files

@@ -4,14 +4,43 @@ View in browser: `http://localhost:8080`
 """
 
 import json
+import os
 from datetime import datetime
 
 import pandas as pd
 import pymongo
 import streamlit as st
+import tomli
 from pymongo.collection import Collection
 
-from src.mongodb import get_mongodb_config
+# Parameters
+# -----------------------------
+
+RAG_CONFIG_TOML: str = "rag_config.toml"
+
+
+# Database Connection Functions
+# -----------------------------
+
+
+def get_rag_config() -> dict:
+    with open(RAG_CONFIG_TOML, mode="rb") as toml_file:
+        config = tomli.load(toml_file)
+    return config
+
+
+def get_mongodb_config(deployed: bool = False) -> dict[str, str]:
+    key: str = "mongodb"
+
+    if deployed:
+        return st.secrets[key]
+
+    if os.getenv("RUNNING_IN_DOCKER") is not None:
+        return get_rag_config()[key]["docker"]
+
+    # Assumes it is local
+    return get_rag_config()[key]["local"]
+
 
 # Secrets
 # -----------------------------
@@ -24,7 +53,7 @@ client = pymongo.MongoClient(mongodb_config["uri"])
 db = client[mongodb_config["db_name"]]
 collection: Collection = db[mongodb_config["coll_name"]]
 
-# Function
+# Database Query Helper Function
 # -----------------------------
 
 
@@ -71,7 +100,7 @@ st.write("Link to app: https://dr-greger-blog-bot.streamlit.app")
 # Time range selection (mimicking Grafana's $__timeFrom and $__timeTo)
 with st.sidebar:
     st.write("Date Filter:")
-    day_offset: int = st.number_input("Last days", value=2, min_value=1)
+    day_offset: int = st.number_input("Last days", value=7, min_value=1)
     start_date = st.date_input("Start date", value=pd.to_datetime("now") - pd.DateOffset(day_offset))
     end_date = st.date_input("End date", value=pd.to_datetime("now"))
 
@@ -88,16 +117,21 @@ st.divider()
 st.header("Numbers")
 col_1, col_2 = st.columns(2, vertical_alignment="center")
 
-with col_1:
+if os.getenv("RUNNING_IN_DOCKER") is not None:
+    query_root = "./"
+else:
+    query_root = "./dashboard/"
+
+with col_1, st.container(border=True):
     st.subheader("# Users")
-    panel_values: list[dict] = get_values_from_query("./dashboard/query_n_user.json", **date_filter)
+    panel_values: list[dict] = get_values_from_query(f"{query_root}query_n_user.json", **date_filter)
     value: int = panel_values[0]["totalEntries"] if panel_values else 0
     st.metric("Total Users", value, label_visibility="collapsed")
 
-with col_2:
+with col_2, st.container(border=True):
     st.subheader("Avg. User Rating")
     st.write("(0 = bad, 4 = very good)")
-    panel_values: list[dict] = get_values_from_query("./dashboard/query_avg_user_rating.json", **date_filter)
+    panel_values: list[dict] = get_values_from_query(f"{query_root}query_avg_user_rating.json", **date_filter)
     avg_rating: float = panel_values[0]["averageScore"] if panel_values else 0
     st.metric("Avg. User Rating", round(avg_rating, 1), label_visibility="collapsed")
 
@@ -108,7 +142,7 @@ st.header("Times Series")
 
 
 def create_ts_chart(query_template_path: str, y_key: str, y_label: str | None = None):
-    panel_values: list[dict] = get_values_from_query(f"./dashboard/{query_template_path}.json", **date_filter)
+    panel_values: list[dict] = get_values_from_query(f"{query_root}{query_template_path}.json", **date_filter)
     time_series = pd.DataFrame(panel_values)
     if not time_series.empty:
         time_series["time"] = pd.to_datetime(time_series["_id"].apply(lambda x: x["time"]))
@@ -119,18 +153,22 @@ def create_ts_chart(query_template_path: str, y_key: str, y_label: str | None = 
 
 
 # Panel: Time Series of User Ratings
-st.subheader("User Ratings")
-st.write("(0 = bad, 4 = very good)")
-create_ts_chart("query_ts_user_rating", y_key="averageRating", y_label="user rating")
+with st.container(border=True):
+    st.subheader("User Ratings")
+    st.write("(0 = bad, 4 = very good)")
+    create_ts_chart("query_ts_user_rating", y_key="averageRating", y_label="user rating")
 
 # Panel: Number of User Questions
-st.subheader("Number of User Questions")
-create_ts_chart("query_ts_n_quest", y_key="totalQuestions", y_label="# user questions")
+with st.container(border=True):
+    st.subheader("Number of User Questions")
+    create_ts_chart("query_ts_n_quest", y_key="totalQuestions", y_label="# user questions")
 
 # Panel: Average Characters of User Questions
-st.subheader("Avg. Characters per User Questions")
-create_ts_chart("query_ts_char_per_quest", y_key="avgQuestionLength", y_label="avg. char. per question")
+with st.container(border=True):
+    st.subheader("Avg. Characters per User Questions")
+    create_ts_chart("query_ts_char_per_quest", y_key="avgQuestionLength", y_label="avg. char. per question")
 
 # Panel: Average Number of Characters in Assistant's Answer
-st.subheader("Avg. Characters per Assistant's Answer")
-create_ts_chart("query_ts_chat_per_answer", y_key="avgAnswerLength", y_label="avg. char. per answer")
+with st.container(border=True):
+    st.subheader("Avg. Characters per Assistant's Answer")
+    create_ts_chart("query_ts_chat_per_answer", y_key="avgAnswerLength", y_label="avg. char. per answer")
