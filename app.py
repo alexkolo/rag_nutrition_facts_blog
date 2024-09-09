@@ -82,7 +82,6 @@ def process_user_input(
             st.session_state["retrieval"].append(extract_context_from_msg(messages[0]["content"]))
 
             # send message to LLM and get response
-            token_current: int = st.session_state["total_tokens"]
             t_start = datetime.now()
             streamed_response_raw: Iterable = client.chat.completions.create(
                 model=st.session_state["model_name"],
@@ -92,6 +91,7 @@ def process_user_input(
                 # max_tokens=RESPONSE_MAX_TOKENS,
             )
             t_duration = datetime.now() - t_start
+            token_current: int = st.session_state["total_tokens"]
             streamed_response_str: Iterable[str] = stream_chat_response(streamed_response_raw, api_name=api_name)
             token_delta: int = st.session_state["total_tokens"] - token_current
             full_response: str = st.write_stream(streamed_response_str)
@@ -241,7 +241,7 @@ if st.session_state["submit_button"] and user_name and st.session_state["llm_api
             # https://wow.groq.com/privacy-policy/
             show_md_file(cst.BOT_DISCLAIMER)
 
-        left_button, middle_button, right_button = st.columns(3)
+        left_button, middle_button, right_button = st.columns(3, vertical_alignment="center")
         with left_button:
             start_chat = create_button(
                 "start_chat",
