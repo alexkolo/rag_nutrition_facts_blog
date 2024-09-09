@@ -2,7 +2,7 @@
 
 [Ref](https://github.com/DataTalksClub/llm-zoomcamp/blob/main/project.md)
 
-03/09/2024: Total: 18 / 23 points (~70%)
+09/09/2024: Total: 19 / 23 points (~83%)
 
 - ✅ Problem description
   - [ ] 0 points: The problem is not described
@@ -19,8 +19,8 @@
   - [ ] 1 point: Only one retrieval approach is evaluated
   - [x] 2 points: Multiple retrieval approaches are evaluated, and the best one is used
 
-- ❗ RAG evaluation: TODO
-  - [x] 0 points: No evaluation of RAG is provided
+- 🚧 RAG evaluation: IMPROVE
+  - [ ] 0 points: No evaluation of RAG is provided
   - [x] 1 point: Only one RAG approach (e.g., one prompt) is evaluated
   - [ ] 2 points: Multiple RAG approaches are evaluated, and the best one is used
 

@@ -66,7 +66,7 @@ To do this, I computed the cosine similarity between all titles and grouped titl
 The list of title hashes for each group is stored in the file `data/ground_truth/eva_title_groups.csv`.
 During retrieval evaluation, if a title from a group is used as a user query, then a retrieved text chunk with a title from the same group will also be considered relevant.
 
-The ground truth table was created with the  `notebooks/evaluation_retrieval.ipynb` notebook and is stored here: `data/ground_truth/eva_ground_truth.csv`.
+The ground truth table was created with the  `notebooks/evaluation_retrieval.ipynb` notebook and was stored in `data/ground_truth/eva_ground_truth.csv`.
 It has 5 columns:
 
 - Blog post title, which serves as the user query.
@@ -85,7 +85,7 @@ See it for more technical details.
 
 #### Test results
 
-With the ground truth table, different types of retrievers were evaluated suing the the hit rate and Mean Reciprocal Rank (mrr) as metrics.
+With the ground truth table, different types of retrievers were evaluated using the Hit Rate and Mean Reciprocal Rank (mrr) as metrics.
 Below are the result sorted by Hit Rate.
 
 ```test
@@ -101,9 +101,11 @@ vector         0.809295  1.054688
 
 _(For details on the different types of retrievers, see the `notebooks/evaluation_retrieval.ipynb` notebook.)_
 
-The retriever `rrf`, a hybrid of vector and full-text search with the [Reciprocal Rank Fusion](https://lancedb.github.io/lancedb/reranking/rrf/) as reranker, delivered this highest score and was finally selected.
-It is interesting to note that pure vector search (`vector`) performed worse than pure full-text search (`fts`, aka keyword search), and that both performed worse than any hybrid search. Due to the limitation of available resources, not [all available rerankers from the LanceDB Library](https://lancedb.github.io/lancedb/reranking/) could be evaluated.
+The retriever `rrf`, a hybrid of vector and full-text search with the [Reciprocal Rank Fusion](https://lancedb.github.io/lancedb/reranking/rrf/) as reranker, delivered the highest score and was finally selected.
 
+It is interesting to note that pure vector search (`vector`) performed worse than pure full-text search (`fts`, aka keyword search), and that both performed worse than any hybrid search.
+
+Due to the limitation of available resources, not [all available rerankers from the LanceDB Library](https://lancedb.github.io/lancedb/reranking/) could be evaluated.
 Excluded from the evaluation were following rerankers:
 
 - [Cohere](https://lancedb.github.io/lancedb/reranking/cohere/) due to a too low rate limit in free tier
@@ -117,7 +119,7 @@ See it for more technical details.
 
 #### Test Setup
 
-For this evaluation, only titles where the most relevant text chunk has a cosine similarity of `>0.8` with the title were used as ground truth. This made the evaluation more robust by ensuring that each title/query actually has a relevant chunk of text that the LLM should reproduce. This also made the evaluation more manageable in terms of time, since the evaluation can take quite a long time (e.g. ~1 min per answer generated), given the free tier of the LLM API provider used.
+For this evaluation, only titles where the most relevant text chunk has a cosine similarity of `>0.8` with the title were used as ground truth. This made the evaluation more robust by ensuring that each title/query actually has a relevant chunk of text that the LLM should reproduce. This also made the evaluation more manageable in terms of time, since the evaluation can take quite a long time (e.g. ~1 min per answer generated), given the free tier of the LLM API provider was used.
 
 This restriction reduces the number of available titles/queries to 77. The cosine similarity between these titles and their most relevant text chunk is on average: `0.83+-0.02`. This is our baseline score for the RAG flow. For the RAG to be considered functional, it should achieve this score.
 
@@ -235,8 +237,3 @@ The chatbot was build with the following technologies:
 - Deployment: [Streamlit Cloud](https://streamlit.io/cloud) (free tier)
 
 - Database for User Data: [MongoDB](https://www.mongodb.com/)
-
-## Docs
-
-- [Internal log on how I build this chatbot](docs/how_to_build.md)
-- [Internal project evaluation](docs/project_evaluation_internal.md)
