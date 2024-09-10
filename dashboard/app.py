@@ -123,9 +123,12 @@ st.write("Link to app: https://dr-greger-blog-bot.streamlit.app")
 # Time range selection (mimicking Grafana's $__timeFrom and $__timeTo)
 with st.sidebar:
     st.write("Date Filter:")
-    day_offset: int = st.number_input("Last days", value=7, min_value=1)
-    start_date = st.date_input("Start date", value=pd.to_datetime("now") - pd.DateOffset(day_offset))
-    end_date = st.date_input("End date", value=pd.to_datetime("now"))
+    end_date_default = pd.to_datetime("now")
+    days_between: int = (end_date_default - pd.to_datetime("2024-09-02")).days
+
+    day_offset: int = st.number_input("Last days", value=days_between, min_value=1)
+    start_date = st.date_input("Start date", value=end_date_default - pd.DateOffset(day_offset))
+    end_date = st.date_input("End date", value=end_date_default)
 
 # Convert selected dates to datetime objects with time at the start and end of the day
 start_time = datetime.combine(start_date, datetime.min.time())
@@ -153,7 +156,7 @@ with col_1, st.container(border=True):
 
 with col_2, st.container(border=True):
     st.subheader("Avg. User Rating")
-    st.write("(0 = bad, 4 = very good)")
+    st.write("_(0 = the worst, 4 = the best)_")
     panel_values: list[dict] = get_values_from_query_file(f"{query_root}query_avg_user_rating.json", **date_filter)
     avg_rating: float = panel_values[0]["averageScore"] if panel_values else 0
     st.metric("Avg. User Rating", round(avg_rating, 1), label_visibility="collapsed")
@@ -169,6 +172,7 @@ def create_ts_chart(
     y_key: str,
     value_key: str = "",
     y_label: str | None = None,
+    fillna: bool = False,
 ):
     panel_values: list[dict] = get_values_from_query_file(
         query_file=f"{query_root}{query_template}.json", value_key=value_key, **date_filter
@@ -178,7 +182,11 @@ def create_ts_chart(
         # extract date information
         table["time"] = pd.to_datetime(table["_id"].apply(lambda x: x["time"]))
         # extract time series
-        time_series: pd.Series = table.set_index("time")[y_key].dropna()
+        time_series: pd.Series = table.set_index("time")[y_key]
+        if fillna:
+            time_series = time_series.fillna(0)
+        else:
+            time_series = time_series.dropna()
         # plot time series
         st.line_chart(data=time_series, x_label="time", y_label=y_label)
         # show data points
@@ -191,7 +199,7 @@ def create_ts_chart(
 # Panel: Time Series of User Ratings
 st.subheader("User Ratings")
 with st.container(border=True):
-    st.write("(0 = bad, 4 = very good)")
+    st.write("_(0 = the worst, 4 = the best)_")
     create_ts_chart("query_ts_user_rating", y_key="averageRating", y_label="user rating")
 
 # Panel: Number of User Questions
@@ -199,10 +207,12 @@ st.subheader("Number of Questions per User")
 with st.container(border=True):
     create_ts_chart("query_ts_n_quest", y_key="totalQuestions", y_label="# user questions")
 
+
 # LLM Usage
 # ----------------
 # st.divider()
 st.subheader("Avg. LLM usage per Q&A")
+st.write("_Only tracked since 09/09/2024._")
 for value_keys, label in [
     (["prompt_tokens", "completion_tokens", "total_tokens"], "token"),
     (["prompt_time", "completion_time", "total_time"], "time (s)"),
@@ -218,7 +228,8 @@ for value_keys, label in [
         # extract time series
         values_dict[value_key] = table.set_index("time")["avgValue"]
 
-    table = pd.DataFrame(values_dict).dropna(how="all", axis=0)
+    # table = pd.DataFrame(values_dict).dropna(how="all", axis=0).loc[lambda x: (x != 0).any(axis=1)]
+    table = pd.DataFrame(values_dict).fillna(0)  # .loc[lambda x: (x != 0).any(axis=1)]
     with st.container(border=True):
         st.write(f"**Average {label.capitalize()} Usage per Q&A**")
         # plot time series
@@ -226,6 +237,12 @@ for value_keys, label in [
         # show data points
         with st.expander(f"`{table.shape[0]} data points`"):
             st.write(table)
+
+# Panel: Assistant response time (s) per user question
+with st.container(border=True):
+    st.write("**Assistant response time (s) per user question**")
+    create_ts_chart("query_ts_rsp_time", y_key="avgResponseTime", y_label="response time (s)", fillna=True)
+
 
 # Various Panels
 # ----------------

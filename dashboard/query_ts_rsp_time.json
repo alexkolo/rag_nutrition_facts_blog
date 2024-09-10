@@ -1,0 +1,120 @@
+[
+    {
+        "$addFields": {
+            "assistantMessages": {
+                "$filter": {
+                    "input": {
+                        "$slice": [
+                            {
+                                "$ifNull": [
+                                    "$chat_history.1",
+                                    []
+                                ]
+                            },
+                            1,
+                            {
+                                "$max": [
+                                    {
+                                        "$size": {
+                                            "$ifNull": [
+                                                "$chat_history.1",
+                                                []
+                                            ]
+                                        }
+                                    },
+                                    1
+                                ]
+                            }
+                        ]
+                    },
+                    "as": "chat",
+                    "cond": {
+                        "$and": [
+                            {
+                                "$eq": [
+                                    "$$chat.role",
+                                    "assistant"
+                                ]
+                            },
+                            {
+                                "$ne": [
+                                    "$$chat.response_time",
+                                    null
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    {
+        "$addFields": {
+            "responseTimesList": {
+                "$map": {
+                    "input": {
+                        "$ifNull": [
+                            "$assistantMessages",
+                            []
+                        ]
+                    },
+                    "as": "message",
+                    "in": "$$message.response_time"
+                }
+            }
+        }
+    },
+    {
+        "$addFields": {
+            "averageResponseTime": {
+                "$cond": {
+                    "if": {
+                        "$gt": [
+                            {
+                                "$size": "$responseTimesList"
+                            },
+                            0
+                        ]
+                    },
+                    "then": {
+                        "$avg": "$responseTimesList"
+                    },
+                    "else": 0
+                }
+            }
+        }
+    },
+    {
+        "$addFields": {
+            "convertedTimestamp": {
+                "$dateFromString": {
+                    "dateString": "$timestamp",
+                    "format": "%Y-%m-%d %H:%M:%S"
+                }
+            }
+        }
+    },
+    {
+        "$match": {
+            "convertedTimestamp": {
+                "$gte": "{{start_time}}",
+                "$lte": "{{end_time}}"
+            }
+        }
+    },
+    {
+        "$group": {
+            "_id": {
+                "time": "$convertedTimestamp"
+            },
+            "avgResponseTime": {
+                "$avg": "$averageResponseTime"
+            }
+        }
+    },
+    {
+        "$sort": {
+            "_id.time": 1
+        }
+    }
+]
