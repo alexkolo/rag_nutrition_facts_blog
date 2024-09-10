@@ -21,9 +21,13 @@ Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.
     <img src="data/images/app_screenshot_2024-09-10.png" width="400">
   </a>
 </p>
+
+<p align="center">
+    <img src="data/images/streamlit-app-2024-09-10-16-09-09(1).gif" width="400" alt="usage recording">
+</p>
 --->
 
-[App Preview](https://github.com/user-attachments/assets/ac50bd6c-dd41-4d10-82b3-c6b5f01526ab)
+[App Preview Video](https://github.com/user-attachments/assets/ac50bd6c-dd41-4d10-82b3-c6b5f01526ab)
 
 ## Documentation
 
