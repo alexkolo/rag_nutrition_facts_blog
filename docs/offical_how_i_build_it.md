@@ -2,7 +2,7 @@
 
 TODO: show image of the basic architecture
 
-## Basic Chatbot Architecture
+## Basic Chatbot Architecture Chart
 
 _A simplified version of the chatbot architecture:_
 
