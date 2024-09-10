@@ -2,7 +2,7 @@
 
 Reference: The [evaluation criteria](https://github.com/DataTalksClub/llm-zoomcamp/blob/main/project.md#evaluation-criteria) of the [LLM-zoomcamp course](https://github.com/DataTalksClub/llm-zoomcamp) (as of 09/09/2024).
 
-09/09/2024: Total: 19 / 23 points (~83%)
+09/09/2024: Total: 19 / 21 points (~91%) (excluding 2 bonus points)
 
 - ✅ Problem description
   - [ ] 0 points: The problem is not described
