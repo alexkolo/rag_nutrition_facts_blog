@@ -2,6 +2,60 @@
 
 TODO: show image of the basic architecture
 
+## Basic Chatbot Architecture
+
+_A simplified version of the chatbot architecture:_
+
+```mermaid
+---
+title: Basic Chatbot Architecture
+---
+graph
+
+  User((User)) -->|Submit Query| InputField
+
+  subgraph "App Interface (Streamlit)"
+    InputField[["User Input Field"]]
+    ChatWindow[["Chat Window"]]
+  end
+  InputField -->|"Forward 'Query'"| QueryHandler
+
+  subgraph "Database (MongoDB)"
+    UserData[("User Data")]
+  end
+  subgraph Orchestration
+    QueryHandler{{"Query Handler"}}
+    PromptBuilder["Prompt Builder"]
+  end
+  QueryHandler <==>|"Request 'Context' given 'Query'"| Retriever
+  QueryHandler <==>|"Request 'Chat History'"| UserData
+  QueryHandler -->|"Forward 'Query', 'Context' & 'Chat History'"| PromptBuilder
+  PromptBuilder --> |"Forward 'Query'"| ChatHistoryBuilder
+
+  subgraph Get Context for Query
+    Retriever{{"Context Retriever"}} --> |"Hybrid Search (Query)"| KBase[("Knowledge Base (LanceDB)")]
+    KBase --> |Raw List of Text Chunks| Reranker["Reranker"]
+    Reranker -->  |Ranked List of Text Chunks| ContextFormatter["Context Formatter"]
+    ContextFormatter --> |Formatted Context| Retriever
+  end
+
+  subgraph "LLM API Provider (Groq)"
+    LLM{"LLM"}
+  end
+  PromptBuilder --> |"Send 'Prompt'"| LLM
+  LLM --> |"Send 'Answer'"| ChatHistoryBuilder
+
+  ChatHistoryBuilder["Chat History Builder"]
+  ChatHistoryBuilder --> |"Save 'Chat History'"| UserData
+
+  subgraph "Dashboard (Streamlit)"
+    Panels[["Panels"]]
+  end
+  UserData --> |"Send data"| Panels
+  UserData --> |"Send 'Chat History'"| ChatWindow
+
+```
+
 ## Knowledge base
 
 ### **Ingestion**
