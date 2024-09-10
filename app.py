@@ -7,10 +7,12 @@ import os
 import uuid
 from collections.abc import Iterable
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 import pytz
 import streamlit as st
+from dotenv import load_dotenv
 from lancedb.table import Table as KBaseTable
 
 import src.constants as cst
@@ -41,15 +43,9 @@ llm_config: dict[str, Any] = cst.get_rag_config()["llm"]
 LLM_TEMP: float = llm_config["settings"]["model_temp"]
 LLM_API_NAME: str = llm_config["settings"]["api_name"]
 LLM_API_CONFIG: dict[str, Any] = llm_config["api"][LLM_API_NAME]
-LLM_API_KEY_NAME: str = LLM_API_CONFIG["key_name"]
+LLM_API_KEY_NAME: str = LLM_API_CONFIG["key_name"].upper()
 LLM_API_KEY_URL: str = LLM_API_CONFIG["key_url"]
 TOTAL_MAX_TOKEN: int = LLM_API_CONFIG["token"]["total_max"]
-
-
-# Secrets
-# -----------------------------
-DEPLOYED: bool = st.secrets.get("deployed", False)
-LLM_API_KEY: str = st.secrets.get(LLM_API_KEY_NAME, st.session_state.get(LLM_API_KEY_NAME, ""))
 
 
 # Chat Bot Elements
@@ -107,6 +103,29 @@ def process_user_input(
     )
 
 
+# Secrets
+# -----------------------------
+ST_SECRETS_FILE: str = ".streamlit/secrets.toml"
+init_st_keys("deployed")
+if st.session_state["deployed"] is None:
+    st.session_state["deployed"] = st.secrets.get("deployed", False) if Path(ST_SECRETS_FILE).exists() else False
+
+init_st_keys(LLM_API_KEY_NAME, "")
+LLM_API_KEY: str = ""
+# 1. see in streamlit secrets, if available
+if Path(ST_SECRETS_FILE).exists():
+    LLM_API_KEY = st.secrets.get(LLM_API_KEY_NAME, "")
+# 2. see in .env, if available
+if LLM_API_KEY == "":
+    load_dotenv()
+    LLM_API_KEY = os.getenv(LLM_API_KEY_NAME, "")
+# 3. see in streamlit session state
+# (the api key is only saved in the session state if it was provided by the user)
+if LLM_API_KEY == "":
+    LLM_API_KEY = st.session_state[LLM_API_KEY_NAME]
+st.session_state["llm_api_key_available"] = LLM_API_KEY != ""
+
+
 # Initialize chat history
 # -----------------------------
 init_st_keys("messages", [])
@@ -119,9 +138,7 @@ init_st_keys("user_info", cst.USER_INFO_TEMPLATE)
 init_st_keys("model_temp", LLM_TEMP)
 init_st_keys("model_name")
 init_st_keys("retrieval", [])
-init_st_keys("deployed", DEPLOYED)
-init_st_keys("llm_api_key_available", LLM_API_KEY != "")
-init_st_keys(LLM_API_KEY_NAME, "")
+
 
 # Page starts here
 # ==========================
@@ -161,7 +178,7 @@ except Exception as error:
 # ------------
 init_st_keys("mongodb_connected", False)
 with st.spinner("Connecting to user database..."):
-    mongodb_client = MongodbClient(**get_mongodb_config(DEPLOYED))
+    mongodb_client = MongodbClient(**get_mongodb_config(deployed=st.session_state["deployed"]))
 if not mongodb_client.connection_test():
     st.error("Connection to user database failed!", icon="❌")
 else:
@@ -373,7 +390,7 @@ with st.expander("🤓 _Debug Information_", expanded=False):
     st.button("Reset All 🧹", on_click=st.session_state.clear)
     st.write("Session State:")
     session_state: dict = dict(st.session_state)
-    del session_state[LLM_API_KEY_NAME]
+    # del session_state[LLM_API_KEY_NAME]
     st.json(session_state, expanded=False)
 
     # show env. variables

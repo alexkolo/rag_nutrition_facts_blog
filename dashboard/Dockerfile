@@ -1,5 +1,5 @@
 # build from root: `docker build -f dashboard/Dockerfile -t dashboard .`
-# docker run -p 8080:8080 dashboard
+# run: `docker run -p 8080:8080 dashboard`
 
 # Using official Python runtime as a parent image
 FROM python:3.12-slim
@@ -20,9 +20,9 @@ COPY ./dashboard /app
 # Copy the config file
 COPY ./rag_config.toml /app
 
-# copy sectret folder
-RUN mkdir -p /app/.streamlit
-COPY ./.streamlit/secrets.toml /app/.streamlit
+# for online test only: copy sectret folder
+# RUN mkdir -p /app/.streamlit
+# COPY ./.streamlit/secrets.toml /app/.streamlit
 
 # Expose the port that Streamlit will run on
 EXPOSE 8080

@@ -13,10 +13,12 @@ import pymongo
 import streamlit as st
 import tomli
 from pymongo.collection import Collection
+from pymongo.errors import ServerSelectionTimeoutError
 
 # Secrets
 # -----------------------------
-DEPLOYED: bool = st.secrets.get("deployed", False)
+ST_SECRETS_FILE: str = ".streamlit/secrets.toml"
+DEPLOYED: bool = st.secrets.get("deployed", False) if Path(ST_SECRETS_FILE).exists() else False
 
 # Parameters
 # -----------------------------
@@ -46,20 +48,17 @@ def get_mongodb_config(deployed: bool = False) -> dict[str, str]:
     return config[key]["local"]
 
 
-# Setup MongoDB connection
-# -----------------------------
-mongodb_config: dict[str, str] = get_mongodb_config(DEPLOYED)
-client = pymongo.MongoClient(mongodb_config["uri"])
-db = client[mongodb_config["db_name"]]
-collection: Collection = db[mongodb_config["coll_name"]]
-
 # Database Query Helper Function
 # -----------------------------
 
 
 # Helper function to query data from MongoDB
 def fetch_data_from_mongo(query: list[dict]) -> list[dict]:
-    return list(collection.aggregate(query))
+    try:
+        return list(collection.aggregate(query))
+    except ServerSelectionTimeoutError:
+        # st.error("Server selection timed out. Please try again later.")
+        return []
 
 
 # Load query template from file
@@ -118,13 +117,27 @@ st.title("Dashboard")
 st.header(page_title)
 st.write("Link to app: https://dr-greger-blog-bot.streamlit.app")
 
+
+# Connection to User Database
+# ------------
+mongodb_config: dict[str, str] = get_mongodb_config(deployed=DEPLOYED)
+client = pymongo.MongoClient(mongodb_config["uri"])
+try:
+    client.admin.command("ping")
+except Exception:
+    st.error("Connection to user database failed!", icon="❌")
+    raise
+db = client[mongodb_config["db_name"]]
+collection: Collection = db[mongodb_config["coll_name"]]
+
+
 # Sidebar: Date Filter
 # -------------------------
 # Time range selection (mimicking Grafana's $__timeFrom and $__timeTo)
 with st.sidebar:
     st.write("Date Filter:")
     end_date_default = pd.to_datetime("now")
-    days_between: int = (end_date_default - pd.to_datetime("2024-09-02")).days
+    days_between: int = (end_date_default - pd.to_datetime("2024-09-02")).days if DEPLOYED else 1
 
     day_offset: int = st.number_input("Last days", value=days_between, min_value=1)
     start_date = st.date_input("Start date", value=end_date_default - pd.DateOffset(day_offset))
@@ -135,7 +148,9 @@ start_time = datetime.combine(start_date, datetime.min.time())
 end_time = datetime.combine(end_date, datetime.max.time())
 date_filter: dict[str, datetime] = {"start_time": start_time, "end_time": end_time}
 
-no_data_msg = f"No data available for the selected time range. {date_filter['start_time']} - {date_filter['end_time']}"
+no_data_msg = (
+    f"No data available for the selected time range: `{date_filter['start_time']} - {date_filter['end_time']}`."
+)
 
 # Numbers Panel
 # --------------------------
@@ -152,8 +167,11 @@ else:
 with col_1, st.container(border=True):
     st.subheader("# Users")
     panel_values: list[dict] = get_values_from_query_file(f"{query_root}query_n_user.json", **date_filter)
-    value: int = panel_values[0]["totalEntries"] if panel_values else 0
-    st.metric("Total Users", value, label_visibility="collapsed")
+    if panel_values:
+        n_user: int = panel_values[0]["totalEntries"] if panel_values else 0
+        st.metric("Total Users", n_user, label_visibility="collapsed")
+    else:
+        st.write("No data available")
 
 with col_2, st.container(border=True):
     st.subheader("Avg. User Rating")
@@ -162,10 +180,14 @@ with col_2, st.container(border=True):
     panel_values: list[dict] = get_values_from_query_file(
         query_file=f"{query_root}query_ts_user_rating.json", **date_filter
     )
-    user_rating: pd.Series = pd.DataFrame(panel_values)["averageRating"].div(4).mul(100)
-    avg_rating = user_rating.mean()
-    st.metric("", f"{avg_rating:.0f} %", label_visibility="collapsed")
-    st.write(f"`Based on {user_rating.shape[0]} votes`")
+    table = pd.DataFrame(panel_values)
+    if not table.empty:
+        user_rating: pd.Series = table["averageRating"].div(4).mul(100)
+        avg_rating = user_rating.mean()
+        st.metric("Avg. User Rating", f"{avg_rating:.0f} %", label_visibility="collapsed")
+        st.write(f"`Based on {user_rating.shape[0]} votes`")
+    else:
+        st.write("No data available")
 
 # Charts
 # --------------------------
@@ -232,20 +254,24 @@ for value_keys, label in [
             query_file=f"{query_root}query_ts_llm_usage.json", value_key=value_key, **date_filter
         )
         table = pd.DataFrame(panel_values)
-        # extract date information
-        table["time"] = pd.to_datetime(table["_id"].apply(lambda x: x["time"]))
-        # extract time series
-        values_dict[value_key] = table.set_index("time")["avgValue"]
+        if not table.empty:
+            # extract date information
+            table["time"] = pd.to_datetime(table["_id"].apply(lambda x: x["time"]))
+            # extract time series
+            values_dict[value_key] = table.set_index("time")["avgValue"]
 
-    # table = pd.DataFrame(values_dict).dropna(how="all", axis=0).loc[lambda x: (x != 0).any(axis=1)]
-    table = pd.DataFrame(values_dict).fillna(0)  # .loc[lambda x: (x != 0).any(axis=1)]
     with st.container(border=True):
         st.write(f"**Average {label.capitalize()} Usage per Q&A**")
-        # plot time series
-        st.line_chart(data=table, x_label="time", y_label=f"avg. {label} usage per Q&A")
-        # show data points
-        with st.expander(f"`{table.shape[0]} data points`"):
-            st.write(table)
+        # table = pd.DataFrame(values_dict).dropna(how="all", axis=0).loc[lambda x: (x != 0).any(axis=1)]
+        table = pd.DataFrame(values_dict).fillna(0)  # .loc[lambda x: (x != 0).any(axis=1)]
+        if not table.empty:
+            # plot time series
+            st.line_chart(data=table, x_label="time", y_label=f"avg. {label} usage per Q&A")
+            # show data points
+            with st.expander(f"`{table.shape[0]} data points`"):
+                st.write(table)
+        else:
+            st.write(no_data_msg)
 
 # Panel: Assistant response time (s) per user question
 with st.container(border=True):
