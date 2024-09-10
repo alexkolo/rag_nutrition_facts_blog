@@ -15,11 +15,15 @@ This digital assistant, inspired by [Dr. Michael Greger & his team](https://nutr
 
 Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.streamlit.app/).
 
+<!---
 <p align="center">
   <a href="https://dr-greger-blog-bot.streamlit.app/" target="_blank">
     <img src="data/images/app_screenshot_2024-09-10.png" width="400">
   </a>
 </p>
+--->
+
+[App Preview](https://github.com/user-attachments/assets/ac50bd6c-dd41-4d10-82b3-c6b5f01526ab)
 
 ## Documentation
 
