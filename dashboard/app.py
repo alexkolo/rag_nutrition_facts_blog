@@ -6,6 +6,7 @@ View in browser: `http://localhost:8080`
 import json
 import os
 from datetime import datetime
+from pathlib import Path
 
 import pandas as pd
 import pymongo
@@ -67,6 +68,24 @@ def load_query_template(filepath: str) -> list[dict]:
         return json.load(file)
 
 
+def load_and_replace_value_key(filepath: str | Path, value_key: str = "") -> list[dict]:
+    # Load the JSON query from the file
+    with open(filepath, encoding="utf-8") as file:
+        query = json.load(file)
+
+    if value_key:
+        # Convert the query to a string for replacement
+        query_str = json.dumps(query)
+
+        # Replace all instances of {{value_key}} with the input value_key
+        query_str = query_str.replace("{{value_key}}", value_key)
+
+        # Convert the string back to JSON format
+        return json.loads(query_str)
+
+    return query
+
+
 # Function to replace placeholders in the query with actual datetime values
 def replace_time_in_query(query: list[dict], start_time: datetime, end_time: datetime) -> list[dict]:
     # Traverse the query structure and replace the placeholders with actual datetime objects
@@ -77,9 +96,14 @@ def replace_time_in_query(query: list[dict], start_time: datetime, end_time: dat
     return query
 
 
-def get_values_from_query(query_template_path: str, start_time: datetime, end_time: datetime) -> list[dict]:
-    query_template = load_query_template(query_template_path)
-    panel_query: list[dict] = replace_time_in_query(query_template, start_time, end_time)
+def get_values_from_query_file(
+    query_file: str | Path,
+    start_time: datetime,
+    end_time: datetime,
+    value_key: str = "",
+) -> list[dict]:
+    query_dict: list[dict] = load_and_replace_value_key(filepath=query_file, value_key=value_key)
+    panel_query: list[dict] = replace_time_in_query(query_dict, start_time, end_time)
     return fetch_data_from_mongo(panel_query)
 
 
@@ -123,51 +147,97 @@ else:
 
 with col_1, st.container(border=True):
     st.subheader("# Users")
-    panel_values: list[dict] = get_values_from_query(f"{query_root}query_n_user.json", **date_filter)
+    panel_values: list[dict] = get_values_from_query_file(f"{query_root}query_n_user.json", **date_filter)
     value: int = panel_values[0]["totalEntries"] if panel_values else 0
     st.metric("Total Users", value, label_visibility="collapsed")
 
 with col_2, st.container(border=True):
     st.subheader("Avg. User Rating")
     st.write("(0 = bad, 4 = very good)")
-    panel_values: list[dict] = get_values_from_query(f"{query_root}query_avg_user_rating.json", **date_filter)
+    panel_values: list[dict] = get_values_from_query_file(f"{query_root}query_avg_user_rating.json", **date_filter)
     avg_rating: float = panel_values[0]["averageScore"] if panel_values else 0
     st.metric("Avg. User Rating", round(avg_rating, 1), label_visibility="collapsed")
 
-# Times Series Charts
+# Charts
 # --------------------------
 st.divider()
-st.header("Times Series")
+st.header("Charts")
 
 
-def create_ts_chart(query_template_path: str, y_key: str, y_label: str | None = None):
-    panel_values: list[dict] = get_values_from_query(f"{query_root}{query_template_path}.json", **date_filter)
-    time_series = pd.DataFrame(panel_values)
-    if not time_series.empty:
-        time_series["time"] = pd.to_datetime(time_series["_id"].apply(lambda x: x["time"]))
-        time_series.set_index("time", inplace=True)
-        st.line_chart(time_series[y_key], x_label="time", y_label=y_label)
+def create_ts_chart(
+    query_template: str,
+    y_key: str,
+    value_key: str = "",
+    y_label: str | None = None,
+):
+    panel_values: list[dict] = get_values_from_query_file(
+        query_file=f"{query_root}{query_template}.json", value_key=value_key, **date_filter
+    )
+    table = pd.DataFrame(panel_values)
+    if not table.empty:
+        # extract date information
+        table["time"] = pd.to_datetime(table["_id"].apply(lambda x: x["time"]))
+        # extract time series
+        time_series: pd.Series = table.set_index("time")[y_key].dropna()
+        # plot time series
+        st.line_chart(data=time_series, x_label="time", y_label=y_label)
+        # show data points
+        with st.expander(f"`{time_series.shape[0]} data points used`"):
+            st.write(time_series)
     else:
         st.write(no_data_msg)
 
 
 # Panel: Time Series of User Ratings
+st.subheader("User Ratings")
 with st.container(border=True):
-    st.subheader("User Ratings")
     st.write("(0 = bad, 4 = very good)")
     create_ts_chart("query_ts_user_rating", y_key="averageRating", y_label="user rating")
 
 # Panel: Number of User Questions
+st.subheader("Number of Questions per User")
 with st.container(border=True):
-    st.subheader("Number of User Questions")
     create_ts_chart("query_ts_n_quest", y_key="totalQuestions", y_label="# user questions")
+
+# LLM Usage
+# ----------------
+# st.divider()
+st.subheader("Avg. LLM usage per Q&A")
+for value_keys, label in [
+    (["prompt_tokens", "completion_tokens", "total_tokens"], "token"),
+    (["prompt_time", "completion_time", "total_time"], "time (s)"),
+]:
+    values_dict = {}
+    for value_key in value_keys:
+        panel_values: list[dict] = get_values_from_query_file(
+            query_file=f"{query_root}query_ts_llm_usage.json", value_key=value_key, **date_filter
+        )
+        table = pd.DataFrame(panel_values)
+        # extract date information
+        table["time"] = pd.to_datetime(table["_id"].apply(lambda x: x["time"]))
+        # extract time series
+        values_dict[value_key] = table.set_index("time")["avgValue"]
+
+    table = pd.DataFrame(values_dict).dropna(how="all", axis=0)
+    with st.container(border=True):
+        st.write(f"**Average {label.capitalize()} Usage per Q&A**")
+        # plot time series
+        st.line_chart(data=table, x_label="time", y_label=f"avg. {label} usage per Q&A")
+        # show data points
+        with st.expander(f"`{table.shape[0]} data points`"):
+            st.write(table)
+
+# Various Panels
+# ----------------
+st.divider()
+st.header("Various Stats")
 
 # Panel: Average Characters of User Questions
 with st.container(border=True):
-    st.subheader("Avg. Characters per User Questions")
+    st.write("**Avg. Characters per User Questions**")
     create_ts_chart("query_ts_char_per_quest", y_key="avgQuestionLength", y_label="avg. char. per question")
 
 # Panel: Average Number of Characters in Assistant's Answer
 with st.container(border=True):
-    st.subheader("Avg. Characters per Assistant's Answer")
+    st.write("**Avg. Characters per Assistant's Answer**")
     create_ts_chart("query_ts_chat_per_answer", y_key="avgAnswerLength", y_label="avg. char. per answer")

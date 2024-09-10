@@ -1,0 +1,120 @@
+[
+    {
+        "$addFields": {
+            "assistantMessages": {
+                "$filter": {
+                    "input": {
+                        "$slice": [
+                            {
+                                "$ifNull": [
+                                    "$chat_history.1",
+                                    []
+                                ]
+                            },
+                            1,
+                            {
+                                "$max": [
+                                    {
+                                        "$size": {
+                                            "$ifNull": [
+                                                "$chat_history.1",
+                                                []
+                                            ]
+                                        }
+                                    },
+                                    1
+                                ]
+                            }
+                        ]
+                    },
+                    "as": "chat",
+                    "cond": {
+                        "$and": [
+                            {
+                                "$eq": [
+                                    "$$chat.role",
+                                    "assistant"
+                                ]
+                            },
+                            {
+                                "$ne": [
+                                    "$$chat.llm_usage",
+                                    null
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    {
+        "$addFields": {
+            "valueList": {
+                "$map": {
+                    "input": {
+                        "$ifNull": [
+                            "$assistantMessages",
+                            []
+                        ]
+                    },
+                    "as": "message",
+                    "in": "$$message.llm_usage.{{value_key}}"
+                }
+            }
+        }
+    },
+    {
+        "$addFields": {
+            "averageValue": {
+                "$cond": {
+                    "if": {
+                        "$gt": [
+                            {
+                                "$size": "$valueList"
+                            },
+                            0
+                        ]
+                    },
+                    "then": {
+                        "$avg": "$valueList"
+                    },
+                    "else": 0
+                }
+            }
+        }
+    },
+    {
+        "$addFields": {
+            "convertedTimestamp": {
+                "$dateFromString": {
+                    "dateString": "$timestamp",
+                    "format": "%Y-%m-%d %H:%M:%S"
+                }
+            }
+        }
+    },
+    {
+        "$match": {
+            "convertedTimestamp": {
+                "$gte": "{{start_time}}",
+                "$lte": "{{end_time}}"
+            }
+        }
+    },
+    {
+        "$group": {
+            "_id": {
+                "time": "$convertedTimestamp"
+            },
+            "avgValue": {
+                "$avg": "$averageValue"
+            }
+        }
+    },
+    {
+        "$sort": {
+            "_id.time": 1
+        }
+    }
+]
