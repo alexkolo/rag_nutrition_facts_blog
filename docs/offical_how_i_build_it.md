@@ -10,49 +10,53 @@ _A simplified version of the chatbot architecture:_
 ---
 title: Basic Chatbot Architecture
 ---
-graph
+%%{init: {'theme':'neutral'}}%%
 
-  User((User)) -->|Submit Query| InputField
+graph TD
 
-  subgraph "App Interface (Streamlit)"
+  User(("User")) -->|Submit Query| InputField
+
+  subgraph "Chatbot Frontend (Streamlit)"
     InputField[["User Input Field"]]
     ChatWindow[["Chat Window"]]
   end
   InputField -->|"Forward 'Query'"| QueryHandler
 
-  subgraph "Database (MongoDB)"
+  subgraph UserDB["Database (MongoDB)"]
     UserData[("User Data")]
   end
-  subgraph Orchestration
+  subgraph "Chatbot Backend"
     QueryHandler{{"Query Handler"}}
     PromptBuilder["Prompt Builder"]
+    ChatHistoryBuilder["Chat History Builder"]
+    QueryHandler -->|"Forward 'Query', 'Context' & 'Chat History'"| PromptBuilder
+    PromptBuilder --> |"Forward 'Query'"| ChatHistoryBuilder
   end
   QueryHandler <==>|"Request 'Context' given 'Query'"| Retriever
-  QueryHandler <==>|"Request 'Chat History'"| UserData
-  QueryHandler -->|"Forward 'Query', 'Context' & 'Chat History'"| PromptBuilder
-  PromptBuilder --> |"Forward 'Query'"| ChatHistoryBuilder
+  QueryHandler <===>|"Request 'Chat History'"| UserDB
 
-  subgraph Get Context for Query
+  subgraph IR["Information Retrieval"]
     Retriever{{"Context Retriever"}} --> |"Hybrid Search (Query)"| KBase[("Knowledge Base (LanceDB)")]
     KBase --> |Raw List of Text Chunks| Reranker["Reranker"]
     Reranker -->  |Ranked List of Text Chunks| ContextFormatter["Context Formatter"]
     ContextFormatter --> |Formatted Context| Retriever
   end
 
-  subgraph "LLM API Provider (Groq)"
+  subgraph LLMProvider["LLM API Provider (Groq)"]
     LLM{"LLM"}
   end
-  PromptBuilder --> |"Send 'Prompt'"| LLM
-  LLM --> |"Send 'Answer'"| ChatHistoryBuilder
+  PromptBuilder --> |"Send 'Prompt'"| LLMProvider
+  LLMProvider --> |"Send 'Answer' & Meta Data"| ChatHistoryBuilder
 
-  ChatHistoryBuilder["Chat History Builder"]
-  ChatHistoryBuilder --> |"Save 'Chat History'"| UserData
+  ChatHistoryBuilder --> |"Save 'Chat History' & Meta Data"| UserDB
 
-  subgraph "Dashboard (Streamlit)"
-    Panels[["Panels"]]
+  subgraph Dashboard["Dashboard (Streamlit)"]
+    Panel01[["Panel 1"]]
+    Panel02[["Panel 2"]]
+    Panel03[["..."]]
   end
-  UserData --> |"Send data"| Panels
-  UserData --> |"Send 'Chat History'"| ChatWindow
+  UserDB --> |"Send data"| Dashboard
+  UserDB --> |"Send 'Chat History'"| ChatWindow
 
 ```
 
