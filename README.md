@@ -1,10 +1,25 @@
-![app image](app_assets/DALLE_2024-09-06_09.48.30.png)
+![readme welcome image](data/images/DALLE_2024-09-06_09.48.30.png)
 
-# Nutrition Insights with Dr. Greger's Digital Twin 🥦 (a RAG-based Q&A chatbot)
+<!--- BADGES: START --->
+![Python-Badge](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
+![Streamlit-Badge](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)
+![MongoDB-Badge](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+![Docker-Badge](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
+<!--- BADGES: END --->
+
+# Nutrition Insights with Dr. Greger's Digital Twin 🥦
+
+## A RAG-based Q&A chatbot
 
 This digital assistant, inspired by [Dr. Michael Greger & his team](https://nutritionfacts.org/team/) at [NutritionFacts.org](https://nutritionfacts.org/about/), was created to answer user questions about healthy eating and lifestyle choices. Drawing from [over 1,200 well-researched blog posts since 2011](https://nutritionfacts.org/blog/), it provides science-backed insights to help users live a healthier, more informed life.
 
 Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.streamlit.app/).
+
+<p align="center">
+  <a href="https://dr-greger-blog-bot.streamlit.app/" target="_blank">
+    <img src="data/images/app_screenshot_2024-09-10.png" width="400">
+  </a>
+</p>
 
 ## Documentation
 
