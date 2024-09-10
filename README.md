@@ -1,3 +1,5 @@
+![app image](app_assets/DALLE_2024-09-06_09.48.30.png)
+
 # Nutrition Insights with Dr. Greger's Digital Twin 🥦 (a RAG-based Q&A chatbot)
 
 This digital assistant, inspired by [Dr. Michael Greger & his team](https://nutritionfacts.org/team/) at [NutritionFacts.org](https://nutritionfacts.org/about/), was created to answer user questions about healthy eating and lifestyle choices. Drawing from [over 1,200 well-researched blog posts since 2011](https://nutritionfacts.org/blog/), it provides science-backed insights to help users live a healthier, more informed life.
