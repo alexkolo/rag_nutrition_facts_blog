@@ -148,6 +148,7 @@ if os.getenv("RUNNING_IN_DOCKER") is not None:
 else:
     query_root = "./dashboard/"
 
+
 with col_1, st.container(border=True):
     st.subheader("# Users")
     panel_values: list[dict] = get_values_from_query_file(f"{query_root}query_n_user.json", **date_filter)
@@ -156,10 +157,15 @@ with col_1, st.container(border=True):
 
 with col_2, st.container(border=True):
     st.subheader("Avg. User Rating")
-    st.write("_(0 = the worst, 4 = the best)_")
-    panel_values: list[dict] = get_values_from_query_file(f"{query_root}query_avg_user_rating.json", **date_filter)
-    avg_rating: float = panel_values[0]["averageScore"] if panel_values else 0
-    st.metric("Avg. User Rating", round(avg_rating, 1), label_visibility="collapsed")
+    st.write("_(0 = the worst, 100 = the best)_")
+
+    panel_values: list[dict] = get_values_from_query_file(
+        query_file=f"{query_root}query_ts_user_rating.json", **date_filter
+    )
+    user_rating: pd.Series = pd.DataFrame(panel_values)["averageRating"].div(4).mul(100)
+    avg_rating = user_rating.mean()
+    st.metric("", f"{avg_rating:.0f} %", label_visibility="collapsed")
+    st.write(f"`Based on {user_rating.shape[0]} votes`")
 
 # Charts
 # --------------------------
@@ -173,6 +179,7 @@ def create_ts_chart(
     value_key: str = "",
     y_label: str | None = None,
     fillna: bool = False,
+    normalize: bool = False,
 ):
     panel_values: list[dict] = get_values_from_query_file(
         query_file=f"{query_root}{query_template}.json", value_key=value_key, **date_filter
@@ -187,6 +194,8 @@ def create_ts_chart(
             time_series = time_series.fillna(0)
         else:
             time_series = time_series.dropna()
+        if normalize:
+            time_series = time_series.div(time_series.max()).mul(100)
         # plot time series
         st.line_chart(data=time_series, x_label="time", y_label=y_label)
         # show data points
@@ -199,8 +208,8 @@ def create_ts_chart(
 # Panel: Time Series of User Ratings
 st.subheader("User Ratings")
 with st.container(border=True):
-    st.write("_(0 = the worst, 4 = the best)_")
-    create_ts_chart("query_ts_user_rating", y_key="averageRating", y_label="user rating")
+    st.write("_(0 = the worst, 100 = the best)_")
+    create_ts_chart("query_ts_user_rating", y_key="averageRating", y_label="user rating", normalize=True)
 
 # Panel: Number of User Questions
 st.subheader("Number of Questions per User")
@@ -240,8 +249,8 @@ for value_keys, label in [
 
 # Panel: Assistant response time (s) per user question
 with st.container(border=True):
-    st.write("**Assistant response time (s) per user question**")
-    create_ts_chart("query_ts_rsp_time", y_key="avgResponseTime", y_label="response time (s)", fillna=True)
+    st.write("**Assistant avg. response time (s) per user question**")
+    create_ts_chart("query_ts_rsp_time", y_key="avgResponseTime", y_label="avg. response time (s)", fillna=True)
 
 
 # Various Panels
