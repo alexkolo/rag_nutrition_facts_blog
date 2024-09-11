@@ -128,7 +128,7 @@ To keep global token usage low, each user request is limited to 500 characters.
 ### LLM API Provider
 
 As LLM API provider I used [Groq Cloud](https://groq.com/) because it is free and has a large number of open weight models ([List of Groq's Models](https://console.groq.com/docs/models)).
-The application was designed to select a model based on the currently active LLMs offered by Groq and a ranked list of LLMs I created.
+The application was designed to select a model based on the currently active LLMs offered by Groq and a ranked list of LLMs based on the RAG evaluation (see section below).
 Therefore, a user may not always get the same model.
 
 ### Interface
@@ -212,14 +212,25 @@ For this evaluation, only titles where the most relevant text chunk has a cosine
 
 This restriction reduces the number of available titles/queries to 77. The cosine similarity between these titles and their most relevant text chunk is on average: `0.83+-0.02`. This is our baseline score for the RAG flow. For the RAG to be considered functional, it should achieve this score.
 
+Since the LLM API provider [Groq Cloud](https://groq.com/) is free and has [several state-of-the-art open-weight models](https://console.groq.com/docs/models), the following models were tested (in alphabetical order): `['gemma2-9b-it', 'llama3-70b-8192', 'llama3-8b-8192', 'mixtral-8x7b-32768']`.
+
 #### Test results
 
-The complete results of the evaluation are stored in `data/ground_truth/eva_rag_results.json` with the title/query itself, the retrieved context, the LLM answer, and the cosine similarity score between the LLM answer and the most relevant text chunk. Index is the hash of the most relevant text chunk.
-In `data/ground_truth/eva_rag_similarity.csv` only the hash of the most relevant text chunk and the similarity score are stored.
-Using this file, we can calculate an average similarity score between the expected and the generated answer of `0.85+-0.04`, which agrees with our baseline score of `0.83+-0.02` (see figure below).
-Therefore, we can conclude from this evaluation that the RAG flow is able to produce useful results when the user query is covered by the RAG knowledge base. 🥳
+The complete results of the evaluation are stored in `data/ground_truth/eva_rag_results_20240911_101327.json` , including with the prompt, the LLM responses, and the cosine similarity scores between the LLM answers and the most relevant text chunk. The main index is the hash of the most relevant text chunk.
+In `data/ground_truth/eva_rag_similarity_20240911_101327.csv` only the hash of the most relevant text chunk and the similarity score are stored for each LLM.
 
-![RAG evaluation: Similarity of expected vs generated answer](./../data/ground_truth/eva_rag_sim_box.png)
+Using the results, we can calculate an average similarity score between the expected and the generated answer, which is shown below as box plots for the baseline and each LLM:
+![RAG evaluation: Similarity](./../data/ground_truth/eva_rag_similarity_20240911_101327_sim_box.png)
+The figure reveals that all tested models agree with the baseline score.
+Therefore, we can conclude that the RAG flow is able to produce useful results when the user query is covered by the RAG knowledge base. 🥳
+
+Since all LLMs perform more or less equally well, we could choose any of them as our default. However, to optimize the performance of the application, it would also be interesting to find out which LLM has the fastest response time on average. Since this data was also tracked during the evaluation (measured by the LLM API provider), we can compare it in this box plot:
+![RAG Evaluation: Time](./../data/ground_truth/eva_rag_similarity_20240911_101327_time_box.png)
+This shows that the smaller models have the fastest response time.
+
+Since the average response time for the larger models is still under one second, I gave them priority, since they should in principle produce better responses. Based on this, I was able to create a ranked list of LLMs, which is compared to the available LLMs of the API provider at the moment of using the chatbot:
+`["llama3-70b-8192", "mixtral-8x7b-32768", "llama3-8b-8192", "gemma2-9b-it"]`
+This means that by default, `llama3-70b-8192` would be used, but if it's not available, the next model in the list would be used, if available, and so on.
 
 ## Monitoring User Interaction
 

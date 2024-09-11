@@ -46,8 +46,8 @@ key_name = "GROQ_TOKEN"
 key_url = "https://console.groq.com/keys"
 token.total_max = 8192
 models.url = "https://api.groq.com/openai/v1/models"
-# as of 23/07/2024
-models.ranked = [ "mixtral-8x7b-32768", "llama3-70b-8192", "llama3-8b-8192", "gemma2-9b-it", "gemma-7b-it" ]
+# based on RAG evaluation 11/09/2024
+models.ranked = ["llama3-70b-8192", "mixtral-8x7b-32768", "llama3-8b-8192", "gemma2-9b-it"]
 
 [mongodb.local]
 db_name = "rag_user_info"
