@@ -62,7 +62,6 @@ def build_full_llm_chat_input(
     """
 
     # get the context for the most recent user prompt
-    # prompt_context: str = "Error: could not retrieve any context"  # TODO retrieve_context(user_prompt)
     prompt_context: str = get_context(k_base, user_prompt)
     # build the system message with the context
     system_msg_with_context: str = build_system_msg(context=prompt_context)

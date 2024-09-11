@@ -180,17 +180,18 @@ Below are the result sorted by Hit Rate.
 ```test
 retrievers     hit_rate       mrr
 ---------------------------------
-rrf            0.843750  1.159802
-hybrid         0.841346  1.138715
-lc_weight_0.7  0.841346  1.138715
-lc_weight_0.3  0.841346  1.138715
+cross_encoder  0.879006  1.075788 (hybrid + reranker)
+rrf            0.856571  1.064436 (hybrid + reranker)
+hybrid         0.854968  1.035604
+lc_w0.5        0.854968  1.035604 (hybrid + reranker)
 fts            0.818910  0.947983
 vector         0.809295  1.054688
 ```
 
 _(For details on the different types of retrievers, see the `notebooks/evaluation_retrieval.ipynb` notebook.)_
 
-The retriever `rrf`, a hybrid of vector and full-text search with the [Reciprocal Rank Fusion](https://lancedb.github.io/lancedb/reranking/rrf/) as reranker, delivered the highest score and was finally selected.
+The retriever `cross_encoder`, a hybrid of vector and full-text search with the reranker [Cross Encoder](https://lancedb.github.io/lancedb/reranking/cross_encoder/) (using model `cross-encoder/ms-marco-MiniLM-L-2-v2`, as it showed a good compression between speed and accuracy) , delivered the highest score and was finally selected.
+At a worthy second place comes the retriever `rrf`, a hybrid of vector and full-text search with the [Reciprocal Rank Fusion](https://lancedb.github.io/lancedb/reranking/rrf/) as reranker.
 
 It is interesting to note that pure vector search (`vector`) performed worse than pure full-text search (`fts`, aka keyword search), and that both performed worse than any hybrid search.
 
@@ -198,7 +199,6 @@ Due to the limitation of available resources, not [all available rerankers from 
 Excluded from the evaluation were following rerankers:
 
 - [Cohere](https://lancedb.github.io/lancedb/reranking/cohere/) due to a too low rate limit in free tier
-- [Cross Encoder](https://lancedb.github.io/lancedb/reranking/cross_encoder/) due to being too slow when using CPU as engine
 - [ColBERT](https://lancedb.github.io/lancedb/reranking/colbert/) due to being too slow when using CPU as engine
 
 ### RAG Performance

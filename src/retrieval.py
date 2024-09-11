@@ -1,7 +1,7 @@
 import lancedb
 import pandas as pd
 from lancedb.db import DBConnection
-from lancedb.rerankers import RRFReranker
+from lancedb.rerankers import CrossEncoderReranker
 from lancedb.table import Table
 
 from src.constants import LANCEDB_URI, get_rag_config
@@ -18,23 +18,36 @@ def get_knowledge_base(table_name: str | None = None) -> Table:
     return db.open_table(_table_name)
 
 
-def retrieve_context(k_base: Table, query_text: str, n_retrieve: int = 10, weight: float = 0.3) -> list[dict]:
+def retrieve_context(
+    k_base: Table, query_text: StopIteration, n_retrieve: int = 10, rr_model_name: str = "", device: str | None = None
+) -> list[dict]:
     # Use `weight` as the weight for vector search (instead of 0.7)
     # reranker_lc = LinearCombinationReranker(weight=weight)
-    reranker_rrf = RRFReranker()
+    # reranker_rrf = RRFReranker()
+    # https://lancedb.github.io/lancedb/reranking/cross_encoder/
+    _device = device or get_rag_config()["reranker"]["device"]
+    _rr_model_name = get_rag_config()["reranker"]["model_name"] if rr_model_name == "" else rr_model_name
+    rr_cross_encoder = CrossEncoderReranker(model_name=_rr_model_name, device=_device)
 
     return (
-        k_base.search(query=query_text, query_type="hybrid").rerank(reranker=reranker_rrf).limit(n_retrieve).to_list()
+        k_base.search(query=query_text, query_type="hybrid")
+        .rerank(reranker=rr_cross_encoder)
+        .limit(n_retrieve)
+        .to_list()
     )
 
 
 def reorder_context(resp: list[dict], n_use: int = 5) -> list[dict]:
-    # Create a DataFrame
-    df = pd.DataFrame(resp).drop(columns=["vector"])
-
-    # Group paragraphs by 'title'
+    # Pandas Pipeline
     return (
-        df.groupby("title")
+        # Create a DataFrame
+        pd.DataFrame(resp)
+        # Remove 'vector' column
+        .drop(columns=["vector"])
+        # remove duplicates based on 'hash_doc'
+        .drop_duplicates(subset="hash_doc")
+        # Group paragraphs by 'title'
+        .groupby("title")
         .agg(
             para=("text", list),  # collect all 'text' into a list per title
             score_sum=("_relevance_score", "sum"),  # sum 'score' for each title
@@ -46,7 +59,7 @@ def reorder_context(resp: list[dict], n_use: int = 5) -> list[dict]:
         # .reset_index(drop=True)  # renew index
         # Add a cumulative count column based on 'text_count'
         .assign(cum_count=lambda x: x["para_count"].cumsum())
-        .iloc[:n_use]  # get the first `n_use` rows
+        .iloc[:n_use]  # get the first `n_use` titles
         .to_dict("records")  # convert to `list[dict]`
     )
 
