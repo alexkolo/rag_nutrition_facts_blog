@@ -33,9 +33,9 @@ repos:
     rev: 1.8.7
     hooks:
       - id: nbqa-isort
-        args: ["--float-to-top", "--profile=black"]
+        args: ["--profile=black"] # "--float-to-top",
       - id: nbqa-flake8
-        args: ["--extend-ignore=E501"]
+        args: ["--extend-ignore=E501,E402"]
       - id: nbqa-black
       - id: nbqa-pyupgrade
         args: ["--py312-plus"]

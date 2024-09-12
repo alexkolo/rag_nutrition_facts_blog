@@ -37,9 +37,11 @@ graph TD
 
   subgraph IR["Information Retrieval"]
     Retriever{{"Context Retriever"}} --> |"Hybrid Search (Query)"| KBase[("Knowledge Base (LanceDB)")]
-    KBase --> |Raw List of Text Chunks| Reranker["Reranker"]
-    Reranker -->  |Ranked List of Text Chunks| ContextFormatter["Context Formatter"]
-    ContextFormatter --> |Formatted Context| Retriever
+    KBase --> |Raw List of Chunks| Reranker["Reranker"]
+    Reranker -->  |Ranked List of Chunks| Grouper
+    Grouper["Group chunks by title"] -->  |Grouped List of Chunks| SWR
+    SWR["Sentence-window retrieval"] --> |Enriched Grouped List of Chunks| ContextFormatter
+    ContextFormatter["Context Formatter"] --> |Human-readable Context| Retriever
   end
 
   subgraph LLMProvider["LLM API Provider (Groq)"]
@@ -85,6 +87,8 @@ The dataset was automatically ingested into a vector store located in `databases
   "n_docs": int,  # Number of text chunks in the blog post (after chunking)
   ```
 
+- TODO: add date information
+
 ### **Chunking**
 
 Since the paragraphs were kept separate during web scraping, the blog posts are technically already chunked, but this chunking wasn't very useful because the length of the paragraphs varies greatly. They can be very short, like just a question or statement that is very similar to the query, or super long, exceeding the limits of the embedding model (512 tokens). Neither would be great. So all the paragraphs of a blog post were merged and then recursively chunked using the _industry standard_ for chunk size and overlap of 1000 and 100 characters, respectively (~250 and ~25 tokens). (See `src.chunking.recursive_text_splitter` for technical details.) This setup is also consistent with the embedding model used, which was trained on 250 token texts.
@@ -103,14 +107,17 @@ The resulting knowledge base for the RAG consists of 1281 blog posts, each with 
 
 ## Information Retrieval (IR)
 
-**Retriever**: Based on the retrieval evaluation results (see section below), a hybrid of vector and full-text search with the [Reciprocal Rank Fusion](https://lancedb.github.io/lancedb/reranking/rrf/) reranker was used a retriever of text chunks.
+**Retriever**: Based on the retrieval evaluation results (see section below), a hybrid of vector and full-text search with the [Cross Encoder](https://lancedb.github.io/lancedb/reranking/cross_encoder/) (using model `cross-encoder/ms-marco-MiniLM-L-2-v2`) reranker was used a retriever of text chunks.
 
-**Post-processing**: The top 10 retrieved text chunks are further processed and enriched with metadata: They are grouped by their blog post title, and the groups are ordered by the sum of the chunks' relevance scores from the retriever. Finally, the blog post URL is added to each group.
+**Post-processing**: The top 10 retrieved text chunks are further processed and enriched with metadata: They are grouped by their blog post title, and then the groups/titles are order by their accumulated relevance score from their retrieved text chunks, and the text chunks of the top 5 groups are selected.
+
+**Sentence-window retrieval**:
+Each blog post has multiple chunks of text, and their order is stored in the knowledge base. This information can be used to add more context to the retrieved text chunks.
+I decided to do this for the group/title with the highest accumulated relevance score after post-processing, as it has the best chance of being relevant to the user query. For all text chunks in this group, the text chunks immediately before and after the retrieved text chunks are added to the group if they are not already in the group.
 
 ### Ideas for improvement
 
 - if similar blog post title (cosine similarity > 0.8), prioritize the more recent one (unless the from the same year)
-- sentence-window retrieval: also provide the chunk before and after the retrieve chunk from the same blog post for enrichment
 - Query rewriting: try HyDE (let the LLM answer the query hypothetically and use this as the new query)
 
 ## Chatbot App
@@ -214,7 +221,15 @@ This restriction reduces the number of available titles/queries to 77. The cosin
 
 Since the LLM API provider [Groq Cloud](https://groq.com/) is free and has [several state-of-the-art open-weight models](https://console.groq.com/docs/models), the following models were tested (in alphabetical order): `['gemma2-9b-it', 'llama3-70b-8192', 'llama3-8b-8192', 'mixtral-8x7b-32768']`.
 
+The evaluation was conducted with 3 different setups:
+
+1. timestamp `20240911_101327` : Reranker = `rrf`, Sentence-window retrieval = off
+2. timestamp `20240912_105808` : Reranker = `cross-encoder`, Sentence-window retrieval = off
+3. timestamp `20240912_114908` : Reranker = `cross-encoder`, Sentence-window retrieval = on
+
 #### Test results
+
+For simplicity, we only look at the 1st setup as the results of the other two setups are statistically identical.
 
 The complete results of the evaluation are stored in `data/ground_truth/eva_rag_results_20240911_101327.json` , including with the prompt, the LLM responses, and the cosine similarity scores between the LLM answers and the most relevant text chunk. The main index is the hash of the most relevant text chunk.
 In `data/ground_truth/eva_rag_similarity_20240911_101327.csv` only the hash of the most relevant text chunk and the similarity score are stored for each LLM.
@@ -231,6 +246,8 @@ This shows that the smaller models have the fastest response time.
 Since the average response time for the larger models is still under one second, I gave them priority, since they should in principle produce better responses. Based on this, I was able to create a ranked list of LLMs, which is compared to the available LLMs of the API provider at the moment of using the chatbot:
 `["llama3-70b-8192", "mixtral-8x7b-32768", "llama3-8b-8192", "gemma2-9b-it"]`
 This means that by default, `llama3-70b-8192` would be used, but if it's not available, the next model in the list would be used, if available, and so on.
+
+**Different setups:** It's not surprising that the 3 different setups have similar results, since by the definition of our test sample, it's easy to retrieve the text chunk that is most relevant to the user query.
 
 ## Monitoring User Interaction
 

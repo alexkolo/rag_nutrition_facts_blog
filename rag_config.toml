@@ -32,10 +32,19 @@ overlap = 100 # The number of characters to overlap between chunks. Default is 1
 uri = "databases/my_lancedb" # relative to the project root
 table_name = "table_simple05"
 
-[reranker]
-# for reranker "Cross Encoder"
-device = "cpu"
-model_name = "cross-encoder/ms-marco-MiniLM-L-2-v2"
+[retriever]
+# Number of relevant text chunks to retrieve after reranking
+n_retrieve = 10
+# Number of top titles returned after grouping retrieved text chunks by title
+# & sorting titles by their relevance score (accumulated by their retrieved chunks)
+n_titles = 5
+# Sentence-window retrieval: wether to enrich the 1st title with additional text chunks
+enrich_first = true
+# for reranker: "Cross Encoder"
+reranker.device = "cpu"
+reranker.model_name = "cross-encoder/ms-marco-MiniLM-L-2-v2"
+
+
 
 [chat]
 user_avatar = "❔"

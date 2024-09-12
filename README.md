@@ -27,7 +27,9 @@ Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.
 </p>
 --->
 
-[App Preview Video](https://github.com/user-attachments/assets/ac50bd6c-dd41-4d10-82b3-c6b5f01526ab)
+### Demo Video
+
+[App Demo Video](https://github.com/user-attachments/assets/ac50bd6c-dd41-4d10-82b3-c6b5f01526ab)
 
 ## Documentation
 
@@ -35,17 +37,21 @@ Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.
 - [How you can run & test the chatbot yourself](docs/offical_how_to_run_yourself.md)
 - [How I built and evaluated this chatbot](docs/offical_how_i_build_it.md)
 - [Personal project evaluation](docs/internal_project_evaluation.md) based on the [criteria](https://github.com/DataTalksClub/llm-zoomcamp/blob/main/project.md#evaluation-criteria) of the [LLM-zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp) course
+- [Dataset used to build the chatbot](#dataset)
+- [Technologies used](#technologies)
 
 ## Dataset
 
 The raw data used to build the RAG knowledge base is stored in `data/blog_posts/json`. It consists of all blog posts from [https://nutritionfacts.org/blog/](https://nutritionfacts.org/blog/) (as of 28.08.2024). See the `notebooks/web_scraping.ipynb` notebook for more technical details on the web scraping process.
 
+<!---
 ## Help improve the bot
 
 - setup "Developer Environment"
   - `pip install --no-cache-dir -e .[dev]`
   - pre-commit setup: `pre-commit install`
     - test: `pre-commit run --all-files`
+--->
 
 ## Technologies
 

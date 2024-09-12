@@ -44,7 +44,10 @@ def get_llm_api_client_object(api_name: str):
 
 
 def build_full_llm_chat_input(
-    user_prompt: str, chat_history: list[dict[str, str]], k_base: Table
+    user_prompt: str,
+    chat_history: list[dict[str, str]],
+    k_base: Table,
+    retriever_config: dict,
 ) -> list[dict[str, str]]:
     """
     Build the full chat history for the LLM where the system message contains the context for the most
@@ -54,15 +57,20 @@ def build_full_llm_chat_input(
     ----------
     user_prompt : str
         Most recent user prompt to send to the LLM, for which to retrieve context.
+    chat_history : list[dict[str, str]]
+        Full chat history from chatbot interaction with user.
+    k_base : Table
+        Knowledge base to retrieve context from.
+    retriever_config: dict
+        Configuration for the retriever
 
     Returns
     -------
     list[dict[str, str]]
         Full list of messages to send to the LLM.
     """
-
     # get the context for the most recent user prompt
-    prompt_context: str = get_context(k_base, user_prompt)
+    prompt_context: str = get_context(k_base, user_prompt, **retriever_config)
     # build the system message with the context
     system_msg_with_context: str = build_system_msg(context=prompt_context)
     # insert user prompt at the beginning of the chat history

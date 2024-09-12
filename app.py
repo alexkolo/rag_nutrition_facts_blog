@@ -5,6 +5,7 @@ View in browser: `http://localhost:8501`
 
 import os
 import uuid
+import warnings
 from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
@@ -22,6 +23,9 @@ from src.llm_api import build_full_llm_chat_input, stream_chat_response
 from src.mongodb import MongodbClient, get_mongodb_config, save_chat_history
 from src.prompt_building import WELCOME_MSG, extract_context_from_msg
 from src.retrieval import connect_to_lancedb_table
+
+# ignore future warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 # Chat Parameters
 # -----------------------------
@@ -46,6 +50,9 @@ LLM_API_CONFIG: dict[str, Any] = llm_config["api"][LLM_API_NAME]
 LLM_API_KEY_NAME: str = LLM_API_CONFIG["key_name"].upper()
 LLM_API_KEY_URL: str = LLM_API_CONFIG["key_url"]
 TOTAL_MAX_TOKEN: int = LLM_API_CONFIG["token"]["total_max"]
+
+# get the config for the retriever
+retriever_config: dict = cst.get_rag_config()["retriever"]
 
 
 # Chat Bot Elements
@@ -73,7 +80,12 @@ def process_user_input(
             # build LLM chat input
             # TODO: check when message gets too big
             chat_history: list[dict[str, str]] = st.session_state["messages"]
-            messages: list[dict[str, str]] = build_full_llm_chat_input(user_prompt, chat_history, k_base)
+            messages: list[dict[str, str]] = build_full_llm_chat_input(
+                user_prompt=user_prompt,
+                chat_history=chat_history,
+                k_base=k_base,
+                retriever_config=retriever_config,
+            )
             # save first message, which contains context
             st.session_state["retrieval"].append(extract_context_from_msg(messages[0]["content"]))
 
