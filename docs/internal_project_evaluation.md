@@ -2,7 +2,7 @@
 
 Reference: The [evaluation criteria](https://github.com/DataTalksClub/llm-zoomcamp/blob/main/project.md#evaluation-criteria) of the [LLM-zoomcamp course](https://github.com/DataTalksClub/llm-zoomcamp) (as of 09/09/2024).
 
-09/09/2024: Total: 19 / 21 points (~91%) (excluding 2 bonus points)
+09/09/2024: Total: 20 / 21 points (~95%) (excluding 2 bonus points)
 
 - ✅ Problem description
   - [ ] 0 points: The problem is not described
@@ -19,10 +19,10 @@ Reference: The [evaluation criteria](https://github.com/DataTalksClub/llm-zoomca
   - [ ] 1 point: Only one retrieval approach is evaluated
   - [x] 2 points: Multiple retrieval approaches are evaluated, and the best one is used
 
-- 🚧 RAG evaluation: IMPROVE
+- ✅ RAG evaluation:
   - [ ] 0 points: No evaluation of RAG is provided
-  - [x] 1 point: Only one RAG approach (e.g., one prompt) is evaluated
-  - [ ] 2 points: Multiple RAG approaches are evaluated, and the best one is used
+  - [ ] 1 point: Only one RAG approach (e.g., one prompt) is evaluated
+  - [x] 2 points: Multiple RAG approaches are evaluated, and the best one is used
 
 - ✅ Interface
   - [ ] 0 points: No way to interact with the application at all
