@@ -109,7 +109,7 @@ def get_values_from_query_file(
 # Page starts here
 # ==========================
 page_title = 'Data Usage of the "Nutrify Your Life" App'
-st.set_page_config(page_title=page_title, icon="📊")
+st.set_page_config(page_title=page_title, page_icon="📊")
 
 # Header
 # -------------------------
