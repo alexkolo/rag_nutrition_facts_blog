@@ -1,10 +1,14 @@
 ![readme welcome image](data/images/DALLE_2024-09-16_21.48.45_header.webp)
 
-<!--- BADGES: START --->
+<!---
 ![Python-Badge](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
+--->
+
+<!--- BADGES: START --->
 ![Streamlit-Badge](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)
 ![MongoDB-Badge](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Docker-Badge](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
+<img src="https://img.shields.io/badge/Python-3.12-blue" height="28"/>
 <!--- BADGES: END --->
 
 # 🥦 Nutrify Your Life 🥦
@@ -30,6 +34,7 @@ Start chatting with the **Nutrify Your Life** companion [here](https://nutrify-y
 --->
 
 ### App Demo Video
+
 [Nutrify_Your_Life_Demo](https://github.com/user-attachments/assets/de4cd419-4188-483b-b373-d3ac6cc09f76)
 
 ## Documentation
