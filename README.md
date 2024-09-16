@@ -29,9 +29,8 @@ Start chatting with the **Nutrify Your Life** companion [here](https://nutrify-y
 </p>
 --->
 
-### Demo Video
-
-[App Demo Video](https://github.com/user-attachments/assets/ac50bd6c-dd41-4d10-82b3-c6b5f01526ab)
+### App Demo Video
+[Nutrify_Your_Life_Demo](https://github.com/user-attachments/assets/de4cd419-4188-483b-b373-d3ac6cc09f76)
 
 ## Documentation
 
