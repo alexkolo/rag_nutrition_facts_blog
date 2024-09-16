@@ -1,5 +1,7 @@
 import time
+from collections.abc import Iterable
 from pathlib import Path
+from typing import Any
 
 import streamlit as st
 from PIL import Image
@@ -16,25 +18,34 @@ def init_st_keys(key: str | list[str], default_value=None):
             st.session_state[key] = default_value
 
 
-def stream_text(response: str):
+def stream_text(response: str, sleep: float = 0.05) -> Iterable[str]:
     for word in response.split():
         yield word + " "
-        time.sleep(0.05)
+        time.sleep(sleep)
+
+
+def get_llm_model_name(api_config: dict[str, Any], api_key: str) -> str:
+    model_name: str = api_config.get("model", {}).get("name", "")
+    if not model_name:
+        models_url: str = api_config.get("models", {}).get("url", "")
+        ranked_models: list[str] = api_config.get("models", {}).get("ranked", [])
+        try:
+            model_name = get_preferred_model(api_key=api_key, models_url=models_url, ranked_models=ranked_models)
+        except Exception:
+            st.error("There was an error connecting to the LLM provider 😢. Try 'Reset All'.", icon="❌")
+            raise
+
+    if not model_name:
+        st.error("The LLM model name remains undefined 😢.", icon="❌")
+
+    return model_name
 
 
 def connect_to_llm(api_key: str, api_name: str, api_config: dict):
     # Setup Model Name
     init_st_keys("model_name")
     if not st.session_state["model_name"]:
-        model_name: str = api_config.get("model", {}).get("name", "")
-        if not model_name:
-            models_url: str = api_config.get("models", {}).get("url", "")
-            ranked_models: list[str] = api_config.get("models", {}).get("ranked", [])
-            try:
-                model_name = get_preferred_model(api_key=api_key, models_url=models_url, ranked_models=ranked_models)
-            except Exception:
-                st.error("There was an error connecting to the LLM provider 😢. Try 'Reset All'.", icon="❌")
-                raise
+        model_name: str = get_llm_model_name(api_config=api_config, api_key=api_key)
         st.session_state["model_name"] = model_name
 
     # Setup LLM API Client

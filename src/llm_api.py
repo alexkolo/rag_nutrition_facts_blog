@@ -1,11 +1,14 @@
+import os
 from collections.abc import Iterable
 from typing import Any
 
 import requests
 import streamlit as st
+from dotenv import load_dotenv
 from groq import Groq
 from lancedb.table import Table
 
+import src.constants as cst
 from src.prompt_building import build_system_msg
 from src.retrieval import get_context
 
@@ -39,8 +42,11 @@ def get_preferred_model(api_key: str, models_url: str, ranked_models: list[str])
     raise ValueError("No preferred model found in the list of active models.")
 
 
-def get_llm_api_client_object(api_name: str):
-    return LLM_CLIENTS.get(api_name)
+def get_llm_api_client_object(api_name: str) -> Any:
+    LLMClient = LLM_CLIENTS.get(api_name)
+    if not LLMClient:
+        raise ValueError(f"Unsupported LLM provider: {api_name}")
+    return LLMClient
 
 
 def build_full_llm_chat_input(
@@ -108,3 +114,35 @@ def stream_chat_response(response: Iterable, api_name: str) -> Iterable[str]:
             """
         else:
             yield text
+
+
+def get_llm_model_name(api_config: dict[str, Any], api_key: str) -> str:
+    model_name: str = api_config.get("model", {}).get("name", "")
+    if not model_name:
+        MODELS_URL: str = api_config.get("models", {}).get("url", "")
+        RANKED_MODELS: list[str] = api_config.get("models", {}).get("ranked", [])
+        model_name = get_preferred_model(api_key=api_key, models_url=MODELS_URL, ranked_models=RANKED_MODELS)
+
+    return model_name
+
+
+def setup_llm_client() -> tuple[Any, str, str]:
+    # LLM Parameters
+    LLM_CONFIG: dict[str, Any] = cst.get_rag_config()["llm"]
+    LLM_API_NAME: str = LLM_CONFIG["settings"]["api_name"]
+    LLM_API_CONFIG: dict[str, Any] = LLM_CONFIG["api"][LLM_API_NAME]
+
+    # secrets
+    load_dotenv(cst.REPO_PATH)
+    LLM_API_KEY_NAME: str = LLM_API_CONFIG["key_name"].upper()
+    LLM_API_KEY: str = os.getenv(LLM_API_KEY_NAME)
+
+    # Model Name
+    model_name: str = get_llm_model_name(api_config=LLM_API_CONFIG, api_key=LLM_API_KEY)
+
+    # Patch the OpenAI client
+    LLMClient = get_llm_api_client_object(api_name=LLM_API_NAME)
+    llm_client = LLMClient(api_key=LLM_API_KEY)
+
+    # return the LLM client and the model name
+    return llm_client, LLM_API_NAME, model_name
