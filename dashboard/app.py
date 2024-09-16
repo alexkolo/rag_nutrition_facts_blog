@@ -115,8 +115,10 @@ st.set_page_config(page_title=page_title)
 # -------------------------
 st.title("Dashboard")
 st.header(page_title)
-st.write("Link to app: https://dr-greger-blog-bot.streamlit.app")
-
+if DEPLOYED:
+    st.write("Link to app: https://dr-greger-blog-bot.streamlit.app")
+else:
+    st.write("Link to app: http://localhost:8501")
 
 # Connection to User Database
 # ------------
