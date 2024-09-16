@@ -9,6 +9,28 @@
 > I used Grafana at first for the online dashboard (see [here](https://chatbotdrgreger.grafana.net/public-dashboards/1ae4a1c3c47c41478e16d97aaa5a2276)). However, due to limitation of the free tier version, it stops working properly (aka won't show any data) on 18.09.2024. For the same reason, it will not work locally.
 > For more details on my drama around the dashboard see [here](offical_how_i_build_it.md#dashboard).
 
+### Deployment to the streamlit cloud
+
+- create/update the `requirements.txt` file:
+
+  `pip freeze --exclude-editable | sed s/+cpu// > requirements.txt`
+
+- the rest happens within the streamlit cloud account:
+  - chatbot app path: `./app.py`
+  - dashboard app path: `./dashboard/app.py`
+  - `.streamlit/secrets.toml` (same for both apps for simplicity):
+
+      ```plaintext
+      GROQ_TOKEN = "gsk_..."
+
+      deployed = true
+
+      [mongodb]
+      db_name = "rag_user_info"
+      coll_name = "chatbot_dr_greger"
+      uri = "mongodb+srv://..."
+      ```
+
 ## Run it on your own
 
 - add a [Groq API key](https://console.groq.com/keys) in `.streamlit/secrets.toml` as `GROQ_TOKEN = "..."` (since the app is using [Groq Cloud](https://groq.com/) as my LLM API provider, as it is free tier).
