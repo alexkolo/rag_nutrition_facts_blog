@@ -6,6 +6,8 @@ TODO: show image of the basic architecture
 
 _A simplified version of the chatbot architecture:_
 
+(best viewed in a web browser)
+
 ```mermaid
 ---
 title: Basic Chatbot Architecture
@@ -107,7 +109,7 @@ The resulting knowledge base for the RAG consists of 1281 blog posts, each with 
 
 ## Information Retrieval (IR)
 
-**Retriever**: Based on the retrieval evaluation results (see section below), a hybrid of vector and full-text search with the [Cross Encoder](https://lancedb.github.io/lancedb/reranking/cross_encoder/) (using model `cross-encoder/ms-marco-MiniLM-L-2-v2`) reranker was used a retriever of text chunks.
+**Retriever**: Based on the retrieval evaluation results (see section below), a hybrid of vector and full-text search with the [Cross Encoder](https://lancedb.github.io/lancedb/reranking/cross_encoder/) (using model `cross-encoder/ms-marco-MiniLM-L-2-v2`) as reranker was used as the retriever.
 
 **Post-processing**: The top 10 retrieved text chunks are further processed and enriched with metadata: They are grouped by their blog post title, and then the groups/titles are order by their accumulated relevance score from their retrieved text chunks, and the text chunks of the top 5 groups are selected.
 
@@ -229,25 +231,27 @@ The evaluation was conducted with 3 different setups:
 
 #### Test results
 
-For simplicity, we only look at the 1st setup as the results of the other two setups are statistically identical.
+The complete results of the evaluation are stored in `data/ground_truth/eva_rag_results_{timestamp}.json` , including with the prompt, the LLM responses, and the cosine similarity scores between the LLM answers and the most relevant text chunk. The main index is the hash of the most relevant text chunk.
+In `data/ground_truth/eva_rag_similarity_{timestamp}.csv` only the hash of the most relevant text chunk and the similarity score are stored for each LLM.
 
-The complete results of the evaluation are stored in `data/ground_truth/eva_rag_results_20240911_101327.json` , including with the prompt, the LLM responses, and the cosine similarity scores between the LLM answers and the most relevant text chunk. The main index is the hash of the most relevant text chunk.
-In `data/ground_truth/eva_rag_similarity_20240911_101327.csv` only the hash of the most relevant text chunk and the similarity score are stored for each LLM.
+For simplicity, we will only look at the results of the first setup, as the results of the other two setups are statistically identical to it. It's not surprising that the 3 different setups have very similar results, since the definition of our test sample makes it easy to retrieve the chunk of text that is most relevant to the user's query.
 
 Using the results, we can calculate an average similarity score between the expected and the generated answer, which is shown below as box plots for the baseline and each LLM:
+
 ![RAG evaluation: Similarity](./../data/ground_truth/eva_rag_similarity_20240911_101327_sim_box.png)
+
 The figure reveals that all tested models agree with the baseline score.
 Therefore, we can conclude that the RAG flow is able to produce useful results when the user query is covered by the RAG knowledge base. 🥳
 
 Since all LLMs perform more or less equally well, we could choose any of them as our default. However, to optimize the performance of the application, it would also be interesting to find out which LLM has the fastest response time on average. Since this data was also tracked during the evaluation (measured by the LLM API provider), we can compare it in this box plot:
-![RAG Evaluation: Time](./../data/ground_truth/eva_rag_similarity_20240911_101327_time_box.png)
+
+![RAG Evaluation: Response Time](./../data/ground_truth/eva_rag_similarity_20240911_101327_time_box.png)
+
 This shows that the smaller models have the fastest response time.
 
 Since the average response time for the larger models is still under one second, I gave them priority, since they should in principle produce better responses. Based on this, I was able to create a ranked list of LLMs, which is compared to the available LLMs of the API provider at the moment of using the chatbot:
 `["llama3-70b-8192", "mixtral-8x7b-32768", "llama3-8b-8192", "gemma2-9b-it"]`
 This means that by default, `llama3-70b-8192` would be used, but if it's not available, the next model in the list would be used, if available, and so on.
-
-**Different setups:** It's not surprising that the 3 different setups have similar results, since by the definition of our test sample, it's easy to retrieve the text chunk that is most relevant to the user query.
 
 ## Monitoring User Interaction
 
