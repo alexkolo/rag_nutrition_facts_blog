@@ -1,0 +1,15 @@
+---
+description: This is the first messsage of the chatbot
+author: myself
+version: 0.0.1
+---
+
+Hi **{{ user_name | default('User') }}**! 🌟 Welcome to your personal guide on healthy eating and lifestyle habits. I'm here to help you
+navigate the world of nutrition with science-backed insights from
+[Dr. Michael Greger & his team](https://nutritionfacts.org/team/)
+at [NutritionFacts.org](https://nutritionfacts.org/about/). Whether you have a quick question or need detailed advice,
+I'm ready to assist you on your journey to a healthier, happier life. Let's get started! 💚
+
+{% if 'test' in user_name.lower() %}
+It seems this is a test run.
+{% endif %}
