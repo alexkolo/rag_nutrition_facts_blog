@@ -11,5 +11,5 @@ st.title(page_title)
 
 
 # Information for the user
-st.write(f"The URL of the app has changed to: `{redirect_url}`")
+st.write(f"The URL of the app has changed to: [`{redirect_url}`]({redirect_url})")
 st.write(f"[Click here to visit the app]({redirect_url})")
