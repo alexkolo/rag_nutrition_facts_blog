@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 from lancedb.table import Table as KBaseTable
 
 import src.constants as cst
-from src.app_utils import connect_to_llm, init_st_keys, load_image
+from src.app_utils import connect_to_llm, init_st_keys
 from src.app_widgets import create_button, create_chat_msg, create_first_assistant_msg, show_chat_history, show_md_file
 from src.llm_api import build_full_llm_chat_input, stream_chat_response
 from src.mongodb import MongodbClient, get_mongodb_config, save_chat_history
@@ -29,8 +29,8 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 
 # Chat Parameters
 # -----------------------------
-BOT_AVATAR = load_image(cst.BOT_AVATAR)
 chat_config: dict[str, Any] = cst.get_rag_config()["chat"]
+BOT_AVATAR: str = chat_config["bot_avatar"]
 AVATARS: dict[str, Any] = {"assistant": BOT_AVATAR, "user": chat_config["user_avatar"]}
 STREAM_DEFAULT: bool = chat_config["stream_default"]
 CHAT_HISTORY_HEIGHT: int = chat_config["chat_history_height"]
@@ -154,14 +154,15 @@ init_st_keys("retrieval", [])
 
 # Page starts here
 # ==========================
-page_title = "Nutrify Your Life: A Science-Based Health & Lifestyle Companion 🥦"
-st.set_page_config(page_title=page_title, page_icon=BOT_AVATAR)  # , layout="wide")
+page_title = f"Nutrify Your Life {BOT_AVATAR}"
+st.set_page_config(page_title=page_title, page_icon=BOT_AVATAR)
 
 # Header
 # ------------
-st.header(page_title, divider="blue")
+st.header(f"{BOT_AVATAR} {page_title}", divider=False)
+st.subheader("A Science-Based Health & Lifestyle Companion ", divider="blue")
 app_intro: str = """
-"Nutrify Your Life" is your personal digital assistant, inspired by the science-based expertise of [NutritionFacts.org](https://nutritionfacts.org/about/). Designed to answer your questions about healthy eating and lifestyle choices, this assistant draws from over 1,200 well-researched blog posts since 2011. Whether you're looking for nutrition tips or guidance on living a healthier life, it offers reliable, science-backed insights to help you live a healthier, more informed life.
+"Nutrify Your Life" is your personal companion, inspired by the science-based expertise of [NutritionFacts.org](https://nutritionfacts.org/about/). Designed to answer your questions about healthy eating and lifestyle choices, this AI-powered digital assistant draws from over 1,200 well-researched blog posts since 2011. Whether you're looking for nutrition tips or guidance on living a healthier life, it offers reliable, science-backed insights to help you live a healthier, more informed life.
 """
 if not st.session_state["start_chat"]:
     st.info(app_intro, icon="💡")

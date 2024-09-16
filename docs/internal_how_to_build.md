@@ -1,7 +1,7 @@
 
 # How I build this bot
 
-- As I'm interest in living health and healthy lives and very much the [blog post of Dr. Greger](https://nutritionfacts.org/blog/), I decided to build a bot based on this well researched blog posts.
+- As I'm interest in living health and healthy lives and very much the [blog post of nutritionfacts.org](https://nutritionfacts.org/blog/), I decided to build a bot based on this well researched blog posts.
 
 ## Data Acquisition
 

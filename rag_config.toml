@@ -48,6 +48,7 @@ reranker.model_name = "cross-encoder/ms-marco-MiniLM-L-2-v2"
 
 [chat]
 user_avatar = "❔"
+bot_avatar = "🥦"
 stream_default = true
 chat_history_height = 650
 

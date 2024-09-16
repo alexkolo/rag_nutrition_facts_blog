@@ -108,15 +108,15 @@ def get_values_from_query_file(
 
 # Page starts here
 # ==========================
-page_title = 'Data Usage of "Nutrition Insights with Dr. Greger\'s Digital Twin 🥦" App'
-st.set_page_config(page_title=page_title)
+page_title = 'Data Usage of the "Nutrify Your Life" App'
+st.set_page_config(page_title=page_title, icon="📊")
 
 # Header
 # -------------------------
 st.title("Dashboard")
 st.header(page_title)
 if DEPLOYED:
-    st.write("Link to app: https://dr-greger-blog-bot.streamlit.app")
+    st.write("Link to app: https://nutrify-your-life.streamlit.app")
 else:
     st.write("Link to app: http://localhost:8501")
 

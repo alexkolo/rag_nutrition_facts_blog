@@ -7,17 +7,19 @@
 ![Docker-Badge](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
 <!--- BADGES: END --->
 
-# Nutrify Your Life: A Science-Based Health & Lifestyle Companion 🥦
+# 🥦 Nutrify Your Life 🥦
 
-## A RAG-based Q&A chatbot
+## A Science-Based Health & Lifestyle Companion
 
-**Nutrify Your Life** is your personal digital assistant, inspired by the science-based expertise of [NutritionFacts.org](https://nutritionfacts.org/about/). Designed to answer your questions about healthy eating and lifestyle choices, this assistant draws from over 1,200 well-researched blog posts since 2011. Whether you're looking for nutrition tips or guidance on living a healthier life, it offers reliable, science-backed insights to help you live a healthier, more informed life.
+### (a RAG-based Q&A chatbot)
 
-Start chatting with the **Nutrify Your Life** companion [here](https://dr-greger-blog-bot.streamlit.app/).
+**Nutrify Your Life** is your personal companion, inspired by the science-based expertise of [NutritionFacts.org](https://nutritionfacts.org/about/). Designed to answer your questions about healthy eating and lifestyle choices, this AI-powered digital assistant draws from over 1,200 well-researched blog posts since 2011. Whether you're looking for nutrition tips or guidance on living a healthier life, it offers reliable, science-backed insights to help you live a healthier, more informed life.
+
+Start chatting with the **Nutrify Your Life** companion [here](https://nutrify-your-life.streamlit.app/).
 
 <!---
 <p align="center">
-  <a href="https://dr-greger-blog-bot.streamlit.app/" target="_blank">
+  <a href="https://nutrify-your-life.streamlit.app/" target="_blank">
     <img src="data/images/app_screenshot_2024-09-10.png" width="400">
   </a>
 </p>
