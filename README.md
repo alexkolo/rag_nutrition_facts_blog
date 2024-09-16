@@ -1,4 +1,4 @@
-![readme welcome image](data/images/DALLE_2024-09-06_09.48.30.png)
+![readme welcome image](data/images/DALLE_2024-09-16_21.48.45_header.webp)
 
 <!--- BADGES: START --->
 ![Python-Badge](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
@@ -7,13 +7,13 @@
 ![Docker-Badge](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
 <!--- BADGES: END --->
 
-# Nutrition Insights with Dr. Greger's Digital Twin 🥦
+# Nutrify Your Life: A Science-Based Health & Lifestyle Companion 🥦
 
 ## A RAG-based Q&A chatbot
 
-This digital assistant, inspired by [Dr. Michael Greger & his team](https://nutritionfacts.org/team/) at [NutritionFacts.org](https://nutritionfacts.org/about/), was created to answer user questions about healthy eating and lifestyle choices. Drawing from [over 1,200 well-researched blog posts since 2011](https://nutritionfacts.org/blog/), it provides science-backed insights to help users live a healthier, more informed life.
+**Nutrify Your Life** is your personal digital assistant, inspired by the science-based expertise of [NutritionFacts.org](https://nutritionfacts.org/about/). Designed to answer your questions about healthy eating and lifestyle choices, this assistant draws from over 1,200 well-researched blog posts since 2011. Whether you're looking for nutrition tips or guidance on living a healthier life, it offers reliable, science-backed insights to help you live a healthier, more informed life.
 
-Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.streamlit.app/).
+Start chatting with the **Nutrify Your Life** companion [here](https://dr-greger-blog-bot.streamlit.app/).
 
 <!---
 <p align="center">
@@ -33,7 +33,6 @@ Start chatting with Dr. Greger's Digital Twin [here](https://dr-greger-blog-bot.
 
 ## Documentation
 
-- [What problems does the chatbot try to mitigate](docs/offical_project_description.md)
 - [How you can run & test the chatbot yourself](docs/offical_how_to_run_yourself.md)
 - [How I built and evaluated this chatbot](docs/offical_how_i_build_it.md)
 - [Personal project evaluation](docs/internal_project_evaluation.md) based on the [criteria](https://github.com/DataTalksClub/llm-zoomcamp/blob/main/project.md#evaluation-criteria) of the [LLM-zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp) course

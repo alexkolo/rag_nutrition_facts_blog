@@ -154,18 +154,14 @@ init_st_keys("retrieval", [])
 
 # Page starts here
 # ==========================
-page_title = "Nutrition Insights with Dr. Greger's Digital Twin 🥦"
+page_title = "Nutrify Your Life: A Science-Based Health & Lifestyle Companion 🥦"
 st.set_page_config(page_title=page_title, page_icon=BOT_AVATAR)  # , layout="wide")
-
 
 # Header
 # ------------
 st.header(page_title, divider="blue")
 app_intro: str = """
-This digital assistant, inspired by [Dr. Michael Greger & his team](https://nutritionfacts.org/team/) at
-[NutritionFacts.org](https://nutritionfacts.org/about/), is here to answer your questions about healthy eating and
-lifestyle choices. Drawing from over 1,200 well-researched blog posts since 2011, it provides science-backed insights
-to help you live a healthier, more informed life.
+"Nutrify Your Life" is your personal digital assistant, inspired by the science-based expertise of [NutritionFacts.org](https://nutritionfacts.org/about/). Designed to answer your questions about healthy eating and lifestyle choices, this assistant draws from over 1,200 well-researched blog posts since 2011. Whether you're looking for nutrition tips or guidance on living a healthier life, it offers reliable, science-backed insights to help you live a healthier, more informed life.
 """
 if not st.session_state["start_chat"]:
     st.info(app_intro, icon="💡")
