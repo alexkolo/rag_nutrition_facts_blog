@@ -145,21 +145,27 @@ init_st_keys("deployed")
 if st.session_state["deployed"] is None:
     st.session_state["deployed"] = st.secrets.get("deployed", False) if Path(ST_SECRETS_FILE).exists() else False
 
+# API KEY of LLM Provider
+# ``````````````````````````
 init_st_keys(LLM_API_KEY_NAME, "")
-LLM_API_KEY: str = ""
-# 1. see in streamlit secrets, if available
-if Path(ST_SECRETS_FILE).exists():
-    LLM_API_KEY = st.secrets.get(LLM_API_KEY_NAME, "")
-# 2. see in .env, if available
-if LLM_API_KEY == "":
-    load_dotenv()
-    LLM_API_KEY = os.getenv(LLM_API_KEY_NAME, "")
-# 3. see in streamlit session state
-# (the api key is only saved in the session state if it was provided by the user)
-if LLM_API_KEY == "":
-    LLM_API_KEY = st.session_state[LLM_API_KEY_NAME]
-st.session_state["llm_api_key_available"] = LLM_API_KEY != ""
+if st.session_state[LLM_API_KEY_NAME] == "":
+    LLM_API_KEY_VALUE: str = ""
+    # 1. see in streamlit secrets, if available
+    if Path(ST_SECRETS_FILE).exists():
+        LLM_API_KEY_VALUE = st.secrets.get(LLM_API_KEY_NAME, "")
+    # 2. see in .env, if available
+    if LLM_API_KEY_VALUE == "":
+        load_dotenv()
+        LLM_API_KEY_VALUE = os.getenv(LLM_API_KEY_NAME, "")
 
+    st.session_state[LLM_API_KEY_NAME] = LLM_API_KEY_VALUE
+
+if st.session_state[LLM_API_KEY_NAME]:
+    api_key_input_label = f"You have the option to enter an [API KEY of the LLM provider **{LLM_API_NAME.capitalize()}**]({LLM_API_KEY_URL}), which is **for free**!  \n_Otherwise, the app creator's API KEY is used, which may slow down response time because it uses a free tier._"
+    api_key_input_placeholder = "Optional: enter an API KEY here"
+else:
+    api_key_input_label = f"You have to enter an [API KEY of the LLM provider **{LLM_API_NAME.capitalize()}**]({LLM_API_KEY_URL}), which is **for free**, to use this app!"
+    api_key_input_placeholder = "Enter an API KEY here"
 
 # Initialize chat history
 # -----------------------------
@@ -174,7 +180,7 @@ init_st_keys("model_temp", LLM_TEMP)
 init_st_keys("model_name")
 init_st_keys("retrieval", [])
 init_st_keys("rsp_time_info", False)
-
+init_st_keys("own_api_key", False)
 
 # Page starts here
 # ==========================
@@ -227,24 +233,10 @@ with st.expander(label="👤 User info", expanded=not st.session_state["start_ch
             label="Before you can start the chat, please tell me your name:", placeholder="Sam Altman", key="user_name"
         )
 
-        # toggle option to enter own LLM API key
-        # use_own_key = st.checkbox(label="Use own LLM API key", value=not st.session_state["llm_api_key_available"])
-
-        if not st.session_state["llm_api_key_available"]:
-            user_llm_key: str = st.text_input(
-                label=(
-                    f"Insert an [API KEY of '{LLM_API_NAME.capitalize()}']({LLM_API_KEY_URL}) here, since it's used as LLM API provider. It's for **free**! "
-                    f'  \n_As a developer you could also add it to the `.streamlit/secrets.toml` file as `{LLM_API_KEY_NAME} = "..."`_.'
-                ),
-                placeholder=f"Enter your LLM API key of '{LLM_API_NAME.capitalize()}' here",
-                type="password",
-                key="user_llm_key",
-                value="",
-            )
-            if user_llm_key:
-                st.session_state["llm_api_key_available"] = True
-                LLM_API_KEY = user_llm_key
-                st.session_state[LLM_API_KEY_NAME] = user_llm_key
+        # LLM API KEY
+        user_llm_key: str = st.text_input(
+            label=api_key_input_label, placeholder=api_key_input_placeholder, type="password", key="user_llm_key"
+        )
 
         # Submit button
         submit_button = st.form_submit_button(label="Save & continue", disabled=st.session_state["start_chat"])
@@ -269,13 +261,22 @@ with st.expander(label="👤 User info", expanded=not st.session_state["start_ch
             if not user_name:
                 st.info("Please provide your name to use the digital assistant.", icon="👆")
 
-            if not LLM_API_KEY:
-                st.error(f"The LLM API key for the API provider '{LLM_API_NAME}' is missing!", icon="❌")
+            if user_llm_key:
+                st.session_state[LLM_API_KEY_NAME] = user_llm_key  # overwrite key of app creator
+                st.success("Also thank you for using your own API KEY!", icon="💚")
+                st.session_state["own_api_key"] = True
+            else:
+                st.session_state["own_api_key"] = False
+            if not st.session_state[LLM_API_KEY_NAME]:
+                st.error(
+                    f"The [API KEY of the LLM provider **{LLM_API_NAME.capitalize()}**]({LLM_API_KEY_URL}) is missing!",
+                    icon="❌",
+                )
 
 # Chat-Control Container
 # ------------
 user_name = st.session_state["user_info"]["user_name"]
-if st.session_state["submit_button"] and user_name and st.session_state["llm_api_key_available"]:
+if st.session_state["submit_button"] and user_name and st.session_state[LLM_API_KEY_NAME]:
     # -------
     with st.container(border=False):
         st.subheader("Start chatting")
@@ -327,7 +328,7 @@ if st.session_state["start_chat"]:
                 st.success("Chat history has been reset.", icon="🗑️")
 
             # waking up assistant, if needed
-            connect_to_llm(api_key=LLM_API_KEY, api_name=LLM_API_NAME, api_config=LLM_API_CONFIG)
+            connect_to_llm(api_key=st.session_state[LLM_API_KEY_NAME], api_name=LLM_API_NAME, api_config=LLM_API_CONFIG)
 
             if new_chat:
                 # show 1st assistant message in the chat history
@@ -353,10 +354,8 @@ if st.session_state["start_chat"]:
                 t_start = datetime.now()
                 process_user_input(user_prompt, avatars=AVATARS, api_name=LLM_API_NAME, k_base=k_base)
                 t_duration = datetime.now() - t_start
-                if t_duration.seconds > RESP_TIME_THRESHOLD:  # and not st.session_state["rsp_time_info"]:
+                if t_duration.total_seconds() > RESP_TIME_THRESHOLD and not st.session_state["own_api_key"]:
                     st.info(SLOW_RESP_TIME_INFO, icon="⏳")
-                    # only show this info once
-                    # st.session_state["rsp_time_info"] = True
 
             # save chat history
             if st.session_state["mongodb_connected"]:
