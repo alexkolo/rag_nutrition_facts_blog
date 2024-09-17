@@ -34,7 +34,7 @@ def create_chat_msg(
     state_key: str = "messages",
 ):
     full_content: str
-    with st.chat_message("assistant", avatar=avatar):
+    with st.chat_message(name=role, avatar=avatar):
         if stream:
             full_content = st.write_stream(content)  # type: ignore
         else:
