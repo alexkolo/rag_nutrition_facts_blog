@@ -38,12 +38,12 @@ def get_llm_model_name(
         except Exception:
             err_msg: str = "There was an error connecting to the LLM API provider 😢."
             if user_provided_key:
-                err_msg += " You may have provided an invalid API KEY."
-            st.error(f"{err_msg}. Click 'Reset All' to start over.", icon="❌")
+                err_msg += "  \nYou may have provided an invalid API KEY."
+            st.error(f"{err_msg}  \nClick **Reset All** to start over.", icon="❌")
             raise
 
     if not model_name:
-        st.error("The LLM model name remains undefined 😢. Click 'Reset All' to start over.", icon="❌")
+        st.error("The LLM model name remains undefined 😢. Click **Reset All** to start over.", icon="❌")
 
     return model_name
 
