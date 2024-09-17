@@ -328,7 +328,12 @@ if st.session_state["start_chat"]:
                 st.success("Chat history has been reset.", icon="🗑️")
 
             # waking up assistant, if needed
-            connect_to_llm(api_key=st.session_state[LLM_API_KEY_NAME], api_name=LLM_API_NAME, api_config=LLM_API_CONFIG)
+            connect_to_llm(
+                api_key=st.session_state[LLM_API_KEY_NAME],
+                api_name=LLM_API_NAME,
+                api_config=LLM_API_CONFIG,
+                user_provided_key=st.session_state["own_api_key"],
+            )
 
             if new_chat:
                 # show 1st assistant message in the chat history

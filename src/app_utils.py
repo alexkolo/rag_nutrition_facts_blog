@@ -24,7 +24,11 @@ def stream_text(response: str, sleep: float = 0.05) -> Iterable[str]:
         time.sleep(sleep)
 
 
-def get_llm_model_name(api_config: dict[str, Any], api_key: str) -> str:
+def get_llm_model_name(
+    api_config: dict[str, Any],
+    api_key: str,
+    user_provided_key: bool = False,
+) -> str:
     model_name: str = api_config.get("model", {}).get("name", "")
     if not model_name:
         models_url: str = api_config.get("models", {}).get("url", "")
@@ -32,20 +36,27 @@ def get_llm_model_name(api_config: dict[str, Any], api_key: str) -> str:
         try:
             model_name = get_preferred_model(api_key=api_key, models_url=models_url, ranked_models=ranked_models)
         except Exception:
-            st.error("There was an error connecting to the LLM provider 😢. Try 'Reset All'.", icon="❌")
+            err_msg: str = "There was an error connecting to the LLM API provider 😢."
+            if user_provided_key:
+                err_msg += " You may have provided an invalid API KEY."
+            st.error(f"{err_msg}. Click 'Reset All' to start over.", icon="❌")
             raise
 
     if not model_name:
-        st.error("The LLM model name remains undefined 😢.", icon="❌")
+        st.error("The LLM model name remains undefined 😢. Click 'Reset All' to start over.", icon="❌")
 
     return model_name
 
 
-def connect_to_llm(api_key: str, api_name: str, api_config: dict):
+def connect_to_llm(api_key: str, api_name: str, api_config: dict, user_provided_key: bool = False):
     # Setup Model Name
     init_st_keys("model_name")
     if not st.session_state["model_name"]:
-        model_name: str = get_llm_model_name(api_config=api_config, api_key=api_key)
+        model_name: str = get_llm_model_name(
+            api_config=api_config,
+            api_key=api_key,
+            user_provided_key=user_provided_key,
+        )
         st.session_state["model_name"] = model_name
 
     # Setup LLM API Client
