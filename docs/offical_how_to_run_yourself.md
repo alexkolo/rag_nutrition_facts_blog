@@ -21,7 +21,7 @@
   - `.streamlit/secrets.toml` (same for both apps for simplicity):
 
       ```plaintext
-      GROQ_TOKEN = "gsk_..."
+      GROQ_TOKEN = "..."
 
       deployed = true
 

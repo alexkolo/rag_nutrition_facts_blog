@@ -27,6 +27,7 @@ from src.retrieval import connect_to_lancedb_table
 # ignore future warnings
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
+
 # Chat Parameters
 # -----------------------------
 chat_config: dict[str, Any] = cst.get_rag_config()["chat"]
@@ -40,6 +41,26 @@ HAL_WARNING_MSG: str = (
 )
 ASK_USER_FEEDBACK: int = 2  # after 1 user questions ask user feedback
 
+APP_INTRO_TEXT: str = """ """
+
+# App Header
+APP_TITLE = f"Nutrify Your Life {BOT_AVATAR}"
+APP_SUBTITLE = "A Science-Based Health & Lifestyle Companion"
+APP_INTRO_TEXT: str = """
+"Nutrify Your Life" is your personal companion, inspired by the science-based expertise of
+[NutritionFacts.org](https://nutritionfacts.org/about/). Designed to answer your questions about healthy eating and
+lifestyle choices, this AI-powered digital assistant draws from over 1,200 well-researched blog posts since 2011.
+Whether you're looking for nutrition tips or guidance on living a healthier life, it offers reliable, science-backed
+insights to help you live a healthier, more informed life.
+"""
+
+# response time threshold to show info
+RESP_TIME_THRESHOLD: int = 4  # in seconds
+SLOW_RESP_TIME_INFO: str = """
+_Response time may be a bit slow as the app uses a **free tier** for its LMM API provider
+[Groq Cloud](https://groq.com/) to make it **accessible to everyone**.
+Sorry for the inconvenience._
+"""
 
 # LLM Parameters
 # -----------------------------
@@ -71,7 +92,7 @@ def process_user_input(
         raise ValueError("Stream=False is not supported in this version of the app")
 
     # show user message in the chat history
-    create_chat_msg(user_prompt, role="user", avatar=avatars["user"])
+    create_chat_msg(content=user_prompt, role="user", avatar=avatars["user"])
 
     # create assistant response
     with st.chat_message("assistant", avatar=avatars["assistant"]):
@@ -157,18 +178,14 @@ init_st_keys("rsp_time_info", False)
 
 # Page starts here
 # ==========================
-page_title = f"Nutrify Your Life {BOT_AVATAR}"
-st.set_page_config(page_title=page_title, page_icon=BOT_AVATAR)
+st.set_page_config(page_title=APP_TITLE, page_icon=BOT_AVATAR)
 
 # Header
 # ------------
-st.header(f"{BOT_AVATAR} {page_title}", divider=False)
-st.subheader("A Science-Based Health & Lifestyle Companion ", divider="blue")
-app_intro: str = """
-"Nutrify Your Life" is your personal companion, inspired by the science-based expertise of [NutritionFacts.org](https://nutritionfacts.org/about/). Designed to answer your questions about healthy eating and lifestyle choices, this AI-powered digital assistant draws from over 1,200 well-researched blog posts since 2011. Whether you're looking for nutrition tips or guidance on living a healthier life, it offers reliable, science-backed insights to help you live a healthier, more informed life.
-"""
+st.header(f"{BOT_AVATAR} {APP_TITLE}", divider=False)
+st.subheader(APP_SUBTITLE, divider="blue")
 if not st.session_state["start_chat"]:
-    st.info(app_intro, icon="💡")
+    st.info(APP_INTRO_TEXT, icon="💡")
 
 # Connect to Knowledge Base
 # ------------
@@ -304,8 +321,8 @@ if st.session_state["start_chat"]:
     new_chat: bool = not st.session_state["messages"]
     with st.container(border=False):
         # chat history
-        chat_history = st.container(border=True, height=250 if new_chat else CHAT_HISTORY_HEIGHT)
-        with chat_history:
+        chat_window = st.container(border=True, height=250 if new_chat else CHAT_HISTORY_HEIGHT)
+        with chat_window:
             if reset_chat is True:
                 st.success("Chat history has been reset.", icon="🗑️")
 
@@ -332,20 +349,14 @@ if st.session_state["start_chat"]:
         )
 
         if user_prompt:
-            with chat_history:  # show everything below in the chat history
+            with chat_window:  # show everything below in the chat history
                 t_start = datetime.now()
                 process_user_input(user_prompt, avatars=AVATARS, api_name=LLM_API_NAME, k_base=k_base)
                 t_duration = datetime.now() - t_start
-                if t_duration.seconds > 1 and not st.session_state["rsp_time_info"]:
-                    st.info(
-                        """
-                        _Response time may be a bit slow as the app uses a **free tier** for its LMM API provider
-                        to make it **accessible to everyone**. Sorry for the inconvenience._
-                        """,
-                        icon="⏳",
-                    )
+                if t_duration.seconds > RESP_TIME_THRESHOLD:  # and not st.session_state["rsp_time_info"]:
+                    st.info(SLOW_RESP_TIME_INFO, icon="⏳")
                     # only show this info once
-                    st.session_state["rsp_time_info"] = True
+                    # st.session_state["rsp_time_info"] = True
 
             # save chat history
             if st.session_state["mongodb_connected"]:
@@ -357,7 +368,7 @@ if st.session_state["start_chat"]:
                     retrieval=st.session_state["retrieval"],
                 )
 
-        with chat_history:
+        with chat_window:
             if st.session_state["total_tokens"] >= TOTAL_MAX_TOKEN:
                 st.error("Chat history is too long. Please reset it.", icon="🚫")
 
@@ -372,7 +383,7 @@ if st.session_state["start_chat"]:
         init_st_keys("user_rating")
         fb_disabled: bool = st.session_state["user_rating"] is not None
 
-        fb_options: list[str] = ["😞", "🙁", "😐", "🙂", "😀"]
+        fb_options: list[str] = ["🤮", "😕", "😐", "😀", "😍"]
         with st.form(key="feedback_form", border=True):
             user_fb = st.radio(
                 label="**Please let me know how helpful you find this digital assistant:**",
@@ -386,7 +397,7 @@ if st.session_state["start_chat"]:
         # save feedback
         if submit:
             value: int = fb_options.index(user_fb)
-            user_likes_bot: bool = user_fb in ["🙂", "😀"]
+            user_likes_bot: bool = user_fb in ["😀", "😍"]
 
             st.session_state["user_rating"] = value
             if user_likes_bot:
@@ -402,15 +413,17 @@ if st.session_state["start_chat"]:
 
 # Debug
 # ==============
-st.divider()
-st.write(f"`LLM used: '{st.session_state['model_name'] or 'not yet defined'}'`")
-st.write(
-    f"`{st.session_state['total_tokens']/TOTAL_MAX_TOKEN:.0%}"
-    " of conversation capacity used before a chat history reset is required.`"
-)
-with st.expander("🤓 _Debug Information_", expanded=False):
-    st.button("Reset All 🧹", on_click=st.session_state.clear)
-    if not st.session_state["deployed"]:
+st.write("###")
+with st.expander("Technical Details", expanded=False):
+    st.write(f"`LLM used: '{st.session_state['model_name'] or 'not yet defined'}'`")
+    st.write(
+        f"`{st.session_state['total_tokens']/TOTAL_MAX_TOKEN:.0%}"
+        " of conversation capacity used before a chat history reset is required.`"
+    )
+
+if not st.session_state["deployed"]:
+    with st.expander("🤓 _Debug Information_", expanded=False):
+        st.button("Reset All 🧹", on_click=st.session_state.clear)
         st.write("Session State:")
         session_state: dict = dict(st.session_state)
         # del session_state[LLM_API_KEY_NAME]
