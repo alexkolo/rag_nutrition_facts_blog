@@ -414,7 +414,7 @@ if st.session_state["start_chat"]:
 # Debug
 # ==============
 st.write("###")
-with st.expander("Technical Details", expanded=False):
+with st.expander("`Technical Details`", expanded=False):
     st.write(f"`LLM used: '{st.session_state['model_name'] or 'not yet defined'}'`")
     st.write(
         f"`{st.session_state['total_tokens']/TOTAL_MAX_TOKEN:.0%}"
