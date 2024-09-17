@@ -74,9 +74,8 @@ def process_user_input(
     create_chat_msg(user_prompt, role="user", avatar=avatars["user"])
 
     # create assistant response
-    client = st.session_state["llm_client"]
-    with st.spinner("I'm thinking..."):
-        with st.chat_message("assistant", avatar=avatars["assistant"]):
+    with st.chat_message("assistant", avatar=avatars["assistant"]):
+        with st.spinner("I'm thinking..."):
             # build LLM chat input
             # TODO: check when message gets too big
             chat_history: list[dict[str, str]] = st.session_state["messages"]
@@ -91,6 +90,7 @@ def process_user_input(
 
             # send message to LLM and get response
             t_start = datetime.now()
+            client = st.session_state["llm_client"]
             streamed_response_raw: Iterable = client.chat.completions.create(
                 model=st.session_state["model_name"],
                 messages=messages,
@@ -99,17 +99,19 @@ def process_user_input(
                 # max_tokens=RESPONSE_MAX_TOKENS,
             )
             t_duration = datetime.now() - t_start
-            token_current: int = st.session_state["total_tokens"]
-            streamed_response_str: Iterable[str] = stream_chat_response(streamed_response_raw, api_name=api_name)
-            token_delta: int = st.session_state["total_tokens"] - token_current
-            full_response: str = st.write_stream(streamed_response_str)
+
+        # copy value, since `stream_chat_response` modifies it
+        n_tokens_before: int = int(st.session_state["total_tokens"])
+        streamed_response_str: Iterable[str] = stream_chat_response(streamed_response_raw, api_name=api_name)
+        n_tokens_delta: int = st.session_state["total_tokens"] - n_tokens_before
+        full_response: str = st.write_stream(streamed_response_str)
     # Add assistant response to chat history
     st.session_state["messages"].append(
         {
             "role": "assistant",
             "content": full_response,
             "response_time": t_duration.total_seconds(),
-            "token_delta": token_delta,
+            "token_delta": n_tokens_delta,
             "llm_usage": st.session_state["llm_usage"],
         }
     )
@@ -150,6 +152,7 @@ init_st_keys("user_info", cst.USER_INFO_TEMPLATE)
 init_st_keys("model_temp", LLM_TEMP)
 init_st_keys("model_name")
 init_st_keys("retrieval", [])
+init_st_keys("rsp_time_info", False)
 
 
 # Page starts here
@@ -333,6 +336,16 @@ if st.session_state["start_chat"]:
                 t_start = datetime.now()
                 process_user_input(user_prompt, avatars=AVATARS, api_name=LLM_API_NAME, k_base=k_base)
                 t_duration = datetime.now() - t_start
+                if t_duration.seconds > 1 and not st.session_state["rsp_time_info"]:
+                    st.info(
+                        """
+                        _Response time may be a bit slow as the app uses a **free tier** for its LMM API provider
+                        to make it **accessible to everyone**. Sorry for the inconvenience._
+                        """,
+                        icon="⏳",
+                    )
+                    # only show this info once
+                    st.session_state["rsp_time_info"] = True
 
             # save chat history
             if st.session_state["mongodb_connected"]:
@@ -397,11 +410,12 @@ st.write(
 )
 with st.expander("🤓 _Debug Information_", expanded=False):
     st.button("Reset All 🧹", on_click=st.session_state.clear)
-    st.write("Session State:")
-    session_state: dict = dict(st.session_state)
-    # del session_state[LLM_API_KEY_NAME]
-    st.json(session_state, expanded=False)
+    if not st.session_state["deployed"]:
+        st.write("Session State:")
+        session_state: dict = dict(st.session_state)
+        # del session_state[LLM_API_KEY_NAME]
+        st.json(session_state, expanded=False)
 
-    # show env. variables
-    st.write("Environment Variables:")
-    st.json(dict(os.environ), expanded=False)
+        # show env. variables
+        st.write("Environment Variables:")
+        st.json(dict(os.environ), expanded=False)
