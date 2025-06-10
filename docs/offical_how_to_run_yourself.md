@@ -101,3 +101,15 @@
 - Dashboard for monitoring (Streamlit App):
   - start it via `streamlit run ./dashboard/app.py --server.port 8080`
   - view in browser: <http://localhost:8080>
+
+#### For Devs
+
+- setup "User Environment": `pip install -e ".[dev]"`
+- `pre-commit`
+
+  ```bash
+  pre-commit install
+  # pre-commit migrate-config # might be needed
+  pre-commit autoupdate
+  # pre-commit run # test
+  ```
