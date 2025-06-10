@@ -226,7 +226,7 @@ else:
 # User-Name Container
 # ------------
 with st.expander(label="👤 User info", expanded=not st.session_state["start_chat"]):
-    with st.form(key="user_form", border=False):
+    with st.form(key="user_form", border=False, enter_to_submit=False):
         # st.subheader("Who are you?")
         # User's name (required)
         user_name: str = st.text_input(
