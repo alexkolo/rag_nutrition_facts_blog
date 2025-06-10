@@ -1,9 +1,9 @@
 # https://pre-commit.com/index.html#top_level-default_stages
-default_stages: [commit] # All hooks that do not specify any stages are set to `commit` by default
+default_stages: [pre-commit] # All hooks that do not specify any stages are set to `commit` by default
 repos:
   # Generic Hooks: https://pre-commit.com/hooks.html
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files # Prevent giant files from being committed.
         args: ['--maxkb=500'] # default 500kb
@@ -24,13 +24,13 @@ repos:
       - id: check-case-conflict # Check for files with names that would conflict on a case-insensitive filesystem
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.17.0
+    rev: v3.20.0
     hooks:
       - id: pyupgrade
         args: [--py312-plus]
 
   - repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.8.7
+    rev: 1.9.1
     hooks:
       - id: nbqa-isort
         args: ["--profile=black"] # "--float-to-top",
