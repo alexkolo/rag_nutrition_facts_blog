@@ -64,8 +64,8 @@ token.total_max = 8192
 models.url = "https://api.groq.com/openai/v1/models"
 # based on RAG evaluation 11/09/2024
 # https://console.groq.com/docs/models
-# updated models 10/06/2026
-models.ranked = ["llama-3.3-70b-versatile","llama3-70b-8192", "llama-3.1-8b-instant", "llama3-8b-8192", "gemma2-9b-it"]
+# updated models 15/09/2025
+models.ranked = ["llama-3.3-70b-versatile","llama-3.1-8b-instant"]
 
 
 [mongodb.local]
