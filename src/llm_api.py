@@ -90,16 +90,25 @@ def build_full_llm_chat_input(
 def stream_chat_response(response: Iterable, api_name: str) -> Iterable[str]:
     for chunk in response:
         text = chunk.choices[0].delta.content
-        if text is None and api_name == "groq":
-            usage = chunk.x_groq.usage
+
+        # Recent Groq streaming responses expose usage on the standard ``usage``
+        # field. Older SDK/API combinations used ``x_groq.usage`` instead. Not
+        # every non-text chunk contains usage (for example, role-only deltas),
+        # so handle both shapes without assuming either extension is present.
+        usage = getattr(chunk, "usage", None)
+        if usage is None and api_name == "groq":
+            x_groq = getattr(chunk, "x_groq", None)
+            usage = getattr(x_groq, "usage", None)
+
+        if usage is not None:
             st.session_state["total_tokens"] = usage.total_tokens
             st.session_state["llm_usage"] = {
                 "prompt_tokens": usage.prompt_tokens,
                 "completion_tokens": usage.completion_tokens,
                 "total_tokens": usage.total_tokens,
-                "prompt_time": usage.prompt_time,
-                "completion_time": usage.completion_time,
-                "total_time": usage.total_time,
+                "prompt_time": getattr(usage, "prompt_time", None),
+                "completion_time": getattr(usage, "completion_time", None),
+                "total_time": getattr(usage, "total_time", None),
             }
             """
             https://console.groq.com/docs/api-reference#chat-create
@@ -112,7 +121,7 @@ def stream_chat_response(response: Iterable, api_name: str) -> Iterable[str]:
                 "total_time": 0.783
             }
             """
-        else:
+        if text is not None:
             yield text
 
 
