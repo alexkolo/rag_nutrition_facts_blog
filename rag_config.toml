@@ -65,7 +65,8 @@ models.url = "https://api.groq.com/openai/v1/models"
 # based on RAG evaluation 11/09/2024
 # https://console.groq.com/docs/models
 # updated models 15/09/2025
-models.ranked = ["llama-3.3-70b-versatile","llama-3.1-8b-instant"]
+# updated models 15/08/2026 , deprecation of llama-3.1-8b-instant and llama-3.3-70b-versatile
+models.ranked = ["openai/gpt-oss-120b","qwen/qwen3.6-27b"]
 
 
 [mongodb.local]
